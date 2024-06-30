@@ -1,13 +1,12 @@
 namespace SpeedTool.Windows.Drawables;
 
-using System.Net.Http.Headers;
 using Silk.NET.Maths;
 using Silk.NET.OpenGL;
 using SpeedTool.Timer;
 using SpeedTool.Util.GL;
 using SpeedTool.Util;
 
-using STShader = SpeedTool.Util.GL.Shader;
+using STShader = Util.GL.Shader;
 
 class TimerDrawable : IDisposable
 {
@@ -67,23 +66,35 @@ class TimerDrawable : IDisposable
         s.DrawWith(() => DrawBuffers(source));
     }
 
+    /// <summary>
+    /// Gets appropriate bar progress for timer source.
+    /// </summary>
+    /// <param name="source"></param>
+    /// <returns>Bar progress in [0; 1] range. If the source isn't started, return (1, 1, 1).</returns>
+    private (float sec, float min, float hrs) GetBarProgressFromSource(ITimerSource source)
+    {
+        if(source.CurrentState == TimerState.NoState)
+            return (60, 60, 12);
+
+        return ((float)source.CurrentTime.FloatSeconds() / 60.0f,
+                (float)source.CurrentTime.FloatMinutes() / 60.0f,
+                (float)source.CurrentTime.FloatHours() / 12.0f);
+    }
+
     private void DrawBuffers(ITimerSource source)
     {
-        //gl::UseProgram(program);
         var mat = GetOrtho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
         s.SetUniform("projection", mat);
         s.SetUniform("clr", new Vector3D<float>(1.0f, 0.0f, 0.0f));
         var coor = s.GetAttribLocation("coordinates");
-        var progressSeconds = (float)source.CurrentTime.FloatSeconds() / 60.0f;
-        var progressMinutes = (float)source.CurrentTime.FloatMinutes() / 60.0f;
-        var progressHours = (float)source.CurrentTime.FloatHours() / 12.0f;
-        objects[0].Draw((int)(objects[0].Length * progressSeconds), (uint)coor);
+        var progress = GetBarProgressFromSource(source);
+        objects[0].Draw((int)(objects[0].Length * progress.sec), (uint)coor);
 
         s.SetUniform("clr", new Vector3D<float>(0.0f, 1.0f, 0.0f));
-        objects[1].Draw((int)(objects[1].Length * progressMinutes), (uint)coor);
+        objects[1].Draw((int)(objects[1].Length * progress.min), (uint)coor);
 
         s.SetUniform("clr", new Vector3D<float>(0.0f, 0.0f, 1.0f));
-        objects[2].Draw((int)(objects[2].Length * progressHours), (uint)coor);
+        objects[2].Draw((int)(objects[2].Length * progress.hrs), (uint)coor);
     }
 
     static Matrix4X4<float> GetOrtho(float left, float right, float bottom, float top, float znear, float zfar)
