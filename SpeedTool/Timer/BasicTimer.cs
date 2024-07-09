@@ -33,6 +33,10 @@ public sealed class BasicTimer : ITimerSource
             Start();
             return;
         }
+
+        // Cannot pause non-running timer
+        if(state != TimerState.Running)
+            return;
         sw.Stop();
         accumulated += sw.Elapsed;
         sw.Reset();
@@ -43,6 +47,7 @@ public sealed class BasicTimer : ITimerSource
     {
         sw.Stop();
         sw.Reset();
+        state = TimerState.NoState;
     }
 
     private TimerState state = TimerState.NoState;

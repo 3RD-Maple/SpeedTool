@@ -4,10 +4,12 @@ using Silk.NET.Windowing;
 using Silk.NET.Maths;
 using SpeedTool.Timer;
 using SpeedTool.Windows.Drawables;
+using SpeedTool.Windows.TimerUI;
 
 namespace SpeedTool.Windows;
 
 using SPWindow = Platform.Window;
+using UI = TimerUI.TimerUI;
 
 class MainWindow : SPWindow, IDisposable
 {
@@ -16,6 +18,8 @@ class MainWindow : SPWindow, IDisposable
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
         timer = new BasicTimer();
+
+        ui = new SpeedToolTimerUI(Gl);
     }
 
     override public void Dispose()
@@ -26,8 +30,7 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnDraw(double dt)
     {
-        Gl.Viewport(0, 0, 500, 500);
-        drw.Draw(timer);
+        ui.Draw(dt, timer);
     }
 
     protected override void OnAfterUI(double dt)
@@ -36,7 +39,7 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnLoad()
     {
-        Platform.Platform.SharedPlatform.LoadFont("C:\\Windows\\Fonts\\calibri.ttf", 42);
+        Platform.Platform.SharedPlatform.LoadFont("C:\\Windows\\Fonts\\cour.ttf", 42);
     }
 
     protected override void OnUI(double dt)
@@ -48,13 +51,9 @@ class MainWindow : SPWindow, IDisposable
         ImGui.PushFont(platform.GetFont(0));
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
-        if(ImGui.Button("Hello"))
-            timer.Start();
-        ImGui.SameLine();
-        if(ImGui.Button("Other"))
-            timer.Pause();
-        
-        ImGui.Text(counter.ToString());
+
+        ui.DoUI(timer);
+
         ImGui.End();
         ImGui.PopFont();
         if(t)
@@ -77,5 +76,5 @@ class MainWindow : SPWindow, IDisposable
 
     Platform.Platform platform;
 
-    private int counter = 0;
+    UI ui;
 }

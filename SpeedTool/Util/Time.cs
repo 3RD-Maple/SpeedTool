@@ -16,4 +16,11 @@ public static class TimeSpanExtension
     {
         return (span.Hours * 60 + span.FloatMinutes()) / 60.0f;
     }
+
+    public static string ToSpeedToolTimerString(this TimeSpan span)
+    {
+        if(span.Hours == 0)
+            return span.ToString(@"m\:ss\.fff");
+        return span.ToString(@"h\:mm\:ss\.fff");
+    }
 }
