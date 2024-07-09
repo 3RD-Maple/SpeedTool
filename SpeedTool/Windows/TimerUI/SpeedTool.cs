@@ -7,8 +7,11 @@ using SpeedTool.Windows.Drawables;
 
 namespace SpeedTool.Windows.TimerUI;
 
-class SpeedToolTimerUI : TimerUI
+class SpeedToolTimerUI : TimerUIBase
 {
+    private readonly GL gl;
+    private readonly TimerDrawable drw;
+
     public SpeedToolTimerUI(GL gl)
     {
         this.gl = gl;
@@ -74,7 +77,4 @@ class SpeedToolTimerUI : TimerUI
         if(ImGui.Button(text, sz))
             timer.Pause();
     }
-
-    private GL gl;
-    private TimerDrawable drw;
 }

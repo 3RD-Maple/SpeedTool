@@ -9,7 +9,6 @@ using SpeedTool.Windows.TimerUI;
 namespace SpeedTool.Windows;
 
 using SPWindow = Platform.Window;
-using UI = TimerUI.TimerUI;
 
 class MainWindow : SPWindow, IDisposable
 {
@@ -76,5 +75,5 @@ class MainWindow : SPWindow, IDisposable
 
     Platform.Platform platform;
 
-    UI ui;
+    TimerUIBase ui;
 }
