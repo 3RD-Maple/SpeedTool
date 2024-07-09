@@ -28,21 +28,27 @@ public sealed class BasicTimer : ITimerSource
 
     public void Pause()
     {
-        if(state == TimerState.Paused)
+        switch(state)
         {
+        case TimerState.Paused:
             Start();
-            return;
+            break;
+        case TimerState.Running:
+            sw.Stop();
+            accumulated += sw.Elapsed;
+            sw.Reset();
+            state = TimerState.Paused;
+            break;
+        default:
+            break;
         }
-        sw.Stop();
-        accumulated += sw.Elapsed;
-        sw.Reset();
-        state = TimerState.Paused;
     }
 
     public void Reset()
     {
         sw.Stop();
         sw.Reset();
+        state = TimerState.NoState;
     }
 
     private TimerState state = TimerState.NoState;
