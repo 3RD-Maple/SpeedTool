@@ -13,6 +13,8 @@ namespace SpeedTool.Global
         private static string? _loadedCfg;
         private static bool _init = false;
 
+        private static object _lock = new object();
+
         private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
             WriteIndented = true,
@@ -65,12 +67,16 @@ namespace SpeedTool.Global
         {
             if (!_init) throw new NotInitializedException();
 
-            section ??= typeof(T).Name;
-            _mappedValues!.Remove(section);
-            _mappedValues.Add(section, JsonSerializer.SerializeToNode(value));
-            using var writer = new StreamWriter(File.Create(_filepath!));
-            writer.Write(JsonSerializer.Serialize(_mappedValues, options: _jsonSerializerOptions));
-            return true;
+            lock (_lock)
+            {
+                section ??= typeof(T).Name;
+                _mappedValues!.Remove(section);
+                _mappedValues.Add(section, JsonSerializer.SerializeToNode(value));
+                _loadedCfg = JsonSerializer.Serialize(_mappedValues, options: _jsonSerializerOptions);
+                using var writer = new StreamWriter(File.Create(_filepath!));
+                writer.Write(_loadedCfg);
+                return true;
+            }
         }
 
 
