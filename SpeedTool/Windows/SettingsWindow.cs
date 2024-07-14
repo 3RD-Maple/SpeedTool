@@ -32,7 +32,6 @@ public sealed class SettingsWindow : Window
         var viewport = ImGui.GetMainViewport();
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(viewport.Size);
-        //ImGui.PushFont(platform.GetFont(0)); //to be fixed
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("SettingsWindow",
             ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar |
@@ -52,8 +51,7 @@ public sealed class SettingsWindow : Window
 
             ImGui.EndPopup();
         }
-
+        
         ImGui.End();
-        //ImGui.PopFont();
     }
 }
