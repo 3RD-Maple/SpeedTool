@@ -4,7 +4,6 @@ using Silk.NET.Windowing;
 using Silk.NET.OpenGL;
 using Silk.NET.OpenGL.Extensions.ImGui;
 using Silk.NET.Input;
-using ImGuiNET;
 using System.Drawing;
 
 using SilkWindow = Silk.NET.Windowing.Window;

@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 
 namespace SpeedTool.Global
 {
@@ -17,9 +18,12 @@ namespace SpeedTool.Global
 
         private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
         {
+            IncludeFields = true,
             WriteIndented = true,
             AllowTrailingCommas = true,
-            NumberHandling = System.Text.Json.Serialization.JsonNumberHandling.AllowReadingFromString | System.Text.Json.Serialization.JsonNumberHandling.WriteAsString | System.Text.Json.Serialization.JsonNumberHandling.AllowNamedFloatingPointLiterals
+            NumberHandling = JsonNumberHandling.AllowReadingFromString
+                             | JsonNumberHandling.WriteAsString
+                             | JsonNumberHandling.AllowNamedFloatingPointLiterals
         };
 
         /// <summary>

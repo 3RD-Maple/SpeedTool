@@ -1,13 +1,18 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using SpeedTool.Global.Json;
+using System.Numerics;
+using System.Text.Json.Serialization;
 
 namespace SpeedTool.Global.Definitions
 {
+    /// <summary>
+    /// Basic configuration file (mostly as template)
+    /// </summary>
     public class GeneralConfiguration
     {
-        public string? TextColor { get; set; }
+        /// <summary>
+        /// Color for all system text fiels
+        /// </summary>
+        [JsonConverter(typeof(ColorVector4Converter))]
+        public Vector4 TextColor { get; set; }
     }
 }
