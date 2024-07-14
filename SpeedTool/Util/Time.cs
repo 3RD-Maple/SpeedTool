@@ -29,7 +29,7 @@ public static class TimeSpanExtension
 
     public static string ToSpeedToolTimerString(this TimeSpan span)
     {
-        if(span.Hours == 0)
+        if (span.Hours == 0)
             return span.ToString(TIME_FORMAT_MINUTES);
         return span.ToString(TIME_FROMAT_HOURS);
     }

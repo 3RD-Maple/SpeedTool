@@ -29,7 +29,7 @@ public class Platform
 
     public void Run()
     {
-        while(windows.Count != 0)
+        while (windows.Count != 0)
         {
             for(int i = 0; i < windows.Count; i++)
             {
