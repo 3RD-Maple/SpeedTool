@@ -56,7 +56,7 @@ namespace SpeedTool.Global
         }
 
         /// <summary>
-        /// 
+        /// Update loaded in-memory config and update it file on disc
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="section"></param>
