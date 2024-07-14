@@ -28,7 +28,7 @@ public sealed class BasicTimer : ITimerSource
 
     public void Pause()
     {
-        switch(state)
+        switch (state)
         {
         case TimerState.Paused:
             Start();
