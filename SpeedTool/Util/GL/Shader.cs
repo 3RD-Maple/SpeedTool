@@ -12,12 +12,10 @@ sealed class Shader : IDisposable
         vertex = gl.CreateShader(ShaderType.VertexShader);
         gl.ShaderSource(vertex, vertexSource);
         gl.CompileShader(vertex);
-        //std::cout << get_log(vertex) << std::endl;
 
         fragment = gl.CreateShader(ShaderType.FragmentShader);
         gl.ShaderSource(fragment, fragmentSource);
         gl.CompileShader(fragment);
-        //std::cout << get_log(fragment) << std::endl;
 
         program = gl.CreateProgram();
         gl.AttachShader(program, vertex);

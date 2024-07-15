@@ -113,7 +113,6 @@ class TimerDrawable : IDisposable
     }
 
     const string fragCode =@"
-        precision mediump float;
         uniform vec3 clr;
         void main(void) {
             gl_FragColor = vec4(clr, 1.0);
