@@ -18,7 +18,7 @@ class MainWindow : SPWindow, IDisposable
         drw = new TimerDrawable(Gl);
         timer = new BasicTimer();
 
-        ui = new SpeedToolTimerUI(Gl);
+        ui = new ClassicTimerUI();
     }
 
     override public void Dispose()
