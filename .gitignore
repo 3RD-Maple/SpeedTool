@@ -64,3 +64,5 @@ packages
 /bin/*
 /tools/yandex.tank/tank_errors.log
 /tools/yandex.tank/logs/*
+
+imgui.ini
