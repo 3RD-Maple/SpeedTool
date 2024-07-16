@@ -23,8 +23,8 @@ class MainWindow : SPWindow, IDisposable
 
     override public void Dispose()
     {
-        base.Dispose();
         drw.Dispose();
+        base.Dispose();
     }
 
     protected override void OnDraw(double dt)
