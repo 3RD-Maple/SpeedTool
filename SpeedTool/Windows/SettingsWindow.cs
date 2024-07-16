@@ -2,6 +2,8 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
+using SpeedTool.Windows.Settings;
+using SpeedTool.Windows.Settings.Tabs;
 using Window = SpeedTool.Platform.Window;
 
 namespace SpeedTool.Windows;
@@ -10,10 +12,13 @@ public sealed class SettingsWindow : Window
 {
     private Platform.Platform platform = Platform.Platform.SharedPlatform;
 
-    private Vector3 textColor = new(0.3f, 0.7f, 0.9f);
+    private List<TabBase> SettingsWindowTabs;
 
     public SettingsWindow() : base(options, new Vector2D<int>(500, 550))
     {
+        SettingsWindowTabs = new TabBase[]
+                { new Colors(), new ClassicUI(), new SpeedToolUI() }
+            .ToList();
     }
 
     private static WindowOptions options
@@ -37,21 +42,12 @@ public sealed class SettingsWindow : Window
             ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoMove);
 
-
-        ImGui.TextColored(new Vector4(textColor, 1.0f), "Text color");
-        ImGui.SameLine();
-
-
-        if (ImGui.ColorButton("Text color", new Vector4(textColor, 1.0f), ImGuiColorEditFlags.None,
-                new Vector2(25f, 25f))) ImGui.OpenPopup("TextColorPicker");
-
-        if (ImGui.BeginPopup("TextColorPicker"))
+        if (ImGui.BeginTabBar("SettingsTabs"))
         {
-            ImGui.ColorPicker3("Choose text color", ref textColor);
-
-            ImGui.EndPopup();
+            foreach (var tab in SettingsWindowTabs) tab.DoTab();
+            ImGui.EndTabBar();
         }
-        
+
         ImGui.End();
     }
 }
