@@ -7,11 +7,13 @@
     <Nullable>enable</Nullable>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
+    <PublishAOT>true</PublishAOT>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Silk.NET" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL.Extensions.Imgui" Version="2.21.0" />
+    <PackageReference Include="Silk.Net.Windowing" Version="2.21.0" />
   </ItemGroup>
 
   <ItemGroup>
