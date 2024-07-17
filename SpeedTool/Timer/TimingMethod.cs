@@ -3,12 +3,12 @@ namespace SpeedTool.Timer;
 /// <summary>
 /// Timing method used for time
 /// </summary>
-public enum TimingMethod
+public enum TimingMethod : int
 {
     /// <summary>
     /// Real-Time Attack, RTA
     /// </summary>
-    RealTime,
+    RealTime = 0,
 
     /// <summary>
     /// Real-Time Attack minus loading screens
@@ -33,5 +33,7 @@ public enum TimingMethod
     /// <summary>
     /// Custom timing method 3
     /// </summary>
-    Custom3
+    Custom3,
+
+    Last
 }

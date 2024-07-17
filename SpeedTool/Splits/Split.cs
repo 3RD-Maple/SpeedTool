@@ -6,12 +6,12 @@ struct Split
     {
         Name = "";
         Subsplits = new List<Split>();
-        SplitTimes = new SplitTimes();
+        SplitTimes = new();
     }
 
     public string Name;
 
     public List<Split> Subsplits;
 
-    public SplitTimes SplitTimes;
+    public TimeCollection SplitTimes;
 }

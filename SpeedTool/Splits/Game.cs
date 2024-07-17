@@ -12,9 +12,9 @@ class Game
         return categories.Any(c => c.Name == name);
     }
 
-    public Category? GetCategoryByName(string category)
+    public Category GetCategoryByName(string category)
     {
-        return categories.Where(c => c.Name == category).FirstOrDefault();
+        return categories.Where(c => c.Name == category).FirstOrDefault() ?? throw new KeyNotFoundException();
     }
 
     /// <summary>
