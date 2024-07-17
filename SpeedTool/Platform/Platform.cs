@@ -38,7 +38,13 @@ public class Platform
 
             var toClose = windows.Where(x => x.IsClosed).ToList();
             windows = windows.Where(x => !x.IsClosed).ToList();
-            toClose.ForEach(x => x.Dispose());
+            foreach (var closed in toClose)
+            {
+                closed.Reset();
+
+                // FEXME: See Platform.Window class for explanation
+                //closed.Dispose();
+            }
         }
     }
 

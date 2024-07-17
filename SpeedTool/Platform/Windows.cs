@@ -53,9 +53,17 @@ public class Window : IDisposable
 
         window.Closing += () =>
         {
-            controller?.Dispose();
+            // FIXME:
+            //   There is some kind of catastrophic failure going on if I dispose of things.
+            //   I'm unsure if it's internal SILK problem or me just being dumb, but I can't figure out the exact
+            //   reason for this failure. I will eventually look into it.
+            //
+            //   For now, not disposing should be OK~ish, since the OS __should__ release all
+            //   unreleased objects itself on app exit. Worst case scenario, we are going to leak a few handles.
+
+            /*controller?.Dispose();
             input?.Dispose();
-            gl?.Dispose();
+            gl?.Dispose();*/
         };
 
         window.Initialize();
@@ -89,10 +97,13 @@ public class Window : IDisposable
     public void Cycle()
     {
         window.DoEvents();
-        if(!window.IsClosing)
+        if (!IsClosed)
         {
             window.DoUpdate();
-            window.DoRender();
+        }
+        if(!IsClosed)
+        {
+                window.DoRender();
         }
     }
 
@@ -107,6 +118,11 @@ public class Window : IDisposable
         {
             return gl!;
         }
+    }
+
+    public void Reset()
+    {
+        window.Reset();
     }
 
     protected virtual void OnLoad() { }
