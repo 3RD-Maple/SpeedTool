@@ -8,18 +8,11 @@ using Window = SpeedTool.Platform.Window;
 
 namespace SpeedTool.Windows;
 
-public sealed class SettingsWindow : Window
+public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 550))
 {
-    private Platform.Platform platform = Platform.Platform.SharedPlatform;
-
-    private List<TabBase> SettingsWindowTabs;
-
-    public SettingsWindow() : base(options, new Vector2D<int>(500, 550))
-    {
-        SettingsWindowTabs = new TabBase[]
-                { new Colors(), new ClassicUI(), new SpeedToolUI() }
-            .ToList();
-    }
+    private readonly TabBase[] settingsWindowTabs = new TabBase[]
+            { new ColorsSettingsTab(), new ClassicUISettingsTab(), new SpeedToolUISettingsTab() }
+            .ToArray();
 
     private static WindowOptions options
     {
@@ -44,7 +37,9 @@ public sealed class SettingsWindow : Window
 
         if (ImGui.BeginTabBar("SettingsTabs"))
         {
-            foreach (var tab in SettingsWindowTabs) tab.DoTab();
+            foreach (var tab in settingsWindowTabs)
+                tab.DoTab();
+            
             ImGui.EndTabBar();
         }
 
