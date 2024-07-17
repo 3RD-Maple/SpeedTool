@@ -43,7 +43,6 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnUI(double dt)
     {
-        bool t = false;
         var viewport = ImGui.GetMainViewport();
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(viewport.Size);
@@ -53,10 +52,13 @@ class MainWindow : SPWindow, IDisposable
 
         ui.DoUI(timer);
 
+        // TODO: This is test stuff, will be removed later
+        ImGui.Text("Last pressed: ");
+        ImGui.SameLine();
+        ImGui.Text(platform.Keyboard.LastPressed.ToString());
+
         ImGui.End();
         ImGui.PopFont();
-        if(t)
-            platform.AddWindow(new SPWindow(WindowOptions.Default, new Vector2D<int>(500, 500)));
     }
 
     static private WindowOptions options
