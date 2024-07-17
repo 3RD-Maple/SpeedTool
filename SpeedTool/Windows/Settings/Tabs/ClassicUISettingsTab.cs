@@ -9,7 +9,7 @@ public sealed class ClassicUISettingsTab : TabBase
     private Vector4 activeSplitColor = new Vector4(1);
     private int shownSplitsCount = 5;
     
-    public override void DoTab()
+    protected override void DoTabInternal()
     {
         if (ImGui.BeginTabItem("ClassicUI"))
         {
@@ -18,6 +18,8 @@ public sealed class ClassicUISettingsTab : TabBase
             ImGui.SameLine();
             ImGui.SetNextItemWidth(75f);
             ImGui.InputInt("", ref shownSplitsCount);
+            
+            ImGui.EndTabItem();
         }
     }
 }

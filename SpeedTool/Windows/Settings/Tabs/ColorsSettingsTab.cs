@@ -13,7 +13,7 @@ public sealed class ColorsSettingsTab : TabBase
     private Vector4 behindColor = new Vector4(1);
     private Vector4 PBColor = new Vector4(1);
     
-    public override void DoTab()
+    protected override void DoTabInternal()
     {
         if (ImGui.BeginTabItem("Colors"))
         {

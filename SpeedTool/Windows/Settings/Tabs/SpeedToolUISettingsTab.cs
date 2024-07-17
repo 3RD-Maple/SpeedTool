@@ -10,7 +10,7 @@ public sealed class SpeedToolUISettingsTab : TabBase
     private Vector4 minutesClockTimerColor = new Vector4(1);
     private Vector4 hoursClockTimerColor = new Vector4(1);
     
-    public override void DoTab()
+    protected override void DoTabInternal()
     {
         if(ImGui.BeginTabItem("SpeedToolUI"))
         {

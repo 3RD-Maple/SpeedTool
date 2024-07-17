@@ -37,13 +37,8 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
             ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoMove);
 
-        if (ImGui.BeginTabBar("SettingsTabs"))
-        {
-            foreach (var tab in settingsWindowTabs)
-                tab.DoTab();
-            
-            ImGui.EndTabBar();
-        }
+        foreach (var tab in settingsWindowTabs)
+            tab.DoTab("SettingsWindow");
         
         if (ImGui.Button("Apply changes"))
         {
