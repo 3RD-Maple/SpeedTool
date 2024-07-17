@@ -21,14 +21,7 @@ public sealed class ColorsSettingsTab : TabBase
             ImGuiExtensions.SpeedToolColorPicker("Ahead time color", ref aheadColor);
             ImGuiExtensions.SpeedToolColorPicker("Behind time color", ref behindColor);
             ImGuiExtensions.SpeedToolColorPicker("PB color", ref PBColor);
-
-            if (ImGui.Button("Save changes"))
-            {
-                var genConf = Configuration.GetSection<GeneralConfiguration>() ?? throw new Exception();
-                genConf.TextColor = textColor;
-                var write = Configuration.SetSection<GeneralConfiguration>(genConf);  
-            }
-
+            
             ImGui.EndTabItem();
         }
     }
