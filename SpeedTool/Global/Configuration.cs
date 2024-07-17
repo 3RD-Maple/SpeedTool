@@ -16,16 +16,6 @@ namespace SpeedTool.Global
 
         private static object _lock = new object();
 
-        private static JsonSerializerOptions _jsonSerializerOptions = new JsonSerializerOptions()
-        {
-            IncludeFields = true,
-            WriteIndented = true,
-            AllowTrailingCommas = true,
-            NumberHandling = JsonNumberHandling.AllowReadingFromString
-                             | JsonNumberHandling.WriteAsString
-                             | JsonNumberHandling.AllowNamedFloatingPointLiterals
-        };
-
         /// <summary>
         /// Initialise global configuration service
         /// </summary>
@@ -37,7 +27,7 @@ namespace SpeedTool.Global
             _filepath = filePath;
             using var reader = new StreamReader(File.OpenRead(filePath));
             _loadedCfg = reader.ReadToEnd();
-            _mappedValues = JsonSerializer.Deserialize<JsonObject>(_loadedCfg, options: _jsonSerializerOptions);
+            _mappedValues = JsonNode.Parse(_loadedCfg)!.AsObject();
 
             _init = true;
             return _init;
@@ -51,12 +41,17 @@ namespace SpeedTool.Global
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="NotInitializedException"></exception>
-        public static T? GetSection<T>(string? section = null) where T : class
+        public static T? GetSection<T>(string? section = null) where T : IConfigurationSection, new()
         {
             if (!_init) throw new NotInitializedException();
 
             section ??= typeof(T).Name;
-            return _mappedValues!.ContainsKey(section) ? _mappedValues.Single(x => x.Key == section).Value?.Deserialize<T>() ?? throw new InvalidOperationException($"Section {section} is missing") : default;
+            T ret = new T();
+            if(!_mappedValues!.ContainsKey(section))
+                throw new InvalidOperationException($"Section {section} is missing");
+
+            ret.FromJSONObject(_mappedValues.Single(x => x.Key == section).Value!.AsObject());
+            return ret;
         }
 
         /// <summary>
@@ -67,7 +62,7 @@ namespace SpeedTool.Global
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="NotInitializedException"
-        public static bool SetSection<T>(T value, string? section = null) where T : class
+        public static bool SetSection<T>(T value, string? section = null) where T : IConfigurationSection
         {
             if (!_init) throw new NotInitializedException();
 
@@ -75,8 +70,8 @@ namespace SpeedTool.Global
             {
                 section ??= typeof(T).Name;
                 _mappedValues!.Remove(section);
-                _mappedValues.Add(section, JsonSerializer.SerializeToNode(value));
-                _loadedCfg = JsonSerializer.Serialize(_mappedValues, options: _jsonSerializerOptions);
+                _mappedValues![section] = value.ToJSONObject();
+                _loadedCfg = _mappedValues.ToString();
                 using var writer = new StreamWriter(File.Create(_filepath!));
                 writer.Write(_loadedCfg);
                 return true;

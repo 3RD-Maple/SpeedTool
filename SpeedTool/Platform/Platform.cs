@@ -1,4 +1,6 @@
 using ImGuiNET;
+using Silk.NET.Input.Glfw;
+using Silk.NET.Windowing.Glfw;
 
 namespace SpeedTool.Platform;
 
@@ -49,6 +51,9 @@ public class Platform
 
     private Platform()
     {
+        GlfwWindowing.RegisterPlatform();
+        GlfwInput.RegisterPlatform();
+
         windows = new List<Window>();
         fonts = new List<ImFontPtr>();
     }

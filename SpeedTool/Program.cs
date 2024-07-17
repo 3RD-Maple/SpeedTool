@@ -1,10 +1,8 @@
-﻿using System.Reflection;
-using SpeedTool.Global;
+﻿using SpeedTool.Global;
 using SpeedTool.Platform;
 using SpeedTool.Windows;
 
-
-var exeDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+var exeDir = Path.GetDirectoryName(System.AppContext.BaseDirectory);
 Console.WriteLine(exeDir);
 var configPath = Path.Combine(exeDir!, @"./App/appsettings.json");
 
