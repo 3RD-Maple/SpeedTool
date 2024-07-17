@@ -4,7 +4,7 @@ using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.Settings.Tabs;
 
-public sealed class ClassicUI : TabBase
+public sealed class ClassicUISettingsTab : TabBase
 {
     private Vector4 activeSplitColor = new Vector4(1);
     private int ShownSplitsCount = 5;

@@ -6,12 +6,12 @@ using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.Settings.Tabs;
 
-public sealed class Colors : TabBase
+public sealed class ColorsSettingsTab : TabBase
 {
     private Vector4 TextColor = new Vector4(1); //to be removed. used as a temp variable
     private Vector4 AheadColor = new Vector4(1);
     private Vector4 BehindColor = new Vector4(1);
-    private  Vector4 PBColor = new Vector4(1);
+    private Vector4 PBColor = new Vector4(1);
     
     public override void DoTab()
     {

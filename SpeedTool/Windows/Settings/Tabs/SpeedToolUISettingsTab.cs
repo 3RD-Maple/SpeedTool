@@ -4,7 +4,7 @@ using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.Settings.Tabs;
 
-public sealed class SpeedToolUI : TabBase
+public sealed class SpeedToolUISettingsTab : TabBase
 {
     private Vector4 secondsClockTimerColor = new Vector4(1);
     private Vector4 minutesClockTimerColor = new Vector4(1);
