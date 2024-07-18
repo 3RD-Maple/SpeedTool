@@ -10,15 +10,12 @@ public sealed class SpeedToolUISettingsTab : TabBase
     private Vector4 minutesClockTimerColor = new Vector4(1);
     private Vector4 hoursClockTimerColor = new Vector4(1);
     
+    public SpeedToolUISettingsTab(string tabName) : base(tabName) {}
+    
     protected override void DoTabInternal()
     {
-        if(ImGui.BeginTabItem("SpeedToolUI"))
-        {
-            ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref secondsClockTimerColor);
-            ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref minutesClockTimerColor);
-            ImGuiExtensions.SpeedToolColorPicker("Hours color", ref hoursClockTimerColor);
-            
-            ImGui.EndTabItem();
-        }
+        ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref secondsClockTimerColor);
+        ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref minutesClockTimerColor);
+        ImGuiExtensions.SpeedToolColorPicker("Hours color", ref hoursClockTimerColor);
     }
 }

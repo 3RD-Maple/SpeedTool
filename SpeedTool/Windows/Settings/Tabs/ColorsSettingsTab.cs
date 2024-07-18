@@ -12,17 +12,14 @@ public sealed class ColorsSettingsTab : TabBase
     private Vector4 aheadColor = new Vector4(1);
     private Vector4 behindColor = new Vector4(1);
     private Vector4 PBColor = new Vector4(1);
-    
-    protected override void DoTabInternal()
+
+    public ColorsSettingsTab(string tabName) : base(tabName) {}
+
+protected override void DoTabInternal()
     {
-        if (ImGui.BeginTabItem("Colors"))
-        {
-            ImGuiExtensions.SpeedToolColorPicker("Text color", ref textColor);
-            ImGuiExtensions.SpeedToolColorPicker("Ahead time color", ref aheadColor);
-            ImGuiExtensions.SpeedToolColorPicker("Behind time color", ref behindColor);
-            ImGuiExtensions.SpeedToolColorPicker("PB color", ref PBColor);
-            
-            ImGui.EndTabItem();
-        }
+        ImGuiExtensions.SpeedToolColorPicker("Text color", ref textColor);
+        ImGuiExtensions.SpeedToolColorPicker("Ahead time color", ref aheadColor);
+        ImGuiExtensions.SpeedToolColorPicker("Behind time color", ref behindColor);
+        ImGuiExtensions.SpeedToolColorPicker("PB color", ref PBColor);
     }
 }

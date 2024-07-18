@@ -4,12 +4,20 @@ namespace SpeedTool.Windows.Settings;
 
 public abstract class TabBase
 {
-    public void DoTab(string tabBarName)
+    private string? tabName;
+
+    public TabBase(string tabName)
     {
-        if (ImGui.BeginTabBar(tabBarName))
+        this.tabName = tabName;
+    }
+    
+
+    public void DoTab()
+    {
+        if (ImGui.BeginTabItem(tabName))
         {
             DoTabInternal();
-            ImGui.EndTabBar();
+            ImGui.EndTabItem();
         }
     }
     protected abstract void DoTabInternal();
