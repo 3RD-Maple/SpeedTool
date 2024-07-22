@@ -1,4 +1,5 @@
 using ImGuiNET;
+using Silk.NET.Input;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 
@@ -18,6 +19,8 @@ public class Platform
             return platform!;
         }
     }
+
+    public Keyboard Keyboard => kb;
 
     public void LoadFont(string font, int size)
     {
@@ -47,7 +50,9 @@ public class Platform
                 // FEXME: See Platform.Window class for explanation
                 //closed.Dispose();
             }
+            hook.Cycle();
         }
+        hook.Dispose();
     }
 
     public void AddWindow(Window w)
@@ -60,12 +65,20 @@ public class Platform
         GlfwWindowing.RegisterPlatform();
         GlfwInput.RegisterPlatform();
 
+        kb = new Keyboard();
         windows = new List<Window>();
         fonts = new List<ImFontPtr>();
+        hook = new KeyboardHook();
+        hook.OnKeyEvent += (object? sneder, KeyPressData data) =>
+        {
+            kb.SetKeyData(data);
+        };
     }
 
     List<Window> windows;
     List<ImFontPtr> fonts;
+    KeyboardHook hook;
+    Keyboard kb;
 
     private static Platform? platform;
 }
