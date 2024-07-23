@@ -52,13 +52,46 @@ class MainWindow : SPWindow, IDisposable
 
         ui.DoUI(timer);
 
+        // Opening windows in between ImGui calls screws up ImGui's stack, so we need to do that on function exit
+        Action? onExit = null;
+
         // TODO: This is test stuff, will be removed later
         ImGui.Text("Last pressed: ");
         ImGui.SameLine();
         ImGui.Text(platform.Keyboard.LastPressed.ToString());
 
-        ImGui.End();
         ImGui.PopFont();
+
+        if(ImGui.BeginPopupContextWindow())
+        {
+            if(ImGui.MenuItem("Edit Game"))
+            {
+                onExit = () => platform.AddWindow(new GameEditorWindow());
+            }
+            ImGui.Separator();
+            if(ImGui.MenuItem("Split"))
+            {
+                // TODO: Add controls
+            }
+            if(ImGui.MenuItem("Pause"))
+            {
+                // TODO: Add controls
+            }
+            ImGui.Separator();
+            if(ImGui.MenuItem("Settings"))
+            {
+                onExit = () => platform.AddWindow(new SettingsWindow());
+            }
+            if(ImGui.MenuItem("Exit"))
+            {
+                platform.Exit();
+            }
+            ImGui.EndPopup();
+        }
+
+        ImGui.End();
+
+        onExit?.Invoke();
     }
 
     static private WindowOptions options

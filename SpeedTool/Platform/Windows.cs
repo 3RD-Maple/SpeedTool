@@ -112,6 +112,11 @@ public class Window : IDisposable
         window.Dispose();
     }
 
+    public void Close()
+    {
+        window.Close();
+    }
+
     public GL Gl
     {
         get
