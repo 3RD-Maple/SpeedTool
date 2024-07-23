@@ -53,17 +53,16 @@ public class Window : IDisposable
 
         window.Closing += () =>
         {
-            // FIXME:
-            //   There is some kind of catastrophic failure going on if I dispose of things.
-            //   I'm unsure if it's internal SILK problem or me just being dumb, but I can't figure out the exact
-            //   reason for this failure. I will eventually look into it.
-            //
-            //   For now, not disposing should be OK~ish, since the OS __should__ release all
-            //   unreleased objects itself on app exit. Worst case scenario, we are going to leak a few handles.
-
-            /*controller?.Dispose();
             input?.Dispose();
-            gl?.Dispose();*/
+            gl?.Dispose();
+
+            // FIXME:
+            //  Disposing of ImGuiController leads to a catastrophic failure of some sort.
+            //  I don't really know what exactly causes it, I suspect it has something to do with fonts.
+            //  Further investigation is needed; Until then -- don't dispose of the ImGui controller!
+            /*
+                controller?.Dispose();
+            */
         };
 
         window.Initialize();
