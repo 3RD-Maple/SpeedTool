@@ -2,19 +2,21 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
+using SpeedTool.Windows.Settings;
+using SpeedTool.Windows.Settings.Tabs;
 using Window = SpeedTool.Platform.Window;
 
 namespace SpeedTool.Windows;
 
-public sealed class SettingsWindow : Window
+public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 550))
 {
-    private Platform.Platform platform = Platform.Platform.SharedPlatform;
-
-    private Vector3 textColor = new(0.3f, 0.7f, 0.9f);
-
-    public SettingsWindow() : base(options, new Vector2D<int>(500, 550))
+    private readonly TabBase[] settingsWindowTabs = new TabBase[]
     {
-    }
+        new ColorsSettingsTab("Colors"), new ClassicUISettingsTab("ClassicUI"),
+        new SpeedToolUISettingsTab("SpeedToolUI")
+    };
 
     private static WindowOptions options
     {
@@ -37,21 +39,21 @@ public sealed class SettingsWindow : Window
             ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoMove);
 
-
-        ImGui.TextColored(new Vector4(textColor, 1.0f), "Text color");
-        ImGui.SameLine();
-
-
-        if (ImGui.ColorButton("Text color", new Vector4(textColor, 1.0f), ImGuiColorEditFlags.None,
-                new Vector2(25f, 25f))) ImGui.OpenPopup("TextColorPicker");
-
-        if (ImGui.BeginPopup("TextColorPicker"))
+        if (ImGui.BeginTabBar("Settings window"))
         {
-            ImGui.ColorPicker3("Choose text color", ref textColor);
-
-            ImGui.EndPopup();
+            foreach (var tab in settingsWindowTabs)
+                tab.DoTab();
         }
         
+        
+        if (ImGui.Button("Apply changes"))
+        {
+            var genConf = Configuration.GetSection<GeneralConfiguration>() ?? throw new Exception();
+            //
+            var write = Configuration.SetSection<GeneralConfiguration>(genConf);  
+        }
+
+
         ImGui.End();
     }
 }
