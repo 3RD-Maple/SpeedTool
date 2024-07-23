@@ -1,5 +1,5 @@
 using System.Numerics;
-using ImGuiNET;
+using SpeedTool.Platform;
 using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.Settings.Tabs;
@@ -17,5 +17,12 @@ public sealed class SpeedToolUISettingsTab : TabBase
         ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref secondsClockTimerColor);
         ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref minutesClockTimerColor);
         ImGuiExtensions.SpeedToolColorPicker("Hours color", ref hoursClockTimerColor);
+
+        // Usage reference
+        ImGuiExtensions.SpeedToolHotkey("Hotkey Test", ref hk);
+        ImGuiExtensions.SpeedToolHotkey("Hotkey 2", ref hk2);
     }
+
+    private Hotkey hk;
+    private Hotkey hk2;
 }
