@@ -13,8 +13,10 @@ namespace SpeedTool.Windows;
 public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 550))
 {
     private readonly TabBase[] settingsWindowTabs = new TabBase[]
-            { new ColorsSettingsTab("Colors"), new ClassicUISettingsTab("ClassicUI"), new SpeedToolUISettingsTab("SpeedToolUI") }
-            .ToArray();
+    {
+        new ColorsSettingsTab("Colors"), new ClassicUISettingsTab("ClassicUI"),
+        new SpeedToolUISettingsTab("SpeedToolUI")
+    };
 
     private static WindowOptions options
     {
