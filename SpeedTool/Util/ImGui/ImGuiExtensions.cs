@@ -44,9 +44,9 @@ public static class ImGuiExtensions
             }
             if(lastPressed != kb.LastPressed && !isIgnoredKey(kb.LastPressed))
             {
-                hotkey.Alt = kb.IsPresed(KeyCode.VcLeftAlt) || kb.IsPresed(KeyCode.VcRightAlt);
-                hotkey.Ctrl = kb.IsPresed(KeyCode.VcLeftControl) || kb.IsPresed(KeyCode.VcRightControl);
-                hotkey.Shift = kb.IsPresed(KeyCode.VcLeftShift) || kb.IsPresed(KeyCode.VcRightShift);
+                hotkey.Alt = kb.IsPressed(KeyCode.VcLeftAlt) || kb.IsPressed(KeyCode.VcRightAlt);
+                hotkey.Ctrl = kb.IsPressed(KeyCode.VcLeftControl) || kb.IsPressed(KeyCode.VcRightControl);
+                hotkey.Shift = kb.IsPressed(KeyCode.VcLeftShift) || kb.IsPressed(KeyCode.VcRightShift);
                 hotkey.Key = kb.LastPressed;
                 lastPressed = kb.LastPressed;
                 listening = false;

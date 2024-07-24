@@ -18,7 +18,7 @@ public struct Hotkey
         {
             var kb = Platform.SharedPlatform.Keyboard;
             var controls = AreCorrectControlsPressed();
-            return kb.IsPresed(Key) && controls;
+            return kb.IsPressed(Key) && controls;
         }
     }
 
@@ -41,9 +41,9 @@ public struct Hotkey
     private bool AreCorrectControlsPressed()
     {
         var kb = Platform.SharedPlatform.Keyboard;
-        var isAltPressed = kb.IsPresed(KeyCode.VcLeftAlt) || kb.IsPresed(KeyCode.VcRightAlt);
-        var isCtrlPressed = kb.IsPresed(KeyCode.VcLeftControl) || kb.IsPresed(KeyCode.VcRightControl);
-        var isShiftPressed = kb.IsPresed(KeyCode.VcLeftShift) || kb.IsPresed(KeyCode.VcRightShift);
+        var isAltPressed = kb.IsPressed(KeyCode.VcLeftAlt) || kb.IsPressed(KeyCode.VcRightAlt);
+        var isCtrlPressed = kb.IsPressed(KeyCode.VcLeftControl) || kb.IsPressed(KeyCode.VcRightControl);
+        var isShiftPressed = kb.IsPressed(KeyCode.VcLeftShift) || kb.IsPressed(KeyCode.VcRightShift);
 
         var altCheckPassed = Alt ? isAltPressed : true;
         var ctrlCheckPassed = Ctrl ? isCtrlPressed : true;

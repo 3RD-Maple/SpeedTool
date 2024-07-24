@@ -10,7 +10,7 @@ public sealed class Keyboard
 
     internal Keyboard() { }
 
-    public bool IsPresed(KeyCode keyCode)
+    public bool IsPressed(KeyCode keyCode)
     {
         var key = (ushort)keyCode;
         return keys[key];
