@@ -1,6 +1,7 @@
 using System.Numerics;
 using SharpHook.Native;
 using SpeedTool.Platform;
+using SpeedTool.Splits;
 
 namespace SpeedTool.Util.ImGui;
 
@@ -53,6 +54,37 @@ public static class ImGuiExtensions
                 ResetFocus();
             }
         }
+    }
+
+    public static SpeedToolSplitContext SpeedToolSplit(string name, ref Split split)
+    {
+        SpeedToolSplitContext ctx = new();
+        if(split.Subsplits.Length == 0)
+        {
+            ImGuiNET.ImGui.InputText(name, ref split.Name, 255);
+            ctx.IsHovered = ImGuiNET.ImGui.IsItemHovered();
+            ctx.selectedSplit = ctx.IsHovered ? split : null;
+            return ctx;
+        }
+
+        bool isOpen = ImGuiNET.ImGui.TreeNodeEx(name + "Tree", ImGuiNET.ImGuiTreeNodeFlags.AllowOverlap);
+        ImGuiNET.ImGui.SameLine();
+        ImGuiNET.ImGui.InputText(name, ref split.Name, 255);
+        ctx.IsHovered = ImGuiNET.ImGui.IsItemHovered();
+        ctx.selectedSplit = ctx.IsHovered ? split : null;
+        if(isOpen)
+        {
+            for(int i = 0; i < split.Subsplits.Length; i++)
+            {
+                var res = SpeedToolSplit("##" + name + "subsplit" + i.ToString(), ref split.Subsplits[i]);
+                if(res.selectedSplit != null)
+                    ctx.selectedSplit = res.selectedSplit;
+                ctx.parentSplit = split;
+            }
+            ImGuiNET.ImGui.TreePop();
+        }
+
+        return ctx;
     }
 
     /// <summary>
