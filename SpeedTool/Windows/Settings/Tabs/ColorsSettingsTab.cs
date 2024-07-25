@@ -1,5 +1,5 @@
 using System.Numerics;
-using ImGuiNET;
+
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
 using SpeedTool.Util.ImGui;
@@ -8,18 +8,33 @@ namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class ColorsSettingsTab : TabBase
 {
-    private Vector4 textColor = new Vector4(1); //to be removed. used as a temp variable
-    private Vector4 aheadColor = new Vector4(1);
-    private Vector4 behindColor = new Vector4(1);
-    private Vector4 PBColor = new Vector4(1);
+   private ColorSettings Config { get; } =
+       Configuration.GetSection<ColorSettings>() ?? throw new Exception();
 
-    public ColorsSettingsTab(string tabName) : base(tabName) {}
+   private Vector4 textColor;
+   private Vector4 aheadColor;
+   private Vector4 behindColor;
+   private Vector4 PBColor;
 
-protected override void DoTabInternal()
+   public ColorsSettingsTab(string tabName) : base(tabName)
+   {
+       textColor = Config.TextColor;
+       aheadColor = Config.AheadColor;
+       behindColor = Config.BehindColor;
+       PBColor = Config.PBColor;
+   }
+    
+    
+    protected override void ApplyTabSettings()
     {
-        ImGuiExtensions.SpeedToolColorPicker("Text color", ref textColor);
-        ImGuiExtensions.SpeedToolColorPicker("Ahead time color", ref aheadColor);
-        ImGuiExtensions.SpeedToolColorPicker("Behind time color", ref behindColor);
-        ImGuiExtensions.SpeedToolColorPicker("PB color", ref PBColor);
+        Configuration.SetSection(Config);
+    }
+
+    protected override void DoTabInternal()
+    {
+        ImGuiExtensions.SpeedToolColorPicker("Text color", ref Config.TextColor);
+        ImGuiExtensions.SpeedToolColorPicker("Ahead time color", ref Config.AheadColor);
+        ImGuiExtensions.SpeedToolColorPicker("Behind time color", ref Config.BehindColor);
+        ImGuiExtensions.SpeedToolColorPicker("PB color", ref Config.PBColor);
     }
 }
