@@ -75,6 +75,11 @@ public class Platform
         };
     }
 
+    public void Exit()
+    {
+        windows.ForEach(x => x.Close());
+    }
+
     List<Window> windows;
     List<ImFontPtr> fonts;
     KeyboardHook hook;
