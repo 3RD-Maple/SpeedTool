@@ -65,32 +65,32 @@ public sealed class GameEditorWindow : Platform.Window
             }
         }
 
-        if(popupSplit != null && ImGui.BeginPopupContextWindow("popup"))
+        if(popupSplit != null)
+            DoPopup();
+
+        if(!ImGui.IsPopupOpen(POPUP_NAME))
+            popupSplit = null;
+
+        // Temporary stuff to debug this mess. Probably will be removed later
+#if DEBUG
+        DoDebugUI();
+#endif
+
+        ImGui.End();
+    }
+
+    private void DoPopup()
+    {
+        if(ImGui.BeginPopupContextWindow(POPUP_NAME))
         {
             if(ImGui.MenuItem("Insert above"))
             {
-                if(popupSplitParent != null)
-                {
-                    popupSplitParent.InsertSplit(Array.IndexOf(popupSplitParent.Subsplits, popupSplit), new Split("New Split"));
-                }
-                else
-                {
-                    var idx = Array.IndexOf(splits, popupSplit);
-                    splits = splits.InsertAt(idx, new Split("New Split"));
-                }
+                InsertAbove();
                 popupSplit = null;
             }
             if(ImGui.MenuItem("Insert below"))
             {
-                if(popupSplitParent != null)
-                {
-                    popupSplitParent.InsertSplit(Array.IndexOf(popupSplitParent.Subsplits, popupSplit) + 1, new Split("New Split"));
-                }
-                else
-                {
-                    var idx = Array.IndexOf(splits, popupSplit) + 1;
-                    splits = splits.InsertAt(idx, new Split("New Split"));
-                }
+                InsertBelow();
                 popupSplit = null;
             }
             if(ImGui.MenuItem("Add subsplit"))
@@ -100,12 +100,37 @@ public sealed class GameEditorWindow : Platform.Window
             }
             ImGui.EndPopup();
         }
+    }
 
-        if(!ImGui.IsPopupOpen("popup"))
-            popupSplit = null;
+    private void InsertAbove()
+    {
+        if(popupSplitParent != null)
+        {
+            popupSplitParent.InsertSplit(Array.IndexOf(popupSplitParent.Subsplits, popupSplit), new Split("New Split"));
+        }
+        else
+        {
+            var idx = Array.IndexOf(splits, popupSplit);
+            splits = splits.InsertAt(idx, new Split("New Split"));
+        }
+    }
 
-        // Temporary stuff to debug this mess. Probably will be removed later
+    private void InsertBelow()
+    {
+        if(popupSplitParent != null)
+        {
+            popupSplitParent.InsertSplit(Array.IndexOf(popupSplitParent.Subsplits, popupSplit) + 1, new Split("New Split"));
+        }
+        else
+        {
+            var idx = Array.IndexOf(splits, popupSplit) + 1;
+            splits = splits.InsertAt(idx, new Split("New Split"));
+        }
+    }
+
 #if DEBUG
+    private void DoDebugUI()
+    {
         if(popupSplit != null)
         {
             ImGui.Text("Selected split = " + popupSplit!.Name);
@@ -114,10 +139,8 @@ public sealed class GameEditorWindow : Platform.Window
                 ImGui.Text("Parent split = " + popupSplitParent!.Name);
             }
         }
-#endif
-
-        ImGui.End();
     }
+#endif
 
     Split? popupSplit;
     Split? popupSplitParent;
@@ -125,4 +148,6 @@ public sealed class GameEditorWindow : Platform.Window
     private Split[] splits;
 
     private string Name = "";
+
+    private const string POPUP_NAME = "popup_meun";
 }
