@@ -2,10 +2,10 @@ namespace SpeedTool.Splits;
 
 class Category
 {
-    public Category(string name)
+    public Category(string name, Split[] splits)
     {
         Name = name;
-        Splits = new Split[0];
+        Splits = splits;
     }
 
     public string Name { get; private set; }
