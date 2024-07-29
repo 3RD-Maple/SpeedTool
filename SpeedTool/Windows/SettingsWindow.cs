@@ -47,7 +47,7 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
         
         
         if (ImGui.Button("Apply changes"))
-        { ;
+        {
             foreach (var tab in settingsWindowTabs)
             {
                 tab.ApplySettings();
