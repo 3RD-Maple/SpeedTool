@@ -1,4 +1,6 @@
 using System.Numerics;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
 using SpeedTool.Platform;
 using SpeedTool.Util.ImGui;
 
@@ -6,23 +8,36 @@ namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class SpeedToolUISettingsTab : TabBase
 {
-    private Vector4 secondsClockTimerColor = new Vector4(1);
-    private Vector4 minutesClockTimerColor = new Vector4(1);
-    private Vector4 hoursClockTimerColor = new Vector4(1);
+    private SpeedToolUISettings Config { get; } =
+        Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
     
-    public SpeedToolUISettingsTab(string tabName) : base(tabName) {}
+    private Vector4 secondsClockTimerColor;
+    private Vector4 minutesClockTimerColor;
+    private Vector4 hoursClockTimerColor;
     
+    private Hotkey hk;
+    private Hotkey hk2;
+
+    public SpeedToolUISettingsTab(string tabName) : base(tabName)
+    {
+        secondsClockTimerColor = Config.SecondsClockTimerColor;
+        minutesClockTimerColor = Config.MinutesClockTimerColor;
+        hoursClockTimerColor = Config.HoursClockTimerColor;
+    }
+
+    protected override void ApplyTabSettings()
+    {
+        Configuration.SetSection(Config);
+    }
+
     protected override void DoTabInternal()
     {
-        ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref secondsClockTimerColor);
-        ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref minutesClockTimerColor);
-        ImGuiExtensions.SpeedToolColorPicker("Hours color", ref hoursClockTimerColor);
+        ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref Config.SecondsClockTimerColor);
+        ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref Config.MinutesClockTimerColor);
+        ImGuiExtensions.SpeedToolColorPicker("Hours color", ref Config.HoursClockTimerColor);
 
         // Usage reference
         ImGuiExtensions.SpeedToolHotkey("Hotkey Test", ref hk);
         ImGuiExtensions.SpeedToolHotkey("Hotkey 2", ref hk2);
     }
-
-    private Hotkey hk;
-    private Hotkey hk2;
 }

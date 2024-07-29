@@ -11,7 +11,7 @@ public abstract class TabBase
         TabName = tabName;
     }
     
-
+    
     public void DoTab()
     {
         if (ImGui.BeginTabItem(TabName))
@@ -20,5 +20,12 @@ public abstract class TabBase
             ImGui.EndTabItem();
         }
     }
+
+    public void ApplySettings()
+    {
+        ApplyTabSettings();
+    }
     protected abstract void DoTabInternal();
+
+    protected abstract void ApplyTabSettings();
 }

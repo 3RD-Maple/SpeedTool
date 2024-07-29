@@ -1,22 +1,35 @@
 using System.Numerics;
 using ImGuiNET;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
 using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class ClassicUISettingsTab : TabBase
 {
-    
-    private Vector4 activeSplitColor = new Vector4(1);
-    private int shownSplitsCount = 5;
-    
-    public ClassicUISettingsTab(string tabName) : base(tabName){}
+    private ClassicUISettings Config { get; } =
+        Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
+
+    private Vector4 activeSplitColor;
+    private int shownSplitsCount;
+
+    public ClassicUISettingsTab(string tabName) : base(tabName)
+    {
+        activeSplitColor = Config.ActiveSplitColor;
+        shownSplitsCount = Config.ShownSplitsCount;
+    }
+    protected override void ApplyTabSettings()
+    {
+        Configuration.SetSection(Config);
+    }
+
     protected override void DoTabInternal()
     {
-        ImGuiExtensions.SpeedToolColorPicker("Active split", ref activeSplitColor);
+        ImGuiExtensions.SpeedToolColorPicker("Active split", ref Config.ActiveSplitColor);
         ImGui.Text("Shown splits");
         ImGui.SameLine();
         ImGui.SetNextItemWidth(75f);
-        ImGui.InputInt("", ref shownSplitsCount);
+        ImGui.InputInt("", ref Config.ShownSplitsCount);
     }
 }

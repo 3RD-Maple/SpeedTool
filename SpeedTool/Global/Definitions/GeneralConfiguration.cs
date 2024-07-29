@@ -7,12 +7,21 @@ namespace SpeedTool.Global.Definitions
     /// <summary>
     /// Basic configuration file (mostly as template)
     /// </summary>
-    public class GeneralConfiguration : IConfigurationSection
+    public sealed class GeneralConfiguration : IConfigurationSection
     {
         /// <summary>
         /// Color for all system text fiels
         /// </summary>
         public Vector4 TextColor { get; set; }
+
+        public ColorSettings? ColorConfig { get; set; } =
+            Configuration.GetSection<ColorSettings>();
+        
+        public SpeedToolUISettings? SpeedToolUIConfig { get; set; } =
+            Configuration.GetSection<SpeedToolUISettings>();
+        
+        public ClassicUISettings? ClassicUISettings { get; set; } =
+            Configuration.GetSection<ClassicUISettings>();
 
         public void FromJSONObject(JsonObject node)
         {
