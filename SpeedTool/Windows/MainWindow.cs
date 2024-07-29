@@ -5,6 +5,8 @@ using Silk.NET.Maths;
 using SpeedTool.Timer;
 using SpeedTool.Windows.Drawables;
 using SpeedTool.Windows.TimerUI;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
 
 namespace SpeedTool.Windows;
 
@@ -18,7 +20,7 @@ class MainWindow : SPWindow, IDisposable
         drw = new TimerDrawable(Gl);
         timer = new BasicTimer();
 
-        ui = new ClassicTimerUI();
+        ui = SelectUI();
     }
 
     override public void Dispose()
@@ -55,11 +57,6 @@ class MainWindow : SPWindow, IDisposable
         // Opening windows in between ImGui calls screws up ImGui's stack, so we need to do that on function exit
         Action? onExit = null;
 
-        // TODO: This is test stuff, will be removed later
-        ImGui.Text("Last pressed: ");
-        ImGui.SameLine();
-        ImGui.Text(platform.Keyboard.LastPressed.ToString());
-
         ImGui.PopFont();
 
         if(ImGui.BeginPopupContextWindow())
@@ -78,6 +75,24 @@ class MainWindow : SPWindow, IDisposable
                 // TODO: Add controls
             }
             ImGui.Separator();
+            if(ImGui.BeginMenu("UI Select"))
+            {
+                if(ImGui.MenuItem("SpeedTool"))
+                {
+                    var conf = Configuration.GetSection<GeneralConfiguration>()!;
+                    conf.TimerUI = "SpeedTool";
+                    Configuration.SetSection(conf);
+                    ui = SelectUI();
+                }
+                if(ImGui.MenuItem("Classic"))
+                {
+                    var conf = Configuration.GetSection<GeneralConfiguration>()!;
+                    conf.TimerUI = "Classic";
+                    Configuration.SetSection(conf);
+                    ui = SelectUI();
+                }
+                ImGui.EndMenu();
+            }
             if(ImGui.MenuItem("Settings"))
             {
                 onExit = () => platform.AddWindow(new SettingsWindow());
@@ -102,6 +117,19 @@ class MainWindow : SPWindow, IDisposable
             opts.Samples = 8;
             opts.WindowBorder = WindowBorder.Fixed;
             return opts;
+        }
+    }
+
+    private TimerUIBase SelectUI()
+    {
+        switch(Configuration.GetSection<GeneralConfiguration>()!.TimerUI)
+        {
+        case "Classic":
+            return new ClassicTimerUI();
+        case "SpeedTool":
+            return new SpeedToolTimerUI(Gl);
+        default:
+            return new SpeedToolTimerUI(Gl);
         }
     }
 
