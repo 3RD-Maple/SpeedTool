@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <None Update="App\appsettings.json">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Resources\arrow_square.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>

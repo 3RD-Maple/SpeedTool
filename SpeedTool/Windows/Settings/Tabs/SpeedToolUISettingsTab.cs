@@ -15,14 +15,20 @@ public sealed class SpeedToolUISettingsTab : TabBase
     private Vector4 minutesClockTimerColor;
     private Vector4 hoursClockTimerColor;
     
-    private Hotkey hk;
-    private Hotkey hk2;
+
+    private Hotkey startHotkey;
+    private Hotkey pauseHotkey;
+    private Hotkey resetHotkey;
 
     public SpeedToolUISettingsTab(string tabName) : base(tabName)
     {
         secondsClockTimerColor = Config.SecondsClockTimerColor;
         minutesClockTimerColor = Config.MinutesClockTimerColor;
         hoursClockTimerColor = Config.HoursClockTimerColor;
+        
+        startHotkey = Config.StartHotkey;
+        pauseHotkey = Config.PauseHotkey;
+        resetHotkey = Config.ResetHotkey;
     }
 
     protected override void ApplyTabSettings()
@@ -37,7 +43,8 @@ public sealed class SpeedToolUISettingsTab : TabBase
         ImGuiExtensions.SpeedToolColorPicker("Hours color", ref Config.HoursClockTimerColor);
 
         // Usage reference
-        ImGuiExtensions.SpeedToolHotkey("Hotkey Test", ref hk);
-        ImGuiExtensions.SpeedToolHotkey("Hotkey 2", ref hk2);
+        ImGuiExtensions.SpeedToolHotkey("Start", ref Config.StartHotkey);
+        ImGuiExtensions.SpeedToolHotkey("Pause", ref Config.PauseHotkey);
+        ImGuiExtensions.SpeedToolHotkey("Reset", ref Config.ResetHotkey);
     }
 }
