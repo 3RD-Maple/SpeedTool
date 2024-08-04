@@ -75,6 +75,12 @@ public sealed class GameEditorWindow : Platform.Window
             Split? parent = null;
 
             ImGui.InputText("Category Name", ref name, 256);
+            ImGui.SameLine();
+            if(ImGui.Button("Delete category"))
+            {
+                string tmpName = name;
+                categories = categories.Where(x => x.Name != tmpName).ToArray();
+            }
             ImGui.Text("Splits:");
 
             for(int i = 0; i < splits.Length; i++)
@@ -122,6 +128,16 @@ public sealed class GameEditorWindow : Platform.Window
                 popupSplit!.AddSubsplit(new Split("New Split"));
                 popupSplit = null;
             }
+            ImGui.Separator();
+            if(ImGui.MenuItem("Delete split"))
+            {
+                RemoveSplit(ref splits);
+                if(splits.Length == 0)
+                {
+                    InsertAbove(ref splits);
+                }
+                popupSplit = null;
+            }
             ImGui.EndPopup();
         }
     }
@@ -149,6 +165,18 @@ public sealed class GameEditorWindow : Platform.Window
         {
             var idx = Array.IndexOf(splits, popupSplit) + 1;
             splits = splits.InsertAt(idx, new Split("New Split"));
+        }
+    }
+
+    private void RemoveSplit(ref Split[] splits)
+    {
+        if(popupSplitParent != null)
+        {
+            popupSplitParent.Subsplits = popupSplitParent.Subsplits.Where(x => x != popupSplit).ToArray();
+        }
+        else
+        {
+            splits = splits.Where(x => x != popupSplit).ToArray();
         }
     }
 

@@ -58,12 +58,22 @@ public static class ImGuiExtensions
 
     public static SpeedToolSplitContext SpeedToolSplit(string name, ref Split split)
     {
+        return SpeedToolSplit(name, ref split, null);
+    }
+
+    private static SpeedToolSplitContext SpeedToolSplit(string name, ref Split split, Split? parent)
+    {
+        // TODO: This is a good candidate for refactoring
         SpeedToolSplitContext ctx = new();
         if(split.Subsplits.Length == 0)
         {
             ImGuiNET.ImGui.InputText(name, ref split.Name, 255);
             ctx.IsHovered = ImGuiNET.ImGui.IsItemHovered();
-            ctx.selectedSplit = ctx.IsHovered ? split : null;
+            if(ctx.IsHovered)
+            {
+                ctx.selectedSplit = ctx.IsHovered ? split : null;
+                ctx.parentSplit = ctx.IsHovered ? parent : null;
+            }
             return ctx;
         }
 
@@ -72,14 +82,18 @@ public static class ImGuiExtensions
         ImGuiNET.ImGui.InputText(name, ref split.Name, 255);
         ctx.IsHovered = ImGuiNET.ImGui.IsItemHovered();
         ctx.selectedSplit = ctx.IsHovered ? split : null;
+        ctx.parentSplit = ctx.IsHovered ? parent : null;
         if(isOpen)
         {
             for(int i = 0; i < split.Subsplits.Length; i++)
             {
-                var res = SpeedToolSplit("##" + name + "subsplit" + i.ToString(), ref split.Subsplits[i]);
-                if(res.selectedSplit != null)
+                var res = SpeedToolSplit("##" + name + "subsplit" + i.ToString(), ref split.Subsplits[i], split);
+                if(res.IsHovered)
+                {
+                    ctx.IsHovered = res.IsHovered;
                     ctx.selectedSplit = res.selectedSplit;
-                ctx.parentSplit = split;
+                    ctx.parentSplit = res.parentSplit;
+                }
             }
             ImGuiNET.ImGui.TreePop();
         }
