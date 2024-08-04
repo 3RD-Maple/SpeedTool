@@ -1,7 +1,8 @@
 using ImGuiNET;
-using Silk.NET.Input;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
+using SpeedTool.Splits;
+using SpeedTool.Timer;
 
 namespace SpeedTool.Platform;
 
@@ -30,6 +31,26 @@ public class Platform
     public ImFontPtr GetFont(int idx)
     {
         return fonts[idx];
+    }
+
+    public void Split()
+    {
+        if(run == null)
+        {
+            return;
+        }
+
+        run.Split();
+    }
+
+    public ITimerSource GetTimerFor(TimingMethod method)
+    {
+        return sources[(int)method];
+    }
+
+    public void LoadGame(Game game)
+    {
+        this.game = game;
     }
 
     public void Run()
@@ -65,6 +86,15 @@ public class Platform
         GlfwWindowing.RegisterPlatform();
         GlfwInput.RegisterPlatform();
 
+        sources = new ITimerSource[(int)TimingMethod.Last];
+
+        sources[(int)TimingMethod.RealTime] = new BasicTimer();
+        sources[(int)TimingMethod.InGame] = new NoTimer();
+        sources[(int)TimingMethod.Loadless] = new NoTimer();
+        sources[(int)TimingMethod.Custom1] = new NoTimer();
+        sources[(int)TimingMethod.Custom2] = new NoTimer();
+        sources[(int)TimingMethod.Custom3] = new NoTimer();
+
         kb = new Keyboard();
         windows = new List<Window>();
         fonts = new List<ImFontPtr>();
@@ -84,6 +114,11 @@ public class Platform
     List<ImFontPtr> fonts;
     KeyboardHook hook;
     Keyboard kb;
+
+    Run? run = null;
+    Game? game = null;
+
+    ITimerSource[] sources;
 
     private static Platform? platform;
 }

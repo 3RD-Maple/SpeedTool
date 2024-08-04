@@ -1,6 +1,6 @@
 namespace SpeedTool.Splits;
 
-class Category
+public class Category
 {
     public Category(string name, Split[] splits)
     {

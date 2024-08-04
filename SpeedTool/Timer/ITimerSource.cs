@@ -1,6 +1,6 @@
 namespace SpeedTool.Timer;
 
-interface ITimerSource
+public interface ITimerSource
 {
     TimeSpan CurrentTime { get; }
 
