@@ -97,6 +97,10 @@ class MainWindow : SPWindow, IDisposable
             {
                 onExit = () => platform.AddWindow(new SettingsWindow());
             }
+            if(ImGui.MenuItem("About"))
+            {
+                onExit = () => platform.AddWindow(new AboutWindow());
+            }
             if(ImGui.MenuItem("Exit"))
             {
                 platform.Exit();
