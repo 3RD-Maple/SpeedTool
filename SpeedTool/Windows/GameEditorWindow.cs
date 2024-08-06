@@ -58,6 +58,11 @@ public sealed class GameEditorWindow : Platform.Window
         }
 
         ImGui.Separator();
+        if(ImGui.Button("Test save"))
+        {
+            var g = new Game(Name, CollectCategories());
+            g.SaveToFile("test.stg");
+        }
 
         // Temporary stuff to debug this mess. Probably will be removed later
 #if DEBUG
@@ -190,6 +195,11 @@ public sealed class GameEditorWindow : Platform.Window
             name = "New Category " + tries.ToString();
         }
         return name;
+    }
+
+    private Category[] CollectCategories()
+    {
+        return categories.Select(x => new Category(x.Name, x.Splits)).ToArray();
     }
 
 #if DEBUG
