@@ -30,12 +30,12 @@ class AboutWindow : Platform.Window
         ImGuiExtensions.TextCentered("CC BY-SA 4.0");
         ImGui.Text(" ");
         ImGui.Text("By:");
-        ImGui.Text("    Alexey Drozhzhin aka Grim Maple, the lead programmer");
-        ImGui.Text("    Alexander \"Rusty Skull\" Bogdanov, the C# consultant");
-        ImGui.Text("    UHDFox, the C# programmer");
-        ImGui.Text("    Anastasiia Drozhzhina aka POPUGAICHIK, the designer");
+        ImGui.Text("    Alexey Drozhzhin aka Grim Maple, the Lead Programmer");
+        ImGui.Text("    Dmitry \"HDFox\" Khakrizoyev, the C# Programmer");
+        ImGui.Text("    Alexander \"Rusty Skull\" Bogdanov, the C# Consultant");
+        ImGui.Text("    Anastasiia Drozhzhina aka POPUGAICHIK, the Designer");
         ImGui.Text(" ");
-        ImGui.Text("    And all the SpeedTool contributors!");
+        ImGui.Text("    And all SpeedTool Contributors!");
 
         ImGui.End();
     }
