@@ -65,6 +65,11 @@ public class Window : IDisposable
             */
         };
 
+        window.FileDrop += files =>
+        {
+            OnFilesDropped(files);
+        };
+
         window.Initialize();
         window.Size = sizes;
     }
@@ -136,6 +141,8 @@ public class Window : IDisposable
     protected virtual void OnDraw(double dt) { }
 
     protected virtual void OnAfterUI(double dt) { }
+
+    protected virtual void OnFilesDropped(string[] files) { }
 
     private IWindow window;
     private GL? gl;
