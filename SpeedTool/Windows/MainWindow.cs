@@ -68,7 +68,7 @@ class MainWindow : SPWindow, IDisposable
             ImGui.Separator();
             if(ImGui.MenuItem("Split"))
             {
-                // TODO: Add controls
+                platform.Split();
             }
             if(ImGui.MenuItem("Pause"))
             {

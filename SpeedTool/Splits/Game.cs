@@ -1,6 +1,6 @@
 namespace SpeedTool.Splits;
 
-class Game
+public class Game
 {
     public Game()
     {

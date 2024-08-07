@@ -1,6 +1,6 @@
 namespace SpeedTool.Splits;
 
-struct SplitDisplayInfo
+public struct SplitDisplayInfo
 {
     public SplitDisplayInfo(string name, bool active, int level)
     {
@@ -12,7 +12,7 @@ struct SplitDisplayInfo
     /// <summary>
     /// Is this a split that's currently being run
     /// </summary>
-    public bool IsCurrent { get; private set; }
+    public bool IsCurrent { get; set; }
 
     /// <summary>
     /// Split's sublevel in the splits tree
