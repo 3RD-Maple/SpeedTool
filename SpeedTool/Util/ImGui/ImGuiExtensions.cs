@@ -101,6 +101,14 @@ public static class ImGuiExtensions
         return ctx;
     }
 
+    public static void TextCentered(string text)
+    {
+        var sz = ImGuiNET.ImGui.CalcTextSize(text);
+        var width = ImGuiNET.ImGui.GetWindowSize().X;
+        ImGuiNET.ImGui.SetCursorPosX(width / 2 - sz.X / 2);
+        ImGuiNET.ImGui.Text(text);
+    }
+
     /// <summary>
     ///  Remove focus from any given element
     /// </summary>
