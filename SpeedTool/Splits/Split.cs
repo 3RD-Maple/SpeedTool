@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using SpeedTool.Util;
 
 namespace SpeedTool.Splits;
@@ -14,6 +15,28 @@ public class Split
     public Split(string name) : this()
     {
         Name = name;
+    }
+
+    public JsonObject ToJson()
+    {
+        JsonObject o = new();
+        o["Name"] = Name;
+        if(Subsplits != null && Subsplits.Length != 0)
+        {
+            o["SubSplits"] = SerializeSubsplits();
+        }
+
+        return o;
+    }
+
+    public static Split FromJson(JsonObject obj)
+    {
+        Split spl = new Split(obj.EnforceGetString("Name"));
+        if(obj.ContainsKey("Subsplits"))
+        {
+            spl.LoadSubsplitsFromJson(obj["Subsplits"]!.AsArray());
+        }
+        return spl;
     }
 
     public string Name;
@@ -35,6 +58,26 @@ public class Split
     public void InsertSplit(int idx, Split split)
     {
         Subsplits = Subsplits.InsertAt(idx, split);
+    }
+
+    private void LoadSubsplitsFromJson(JsonArray array)
+    {
+        var len = array.Count;
+        Subsplits = new Split[len];
+        for(int i = 0; i < len; i++)
+        {
+            Subsplits[i] = Split.FromJson(array[i]!.AsObject());
+        }
+    }
+
+    private JsonArray SerializeSubsplits()
+    {
+        JsonArray array = new();
+        for(int i = 0; i < Subsplits.Length; i++)
+        {
+            array.Add((JsonNode)Subsplits[i].ToJson());
+        }
+        return array;
     }
 
     private SplitDisplayInfo[] Flatten(int level)
