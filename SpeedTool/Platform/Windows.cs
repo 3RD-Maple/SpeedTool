@@ -21,7 +21,9 @@ public class Window : IDisposable
         window.Load += () =>
         {
             gl = window.CreateOpenGL();
+            gl.Enable(EnableCap.Texture2D);
             input = window.CreateInput();
+            images = new Images(gl!);
             controller = new ImGuiController(gl, window, input, () => {
                 OnLoad();
             });
@@ -135,6 +137,11 @@ public class Window : IDisposable
         window.Reset();
     }
 
+    protected Images Images
+    {
+        get { return images!; }
+    }
+
     protected virtual void OnLoad() { }
 
     protected virtual void OnUI(double dt) { }
@@ -154,6 +161,8 @@ public class Window : IDisposable
     private GL? gl;
     private IInputContext? input;
     ImGuiController? controller;
+
+    private Images? images;
 
     Vector2D<int> sizes;
 }
