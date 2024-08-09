@@ -23,7 +23,7 @@ public class Split
         o["Name"] = Name;
         if(Subsplits != null && Subsplits.Length != 0)
         {
-            o["SubSplits"] = SerializeSubsplits();
+            o["Subsplits"] = SerializeSubsplits();
         }
 
         return o;

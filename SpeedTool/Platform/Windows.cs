@@ -53,6 +53,7 @@ public class Window : IDisposable
 
         window.Closing += () =>
         {
+            OnClosing();
             input?.Dispose();
             gl?.Dispose();
 
@@ -143,6 +144,11 @@ public class Window : IDisposable
     protected virtual void OnAfterUI(double dt) { }
 
     protected virtual void OnFilesDropped(string[] files) { }
+
+    /// <summary>
+    /// Called when the window is closing
+    /// </summary>
+    protected virtual void OnClosing() { }
 
     private IWindow window;
     private GL? gl;

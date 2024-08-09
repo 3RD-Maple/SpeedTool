@@ -7,6 +7,7 @@ using SpeedTool.Windows.Drawables;
 using SpeedTool.Windows.TimerUI;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
+using SpeedTool.Splits;
 
 namespace SpeedTool.Windows;
 
@@ -32,6 +33,10 @@ class MainWindow : SPWindow, IDisposable
     protected override void OnDraw(double dt)
     {
         ui.Draw(dt, timer);
+        if(platform.Game != null)
+            Text = $"Speedtool -- {platform.Game.Name}";
+        else
+            Text = "Speedtool";
     }
 
     protected override void OnAfterUI(double dt)
@@ -63,7 +68,8 @@ class MainWindow : SPWindow, IDisposable
         {
             if(ImGui.MenuItem("Edit Game"))
             {
-                onExit = () => platform.AddWindow(new GameEditorWindow());
+                onExit = () => platform.AddWindow(platform.Game == null ? new GameEditorWindow() :
+                                                                          new GameEditorWindow(platform.Game));
             }
             ImGui.Separator();
             if(ImGui.MenuItem("Split"))
@@ -108,9 +114,42 @@ class MainWindow : SPWindow, IDisposable
             ImGui.EndPopup();
         }
 
+        if(hasError)
+        {
+            hasError = false;
+            ImGui.OpenPopup("Error");
+        }
+
+        bool open = true;
+        if(ImGui.BeginPopupModal("Error", ref open, ImGuiWindowFlags.AlwaysAutoResize))
+        {
+            ImGui.Text(errorMessage);
+            if(ImGui.Button("OK"))
+            {
+                ImGui.CloseCurrentPopup();
+            }
+            ImGui.EndPopup();
+        }
+
         ImGui.End();
 
         onExit?.Invoke();
+    }
+
+    protected override void OnFilesDropped(string[] files)
+    {
+        if(files.Length != 1) // Only one file is allowed
+            return;
+
+        try
+        {
+            platform.LoadGame(Game.LoadFromFile(files[0]));
+        }
+        catch(Exception)
+        {
+            hasError = true;
+            errorMessage = "Broken file";
+        }
     }
 
     static private WindowOptions options
@@ -136,6 +175,9 @@ class MainWindow : SPWindow, IDisposable
             return new SpeedToolTimerUI(Gl);
         }
     }
+
+    bool hasError = false;
+    string errorMessage = "";
 
     BasicTimer timer;
     TimerDrawable drw;

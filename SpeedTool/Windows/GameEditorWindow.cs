@@ -21,8 +21,24 @@ public sealed class GameEditorWindow : Platform.Window
     {
         platform = Platform.Platform.SharedPlatform;
         Name = "Game Name";
-        categories = [];
+        categories = [new EditableCategory(){
+            Name = "any%",
+            Splits = [new Split("New Split")]
+        }];
         Text = "SpeedTool -- Game Editor";
+    }
+
+    public GameEditorWindow(Game game) : this()
+    {
+        Name = game.Name;
+        categories = new EditableCategory[game.GetCategories().Length];
+        for(int i = 0; i < categories.Length; i++)
+        {
+            categories[i] = new EditableCategory(){
+                Name = game.GetCategories()[i].Name,
+                Splits = game.GetCategories()[i].Splits
+            };
+        }
     }
 
     protected override void OnUI(double dt)
@@ -70,6 +86,11 @@ public sealed class GameEditorWindow : Platform.Window
 #endif
 
         ImGui.End();
+    }
+
+    protected override void OnClosing()
+    {
+        platform.LoadGame(new Game(Name, CollectCategories()));
     }
 
     private void DoTab(ref string name, ref Split[] splits)
