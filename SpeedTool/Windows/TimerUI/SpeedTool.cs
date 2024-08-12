@@ -1,6 +1,8 @@
 using System.Numerics;
 using ImGuiNET;
 using Silk.NET.OpenGL;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
 using SpeedTool.Timer;
 using SpeedTool.Util;
 using SpeedTool.Windows.Drawables;
@@ -11,6 +13,11 @@ class SpeedToolTimerUI : TimerUIBase
 {
     private readonly GL gl;
     private readonly TimerDrawable drw;
+    private ColorSettings colorsConfig { get; set; } = 
+        Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+    
+    private SpeedToolUISettings speedToolConfig { get; set; } = 
+        Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
 
     public SpeedToolTimerUI(GL gl)
     {
@@ -19,21 +26,26 @@ class SpeedToolTimerUI : TimerUIBase
     }
     public override void Draw(double dt, ITimerSource timer)
     {
+        drw.SecondsColor = speedToolConfig.SecondsClockTimerColor;
+        drw.MinutesColor = speedToolConfig.MinutesClockTimerColor;
+        drw.HoursColor = speedToolConfig.HoursClockTimerColor;
         gl.Viewport(0, 0, 500, 500);
         drw.Draw(timer);
     }
 
     public override void DoUI(ITimerSource timer)
     {
+        colorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         var style = ImGui.GetStyle();
         style.FramePadding = new Vector2(0, 0);
         style.ItemSpacing = new Vector2(0, 0);
         style.WindowPadding = new Vector2(0, 0);
         style.Colors[(int)ImGuiCol.WindowBg] = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-        ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 0.00f));
+        ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 1.00f));
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.3f, 0.3f, 0.3f, 1.0f));
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+        ImGui.PushStyleColor(ImGuiCol.Text, colorsConfig.TextColor);
         DoStartButton(timer);
         ImGui.SameLine();
         DoPauseButton(timer);
@@ -47,7 +59,7 @@ class SpeedToolTimerUI : TimerUIBase
         var text = timer.CurrentTime.ToSpeedToolTimerString();
         var sz = ImGui.CalcTextSize(text);
         ImGui.SetCursorPos(new Vector2(250 - sz.X / 2, 300));
-        ImGui.Text(text);
+        ImGui.TextColored(colorsConfig.TextColor, text);
     }
 
     private void DoStartButton(ITimerSource timer)

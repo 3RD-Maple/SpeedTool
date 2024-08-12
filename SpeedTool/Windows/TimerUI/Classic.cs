@@ -1,5 +1,6 @@
-using System.Numerics;
 using ImGuiNET;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -8,6 +9,12 @@ namespace SpeedTool.Windows.TimerUI;
 
 class ClassicTimerUI : TimerUIBase
 {
+    private ColorSettings ColorsConfig { get; set; } = 
+        Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+    
+    private ClassicUISettings UIConfig { get; set; } = 
+        Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
+    
     public ClassicTimerUI()
     {
 
@@ -15,20 +22,22 @@ class ClassicTimerUI : TimerUIBase
 
     public override void DoUI(ITimerSource source)
     {
+        ColorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+        UIConfig = Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
         ImGui.BeginTable("##splits_table", 1);
         ISplitsSource splitsSource = new FakeSplitsSource();
-        foreach(var split in splitsSource.GetSplits(3))
+        foreach(var split in splitsSource.GetSplits(UIConfig.ShownSplitsCount))
         {
             ImGui.TableNextColumn();
-            if(split.IsCurrent)
-                ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, 0xFF00FF00);
+            if (split.IsCurrent)
+                ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(UIConfig.ActiveSplitColor)); //(uint)UIConfig.ActiveSplitColor.GetHashCode());
             if(split.Level > 0)
                 ImGui.SetCursorPosX(split.Level * SPLIT_OFFSET);
 
-            ImGui.Text(split.DisplayString);
+            ImGui.TextColored(ColorsConfig.TextColor, split.DisplayString);
         }
         ImGui.EndTable();
-        ImGui.Text(source.CurrentTime.ToSpeedToolTimerString());
+        ImGui.TextColored(ColorsConfig.TextColor,source.CurrentTime.ToSpeedToolTimerString());
     }
 
     class FakeSplitsSource : ISplitsSource
