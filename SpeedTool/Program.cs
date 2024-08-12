@@ -4,7 +4,7 @@ using SpeedTool.Windows;
 
 var exeDir = Path.GetDirectoryName(System.AppContext.BaseDirectory);
 Console.WriteLine(exeDir);
-var configPath = Path.Combine(exeDir!, @"./App/appsettings.json");
+var configPath = Path.Combine(exeDir!, @"./appsettings.json");
 
 Configuration.Init(configPath);
 Platform.SharedPlatform.AddWindow(new MainWindow());

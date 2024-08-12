@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Reflection;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using System.Text.Json.Serialization;
 
@@ -24,6 +25,13 @@ namespace SpeedTool.Global
         public static bool Init(string filePath)
         {
             if (_init) return _init;
+            if(!File.Exists(filePath))
+            {
+                var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!;
+                var sr = new StreamReader(stream);
+                File.WriteAllText(filePath, sr.ReadToEnd());
+                return Init(filePath);
+            }
             _filepath = filePath;
             using var reader = new StreamReader(File.OpenRead(filePath));
             _loadedCfg = reader.ReadToEnd();
@@ -86,5 +94,7 @@ namespace SpeedTool.Global
         {
             public override string Message => "Service requiered initialization before usage";
         }
+
+        private const string RESOURCE_NAME = "SpeedTool.App.appsettings.json";
     }
 }
