@@ -12,29 +12,39 @@ internal sealed class KeyboardHook : IDisposable
 
     public KeyboardHook()
     {
+        #if DEBUG
+        #else
         hook = new SimpleGlobalHook();
         hook.KeyPressed += Hook_KeyPressed;
         hook.KeyReleased += Hook_KeyReleased;
         hookTask = hook.RunAsync();
+        #endif
     }
 
     public void Cycle()
     {
+        #if DEBUG
+        #else
         while(!presses.IsEmpty)
         {
             var keyData = DequeueElement();
             OnKeyEvent?.Invoke(this, keyData);
         }
+        #endif
     }
 
     public void Dispose()
     {
+        #if DEBUG
+        #else
         hook.Dispose();
         hookTask.Wait();
+        #endif
     }
 
     private void Hook_KeyPressed(object? sender, KeyboardHookEventArgs args)
     {
+        OnKeyEvent?.Invoke(null, new KeyPressData());
         presses.Enqueue(new KeyPressData(true, args.Data.KeyCode));
     }
 
@@ -49,9 +59,11 @@ internal sealed class KeyboardHook : IDisposable
         while(!presses.TryDequeue(out data));
         return data;
     }
-
+    #if DEBUG
+    #else
     private Task hookTask;
     private SimpleGlobalHook hook;
+    #endif
 
     ConcurrentQueue<KeyPressData> presses = new();
 }

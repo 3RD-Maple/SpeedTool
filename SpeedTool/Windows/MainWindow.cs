@@ -19,7 +19,6 @@ class MainWindow : SPWindow, IDisposable
     {
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
-        timer = new BasicTimer();
 
         ui = SelectUI();
     }
@@ -32,9 +31,9 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnDraw(double dt)
     {
-        ui.Draw(dt, timer);
+        ui.Draw(dt, platform.GetSplits(), platform.GetTimerFor(TimingMethod.RealTime));
         if(platform.Game != null)
-            Text = $"Speedtool -- {platform.Game.Name}";
+            Text = $"Speedtool -- {platform.Game.Name} -- {platform.CurrentCategory?.Name}";
         else
             Text = "Speedtool";
     }
@@ -58,7 +57,7 @@ class MainWindow : SPWindow, IDisposable
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
-        ui.DoUI(timer);
+        ui.DoUI(platform.GetSplits(), platform.GetTimerFor(TimingMethod.RealTime));
 
         // Opening windows in between ImGui calls screws up ImGui's stack, so we need to do that on function exit
         Action? onExit = null;
@@ -180,8 +179,6 @@ class MainWindow : SPWindow, IDisposable
 
     bool hasError = false;
     string errorMessage = "";
-
-    BasicTimer timer;
     TimerDrawable drw;
 
     Platform.Platform platform;

@@ -20,7 +20,7 @@ class ClassicTimerUI : TimerUIBase
 
     }
 
-    public override void DoUI(ITimerSource source)
+    public override void DoUI(ISplitsSource splits, ITimerSource source)
     {
         ColorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         UIConfig = Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
@@ -34,25 +34,24 @@ class ClassicTimerUI : TimerUIBase
             if(split.Level > 0)
                 ImGui.SetCursorPosX(split.Level * SPLIT_OFFSET);
 
-            ImGui.TextColored(ColorsConfig.TextColor, split.DisplayString);
+            ImGui.Text(split.DisplayString);
+            if(split.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
+            {
+                ImGui.SameLine();
+                ImGui.TextColored(ColorsConfig.TextColor, split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+            }
+            else if(split.Times[TimingMethod.RealTime].TotalMilliseconds != 0)
+            {
+                ImGui.SameLine();
+                ImGui.TextColored(ColorsConfig.TextColor, split.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
+            }
+            ImGui.Separator();
         }
         ImGui.EndTable();
         ImGui.TextColored(ColorsConfig.TextColor,source.CurrentTime.ToSpeedToolTimerString());
     }
 
-    class FakeSplitsSource : ISplitsSource
-    {
-        public SplitDisplayInfo[] GetSplits(int count)
-        {
-            return new SplitDisplayInfo[] {
-                new SplitDisplayInfo("Test 1", false, 0),
-                new SplitDisplayInfo("Test 2", true, 1),
-                new SplitDisplayInfo("Test 3", false, 0)
-            };
-        }
-    }
-
-    public override void Draw(double dt, ITimerSource source) { }
+    public override void Draw(double dt, ISplitsSource splits, ITimerSource source) { }
 
     private const int SPLIT_OFFSET = 25;
 }

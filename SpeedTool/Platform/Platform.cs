@@ -28,6 +28,19 @@ public class Platform
         }
     }
 
+    public Category? CurrentCategory
+    {
+        get
+        {
+            return game?.GetCategories()[0];
+        }
+    }
+
+    public ISplitsSource GetSplits()
+    {
+        return run != null? run : nullSplits;
+    }
+
     public Keyboard Keyboard => kb;
 
     public void Split()
@@ -48,6 +61,8 @@ public class Platform
     public void LoadGame(Game game)
     {
         this.game = game;
+        run = new Run(game, game.GetCategories()[0].Splits, null);
+        sources[(int)TimingMethod.RealTime] = run.Timer;
     }
 
     public void Run()
@@ -112,6 +127,8 @@ public class Platform
 
     Run? run = null;
     Game? game = null;
+
+    NullSplitsSource nullSplits = new();
 
     ITimerSource[] sources;
 

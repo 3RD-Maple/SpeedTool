@@ -3,6 +3,7 @@ using ImGuiNET;
 using Silk.NET.OpenGL;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
+using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
 using SpeedTool.Windows.Drawables;
@@ -24,7 +25,7 @@ class SpeedToolTimerUI : TimerUIBase
         this.gl = gl;
         drw = new TimerDrawable(gl);
     }
-    public override void Draw(double dt, ITimerSource timer)
+    public override void Draw(double dt, ISplitsSource splits, ITimerSource timer)
     {
         speedToolConfig = Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
         drw.SecondsColor = speedToolConfig.SecondsClockTimerColor;
@@ -34,7 +35,7 @@ class SpeedToolTimerUI : TimerUIBase
         drw.Draw(timer, speedToolConfig);
     }
 
-    public override void DoUI(ITimerSource timer)
+    public override void DoUI(ISplitsSource splits, ITimerSource timer)
     {
         colorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         var style = ImGui.GetStyle();
@@ -51,6 +52,9 @@ class SpeedToolTimerUI : TimerUIBase
         ImGui.SameLine();
         DoPauseButton(timer);
         ImGui.PopStyleColor(5);
+
+        ImGui.SetCursorPos(new Vector2(250, 250));
+        ImGui.Text(splits.CurrentSplit.DisplayString);
 
         DrawTimeText(timer);
     }

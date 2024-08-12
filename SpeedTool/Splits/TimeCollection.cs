@@ -1,4 +1,3 @@
-using System.Collections;
 using SpeedTool.Timer;
 
 namespace SpeedTool.Splits;
