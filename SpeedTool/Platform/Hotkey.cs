@@ -1,3 +1,5 @@
+using System.Text.Json.Nodes;
+
 namespace SpeedTool.Platform;
 
 using System.Text;
@@ -36,6 +38,31 @@ public struct Hotkey
             sb.Append(Key.ToString());
             return sb.ToString();
         }
+    }
+    
+    public static JsonObject ToJSONObject(Hotkey hotkey)
+    { 
+        var node = new JsonObject();
+
+        node["CheckAlt"] = hotkey.Alt;
+        node["CheckShift"] = hotkey.Shift;
+        node["CheckCtrl"] = hotkey.Ctrl;
+        node["KeyCode"] = (ushort)hotkey.Key;
+        
+        return node;
+    }
+    
+    public static Hotkey FromJSONObject(JsonObject node) // use instead of class constructor 
+    {
+        var hotkey = new Hotkey();
+        
+        hotkey.Alt = (bool)node["CheckAlt"]!;
+        hotkey.Shift = (bool)node["CheckShift"]!;
+        hotkey.Ctrl = (bool)node["CheckCtrl"]!;
+        
+        hotkey.Key =  (KeyCode)((ushort)node["KeyCode"]!);
+
+        return hotkey;
     }
 
     private bool AreCorrectControlsPressed()
