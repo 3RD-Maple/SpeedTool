@@ -2,8 +2,6 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
-using SpeedTool.Global;
-using SpeedTool.Global.Definitions;
 using SpeedTool.Windows.Settings;
 using SpeedTool.Windows.Settings.Tabs;
 using Window = SpeedTool.Platform.Window;

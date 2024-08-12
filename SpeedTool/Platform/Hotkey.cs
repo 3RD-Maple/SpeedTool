@@ -44,9 +44,9 @@ public struct Hotkey
     { 
         var node = new JsonObject();
 
-        node["IsAltPressed"] = hotkey.Alt;
-        node["IsShiftPressed"] = hotkey.Shift;
-        node["IsCtrlPressed"] = hotkey.Ctrl;
+        node["CheckAlt"] = hotkey.Alt;
+        node["CheckShift"] = hotkey.Shift;
+        node["CheckCtrl"] = hotkey.Ctrl;
         node["KeyCode"] = (ushort)hotkey.Key;
         
         return node;
@@ -56,9 +56,9 @@ public struct Hotkey
     {
         var hotkey = new Hotkey();
         
-        hotkey.Alt = (bool)node["IsAltPressed"]!;
-        hotkey.Shift = (bool)node["IsShiftPressed"]!;
-        hotkey.Ctrl = (bool)node["IsCtrlPressed"]!;
+        hotkey.Alt = (bool)node["CheckAlt"]!;
+        hotkey.Shift = (bool)node["CheckShift"]!;
+        hotkey.Ctrl = (bool)node["CheckCtrl"]!;
         
         hotkey.Key =  (KeyCode)((ushort)node["KeyCode"]!);
 

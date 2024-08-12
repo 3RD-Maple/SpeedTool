@@ -15,7 +15,6 @@ public sealed class SpeedToolUISettingsTab : TabBase
     private Vector4 minutesClockTimerColor;
     private Vector4 hoursClockTimerColor;
     
-
     private Hotkey startHotkey;
     private Hotkey pauseHotkey;
     private Hotkey resetHotkey;
