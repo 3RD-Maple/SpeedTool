@@ -9,6 +9,7 @@
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <PublishAOT>true</PublishAOT>
     <Version>0.1.0</Version>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
@@ -16,12 +17,14 @@
     <PackageReference Include="Silk.NET" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL.Extensions.Imgui" Version="2.21.0" />
     <PackageReference Include="Silk.Net.Windowing" Version="2.21.0" />
+    <PackageReference Include="StbImageSharp" Version="2.27.14" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="App\appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="Resources\arrow_square.png" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
 </Project>
