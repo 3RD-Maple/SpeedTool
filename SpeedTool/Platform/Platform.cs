@@ -21,6 +21,14 @@ public class Platform
         }
     }
 
+    public Game? Game
+    { 
+        get
+        {
+            return game;
+        }
+    }
+
     public Keyboard Keyboard => kb;
 
     public void LoadFont(string font, int size)

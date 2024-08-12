@@ -17,13 +17,12 @@ public class Category
         JsonObject o = new();
         o["Name"] = Name;
         o["RunsCount"] = RunsCount;
-        o["splits"] = SerializeSplits();
+        o["Splits"] = SerializeSplits();
         return o;
     }
 
     public static Category FromJson(JsonObject obj)
     {
-        Category ret = new Category(obj.EnforceGetString("Name"), []);
         if(!obj.ContainsKey("Splits"))
             throw new FormatException();
         var splits = obj["Splits"]!.AsArray();
@@ -33,7 +32,7 @@ public class Category
             spl[i] = Split.FromJson(splits[i]!.AsObject());
         }
 
-        return ret;
+        return new Category(obj.EnforceGetString("Name"), spl);
     }
 
     public string Name { get; private set; }

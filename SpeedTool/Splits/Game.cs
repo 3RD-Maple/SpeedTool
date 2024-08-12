@@ -61,13 +61,19 @@ public class Game
             var obj = JSONHelper.EnforceParseAsObject(text);
             g.Name = obj.EnforceGetString("Name");
 
-            var categories = file.Entries.Where(x => x.FullName.StartsWith("category/"));
-            foreach(var cat in categories)
+            var categories = file.Entries.Where(x => x.FullName.StartsWith("categories/")).ToArray();
+            g.categories = new Category[categories.Length];
+            for(int i = 0; i < categories.Length; i++)
             {
-                Category.FromJson(JSONHelper.EnforceParseAsObject(cat.AsText()));
+                g.categories[i] = Category.FromJson(JSONHelper.EnforceParseAsObject(categories[i].AsText()));
             }
         }
         return g;
+    }
+
+    public Category[] GetCategories()
+    {
+        return categories;
     }
 
     private Category[] categories;
