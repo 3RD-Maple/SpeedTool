@@ -26,11 +26,12 @@ class SpeedToolTimerUI : TimerUIBase
     }
     public override void Draw(double dt, ITimerSource timer)
     {
+        speedToolConfig = Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
         drw.SecondsColor = speedToolConfig.SecondsClockTimerColor;
         drw.MinutesColor = speedToolConfig.MinutesClockTimerColor;
         drw.HoursColor = speedToolConfig.HoursClockTimerColor;
         gl.Viewport(0, 0, 500, 500);
-        drw.Draw(timer);
+        drw.Draw(timer, speedToolConfig);
     }
 
     public override void DoUI(ITimerSource timer)
@@ -42,14 +43,14 @@ class SpeedToolTimerUI : TimerUIBase
         style.WindowPadding = new Vector2(0, 0);
         style.Colors[(int)ImGuiCol.WindowBg] = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
         ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-        ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 1.00f));
+        ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 0.00f));
         ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.3f, 0.3f, 0.3f, 1.0f));
         ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
         ImGui.PushStyleColor(ImGuiCol.Text, colorsConfig.TextColor);
         DoStartButton(timer);
         ImGui.SameLine();
         DoPauseButton(timer);
-        ImGui.PopStyleColor(4);
+        ImGui.PopStyleColor(5);
 
         DrawTimeText(timer);
     }

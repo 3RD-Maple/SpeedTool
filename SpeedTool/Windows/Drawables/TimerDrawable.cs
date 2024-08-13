@@ -27,9 +27,9 @@ sealed class TimerDrawable : IDisposable
         objects[2] = CreateDrawObject(gl, 0.8f, 0.1f);
         this.gl = gl;
     }
-    
+
     static private DrawObject CreateDrawObject(GL gl, float rad, float thick)
-    {
+    {   
         var res = CreateVertices(rad, thick);
         return new DrawObject(gl, res.Item1, res.Item2);
     }
@@ -68,8 +68,12 @@ sealed class TimerDrawable : IDisposable
             indices[i] = (ushort)i;
         return (ret.ToArray(), indices);
     }
-    public void Draw(ITimerSource source)
+    public void Draw(ITimerSource source, SpeedToolUISettings config)
     {
+        SecondsColor = config.SecondsClockTimerColor;
+        MinutesColor = config.MinutesClockTimerColor;
+        HoursColor = config.HoursClockTimerColor;
+        
         gl.Enable(GLEnum.PolygonSmooth);
         s.DrawWith(() => DrawBuffers(source));
     }
@@ -91,11 +95,6 @@ sealed class TimerDrawable : IDisposable
 
     private void DrawBuffers(ITimerSource source)
     {
-        var config = Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
-        SecondsColor = config.SecondsClockTimerColor;
-        MinutesColor = config.MinutesClockTimerColor;
-        HoursColor = config.HoursClockTimerColor;
-        
         var mat = GetOrtho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
         s.SetUniform("projection", mat);
         s.SetUniform("clr", new Vector3D<float>(SecondsColor.X, SecondsColor.Y, SecondsColor.Z));
