@@ -1,4 +1,3 @@
-using ImGuiNET;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 using SpeedTool.Splits;
@@ -30,16 +29,6 @@ public class Platform
     }
 
     public Keyboard Keyboard => kb;
-
-    public void LoadFont(string font, int size)
-    {
-        fonts.Add(ImGui.GetIO().Fonts.AddFontFromFileTTF(font, size));
-    }
-
-    public ImFontPtr GetFont(int idx)
-    {
-        return fonts[idx];
-    }
 
     public void Split()
     {
@@ -105,7 +94,6 @@ public class Platform
 
         kb = new Keyboard();
         windows = new List<Window>();
-        fonts = new List<ImFontPtr>();
         hook = new KeyboardHook();
         hook.OnKeyEvent += (object? sneder, KeyPressData data) =>
         {
@@ -119,7 +107,6 @@ public class Platform
     }
 
     List<Window> windows;
-    List<ImFontPtr> fonts;
     KeyboardHook hook;
     Keyboard kb;
 

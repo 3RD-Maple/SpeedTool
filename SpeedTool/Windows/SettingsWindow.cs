@@ -27,6 +27,11 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
         }
     }
 
+    protected override void OnLoad()
+    {
+        LoadFont("C:\\Windows\\Fonts\\meiryo.ttc", 22, "Main");
+    }
+
     protected override void OnUI(double dt)
     {
         var viewport = ImGui.GetMainViewport();
@@ -36,6 +41,8 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
         ImGui.Begin("SettingsWindow",
             ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar |
             ImGuiWindowFlags.NoMove);
+
+        ImGui.PushFont(GetFont("Main"));
 
         if (ImGui.BeginTabBar("Settings window"))
         {
@@ -51,6 +58,8 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
                 tab.ApplySettings();
             }
         }
+
+        ImGui.PopFont();
 
         ImGui.End();
     }

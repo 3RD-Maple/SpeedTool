@@ -45,7 +45,8 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnLoad()
     {
-        Platform.Platform.SharedPlatform.LoadFont("C:\\Windows\\Fonts\\cour.ttf", 42);
+        LoadFont("C:\\Windows\\Fonts\\meiryo.ttc", 42, "Main");
+        LoadFont("C:\\Windows\\Fonts\\meiryo.ttc", 22, "UI");
     }
 
     protected override void OnUI(double dt)
@@ -53,7 +54,7 @@ class MainWindow : SPWindow, IDisposable
         var viewport = ImGui.GetMainViewport();
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(viewport.Size);
-        ImGui.PushFont(platform.GetFont(0));
+        ImGui.PushFont(GetFont("Main"));
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
@@ -63,6 +64,7 @@ class MainWindow : SPWindow, IDisposable
         Action? onExit = null;
 
         ImGui.PopFont();
+        ImGui.PushFont(GetFont("UI"));
 
         if(ImGui.BeginPopupContextWindow())
         {
@@ -72,11 +74,11 @@ class MainWindow : SPWindow, IDisposable
                                                                           new GameEditorWindow(platform.Game));
             }
             ImGui.Separator();
-            if(ImGui.MenuItem("Split"))
+            if(ImGui.MenuItem("Сплит"))
             {
                 platform.Split();
             }
-            if(ImGui.MenuItem("Pause"))
+            if(ImGui.MenuItem("ポース"))
             {
                 // TODO: Add controls
             }
@@ -130,7 +132,7 @@ class MainWindow : SPWindow, IDisposable
             }
             ImGui.EndPopup();
         }
-
+        ImGui.PopFont();
         ImGui.End();
 
         onExit?.Invoke();
