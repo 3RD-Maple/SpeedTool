@@ -29,7 +29,7 @@ sealed class TimerDrawable : IDisposable
     }
 
     static private DrawObject CreateDrawObject(GL gl, float rad, float thick)
-    {   
+    {
         var res = CreateVertices(rad, thick);
         return new DrawObject(gl, res.Item1, res.Item2);
     }
