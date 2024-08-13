@@ -1,5 +1,6 @@
 using SpeedTool.Splits;
 using SpeedTool.Timer;
+using SpeedTool.Util;
 
 namespace SpeedTool.Platform;
 
@@ -74,91 +75,78 @@ public class Run : ISplitsSource
     private SplitDisplayInfo[] flattened = [];
     private int[] zeroLevelSplits = [];
 
-    public SplitDisplayInfo[] GetSplits(int count)
+    public IEnumerable<SplitDisplayInfo> GetSplits(int count)
     {
-        if(!Started)
-        {
-            return zeroLevelSplits.Take(count).Select(x => flattened[x]).ToArray();
-        }
+        // Honestly, I wrote this function when I was high on sleep deprevation and eye disease,
+        // so it might be difficult to understand the hell is going on here.
+        // I'm trying to explain it as an aftermath with clear head, so don't mind me
 
-        SplitDisplayInfo[] ret = new SplitDisplayInfo[count];
+        // This function has a `wieght` parameter to decide how to value splits from each side.
+        // TODO: This weight feature doesn't really work well, it should probably be changed to something else
         var currentLevelSplits = GetCurrentLevelSplits();
         var posInCurrentLevel = currentLevelSplits.IndexOf(CurrentFlatSplit);
 
-        var topSplitCount = infoStack.Count;
-
-        var currentLevelSplitsCount = currentLevelSplits.Count;
-        var nextSplitsCount = currentLevelSplitsCount - posInCurrentLevel;
-        var prevSplitsCount = posInCurrentLevel;
-
-        int pos = 0;
-
-        // Propagate top-level splits
-        foreach(var spl in infoStack)
+        // If on level 0, just get enough splits to display
+        if(CurrentFlatSplit.Level == 0)
         {
-            ret[infoStack.Count - pos - 1] = spl;
-            pos++;
-            if(pos == count - 1)
-                break;
+            return currentLevelSplits.TakeAtPosWeighted(count, posInCurrentLevel, weight);
         }
 
-        // Populate current-level splits
-        if(pos + currentLevelSplitsCount >= count)
-        {
-            // If we have enough splits to populate requested amount, do just that
-            // If can populate with "next", do that
-            if(pos + nextSplitsCount >= count)
-            {
-                for(int i = 0; i < count - pos; i++)
-                    ret[pos + i] = currentLevelSplits[posInCurrentLevel + i];
-                return ret;
-            }
-            else // Otherwise, populate with "back" splits, then "next"
-            {
-                var neededPreviousSplits = count - pos - nextSplitsCount;
-                for(int i = neededPreviousSplits; i > 0; i--)
-                {
-                    ret[pos] = currentLevelSplits[posInCurrentLevel - i];
-                    pos++;
-                }
-                // Fill the rest with "next" splits
-                for(int i = 0; i < count - pos; i++)
-                    ret[pos + i] = currentLevelSplits[posInCurrentLevel + i];
-                return ret;
-            }
-        }
-        else // // We need to populate with zero level splits too!
-        {
-            // First, populate with current level splits
-            ret = GetSplits(pos + currentLevelSplitsCount);
+        // Always display splits tree on top
+        var topmostSplits = GetTopmostSplits();
+        var topmostCount = Math.Min(count - 1, topmostSplits.Count);
 
-            List<SplitDisplayInfo> prev = new();
-            List<SplitDisplayInfo> next = new();
-            int i = 0;
-            while(i < zeroLevelSplits.Length && zeroLevelSplits[i] < currentSplit)
+        // If we have enough tree to fill in the requested space, do that
+        if(topmostCount == count - 1)
+            return topmostSplits.TakeLast(topmostCount).Append(CurrentFlatSplit);
+
+        var currentLevelCount = Math.Min(currentLevelSplits.Count, count - topmostCount);
+
+        // If tree + current level fits the space, do that
+        if(currentLevelCount + topmostCount >= count)
+        {
+            return topmostSplits.TakeLast(topmostCount).Concat(currentLevelSplits.TakeAtPosWeighted(currentLevelCount, posInCurrentLevel, weight));
+        }
+
+        var middle = topmostSplits.TakeLast(topmostCount).Concat(currentLevelSplits.TakeAtPosWeighted(currentLevelCount, posInCurrentLevel, weight));
+
+        var zeroLevelCount = count - currentLevelCount - topmostCount;
+
+        zeroLevelSplits.Select(x => flattened[x]).TakeAtPosWeighted(zeroLevelCount, 1, weight);
+
+        // Figure out next and previous splits to fit the space
+        List<SplitDisplayInfo> prev = new();
+        List<SplitDisplayInfo> next = new();
+        int i = 0;
+        while(i < zeroLevelSplits.Length && zeroLevelSplits[i] < currentSplit)
+        {
+            if(zeroLevelSplits[i] == currentSplit)
             {
-                if(zeroLevelSplits[i] == currentSplit)
-                {
-                    i++;
-                    continue;
-                }
-                prev.Add(flattened[zeroLevelSplits[i]]);
                 i++;
+                continue;
             }
-            while(i < zeroLevelSplits.Length)
-            {
-                if(zeroLevelSplits[i] == currentSplit)
-                {
-                    i++;
-                    continue;
-                }
-                next.Add(flattened[zeroLevelSplits[i]]);
-                i++;
-            }
-            var prevCount = Math.Min(count - pos, prev.Count);
-            var nextCount = Math.Max(count - pos - prevCount, next.Count);
-            return prev.TakeLast(prevCount).Concat(ret.Take(pos)).Concat(next.Take(nextCount)).ToArray();
+            prev.Add(flattened[zeroLevelSplits[i]]);
+            i++;
         }
+        while(i < zeroLevelSplits.Length)
+        {
+            if(zeroLevelSplits[i] == currentSplit)
+            {
+                i++;
+                continue;
+            }
+            next.Add(flattened[zeroLevelSplits[i]]);
+            i++;
+        }
+
+        // Figure out how many splits to take from the left and from the right
+        var wantRight = (int)(weight / 100.0) * zeroLevelCount;
+        wantRight = Math.Min(next.Count, wantRight);
+
+        var wantLeft = zeroLevelCount - wantRight;
+        wantLeft = Math.Min(wantLeft, prev.Count);
+
+        return prev.TakeLast(wantLeft).Concat(middle).Concat(next.Take(wantRight));
     }
 
     private void NextSplit()
@@ -213,14 +201,21 @@ public class Run : ISplitsSource
         return infos;
     }
 
+    private List<SplitDisplayInfo> GetTopmostSplits()
+    {
+        var list = infoStack.ToList();
+        list.Reverse();
+        return list;
+    }
+
     private int FirstSubsplitPos()
     {
-        for(int i = currentSplit; i > 0; i--)
+        for(int i = currentSplit; i >= 0; i--)
         {
             if(flattened[i].Level < CurrentFlatSplit.Level)
                 return i + 1;
         }
-        return currentSplit;
+        return 0;
     }
 
     private int LastSubsplitPos()
@@ -240,6 +235,8 @@ public class Run : ISplitsSource
     private SplitDisplayInfo? NextFlatSplit => currentSplit >= flattened.Length - 1 ? null : flattened[currentSplit + 1];
     private SplitDisplayInfo CurrentFlatSplit => flattened[currentSplit];
     private SplitDisplayInfo? PreviousFlatSplit => currentSplit <= 0 ? null : flattened[currentSplit - 1];
+
+    const int weight = 75;
 
     BasicTimer timer = new();
 }
