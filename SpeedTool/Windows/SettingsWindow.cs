@@ -16,7 +16,7 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
     private readonly TabBase[] settingsWindowTabs =
     {
         new ColorsSettingsTab("Colors"), new ClassicUISettingsTab("ClassicUI"),
-        new SpeedToolUISettingsTab("SpeedToolUI")
+        new SpeedToolUISettingsTab("SpeedToolUI"), new HotkeySettingsTab("Hotkeys")
     };
 
     private static WindowOptions options

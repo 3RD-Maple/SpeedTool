@@ -54,6 +54,50 @@ public class Run : ISplitsSource
         flattened[currentSplit].IsCurrent = true;
     }
 
+    public void SkipSplit()
+    {
+        if(!Started)
+        {
+            return;
+        }
+
+        flattened[currentSplit].IsCurrent = false;
+        NextSplitNoUpdate();
+        if(currentSplit >= flattened.Length)
+        {
+            timer.Stop();
+            Started = false;
+            currentSplit--;
+            return;
+        }
+        flattened[currentSplit].IsCurrent = true;
+    }
+
+    private void NextSplitNoUpdate()
+    {
+        // Write split time
+        currentSplit++;
+
+        // Roll over parent splitts
+        while(infoStack.Count > 0 && infoStack.Peek().Level >= flattened[currentSplit].Level)
+        {
+            var p = infoStack.Pop();
+        }
+
+        // Roll over to the first actual split in the tree
+        while(NextFlatSplit != null && CurrentFlatSplit.Level < NextFlatSplit.Value.Level)
+        {
+            infoStack.Push(flattened[currentSplit]);
+            currentSplit++;
+        }
+
+        // If split has subsplits, go to next split
+        if(NextFlatSplit != null && NextFlatSplit.Value.Level > CurrentFlatSplit.Level)
+        {
+            SkipSplit();
+        }
+    }
+
     private void FlattenSplits()
     {
         List<SplitDisplayInfo> f = new();
