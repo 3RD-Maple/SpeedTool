@@ -10,6 +10,7 @@ using SilkWindow = Silk.NET.Windowing.Window;
 using Silk.NET.Maths;
 
 using Sizes = Silk.NET.Maths.Vector2D<int>;
+using ImGuiNET;
 
 public class Window : IDisposable
 {
@@ -17,6 +18,8 @@ public class Window : IDisposable
     {
         window = SilkWindow.Create(options);
         sizes = sz;
+
+        fonts = new();
 
         window.Load += () =>
         {
@@ -158,6 +161,30 @@ public class Window : IDisposable
     protected virtual void OnClosing() { }
 
     private IWindow window;
+
+    public unsafe void LoadFont(string font, int size, string name)
+    {
+        var builder = new ImFontGlyphRangesBuilderPtr(ImGuiNative.ImFontGlyphRangesBuilder_ImFontGlyphRangesBuilder());
+        builder.AddRanges(ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+        builder.AddRanges(ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
+        builder.AddRanges(ImGui.GetIO().Fonts.GetGlyphRangesKorean());
+        builder.AddRanges(ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+        ImVector vc;
+        builder.BuildRanges(out vc);
+        ImFontConfigPtr config = new(ImGuiNative.ImFontConfig_ImFontConfig())
+        {
+            GlyphRanges = vc.Data
+        };
+        fonts[name] = ImGui.GetIO().Fonts.AddFontFromFileTTF(font, size, config);
+    }
+
+    public ImFontPtr GetFont(string name)
+    {
+        return fonts[name];
+    }
+
+    Dictionary<string, ImFontPtr> fonts;
+    
     private GL? gl;
     private IInputContext? input;
     ImGuiController? controller;
