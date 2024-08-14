@@ -44,7 +44,8 @@ class AboutWindow : Platform.Window
 
     protected override void OnLoad()
     {
-        Images.LoadImage("logo", ImageResult.FromMemory(File.ReadAllBytes("Resources/arrow_square.png")));
+        var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!;
+        Images.LoadImage("logo", ImageResult.FromStream(stream));
     }
 
     static private WindowOptions options
@@ -57,6 +58,8 @@ class AboutWindow : Platform.Window
             return opts;
         }
     }
+
+    private const string RESOURCE_NAME = "SpeedTool.Resources.arrow_square.png";
 
     Platform.Platform platform;
 }

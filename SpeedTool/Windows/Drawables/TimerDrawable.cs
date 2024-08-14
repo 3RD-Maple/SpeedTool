@@ -1,3 +1,7 @@
+using System.Numerics;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
+
 namespace SpeedTool.Windows.Drawables;
 
 using Silk.NET.Maths;
@@ -8,8 +12,12 @@ using SpeedTool.Util;
 
 using STShader = Util.GL.Shader;
 
-class TimerDrawable : IDisposable
+sealed class TimerDrawable : IDisposable
 {
+    
+    public Vector4 SecondsColor { get; set; }
+    public Vector4 MinutesColor { get; set; }
+    public Vector4 HoursColor { get; set; }
     public TimerDrawable(GL gl)
     {
         s = new STShader(vertCode, fragCode, gl);
@@ -60,8 +68,12 @@ class TimerDrawable : IDisposable
             indices[i] = (ushort)i;
         return (ret.ToArray(), indices);
     }
-    public void Draw(ITimerSource source)
+    public void Draw(ITimerSource source, SpeedToolUISettings config)
     {
+        SecondsColor = config.SecondsClockTimerColor;
+        MinutesColor = config.MinutesClockTimerColor;
+        HoursColor = config.HoursClockTimerColor;
+        
         gl.Enable(GLEnum.PolygonSmooth);
         s.DrawWith(() => DrawBuffers(source));
     }
@@ -85,15 +97,15 @@ class TimerDrawable : IDisposable
     {
         var mat = GetOrtho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
         s.SetUniform("projection", mat);
-        s.SetUniform("clr", new Vector3D<float>(1.0f, 0.0f, 0.0f));
+        s.SetUniform("clr", new Vector3D<float>(SecondsColor.X, SecondsColor.Y, SecondsColor.Z));
         var coor = s.GetAttribLocation("coordinates");
         var progress = GetBarProgressFromSource(source);
         objects[0].Draw((int)(objects[0].Length * progress.sec), (uint)coor);
 
-        s.SetUniform("clr", new Vector3D<float>(0.0f, 1.0f, 0.0f));
+        s.SetUniform("clr", new Vector3D<float>(MinutesColor.X, MinutesColor.Y, MinutesColor.Z));
         objects[1].Draw((int)(objects[1].Length * progress.min), (uint)coor);
 
-        s.SetUniform("clr", new Vector3D<float>(0.0f, 0.0f, 1.0f));
+        s.SetUniform("clr", new Vector3D<float>(HoursColor.X, HoursColor.Y, HoursColor.Z));
         objects[2].Draw((int)(objects[2].Length * progress.hrs), (uint)coor);
     }
 

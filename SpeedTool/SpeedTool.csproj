@@ -21,10 +21,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="App\appsettings.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="Resources\arrow_square.png" CopyToOutputDirectory="PreserveNewest" />
+    <EmbeddedResource Include="App\appsettings.json" />
+    <EmbeddedResource Include="Resources\arrow_square.png" />
   </ItemGroup>
 
 </Project>
