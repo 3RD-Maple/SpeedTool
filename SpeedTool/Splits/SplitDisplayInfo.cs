@@ -9,6 +9,13 @@ public struct SplitDisplayInfo
         Level = level;
     }
 
+    public SplitDisplayInfo(Split s)
+    {
+        DisplayString = s.Name;
+        IsCurrent = false;
+        Level = 0;
+    }
+
     /// <summary>
     /// Is this a split that's currently being run
     /// </summary>
@@ -20,4 +27,8 @@ public struct SplitDisplayInfo
     public int Level { get; private set; }
 
     public string DisplayString { get; private set; }
+
+    public TimeCollection DeltaTimes = new();
+
+    public TimeCollection Times = new();
 }

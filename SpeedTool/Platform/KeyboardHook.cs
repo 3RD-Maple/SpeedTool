@@ -35,6 +35,7 @@ internal sealed class KeyboardHook : IDisposable
 
     private void Hook_KeyPressed(object? sender, KeyboardHookEventArgs args)
     {
+        OnKeyEvent?.Invoke(null, new KeyPressData());
         presses.Enqueue(new KeyPressData(true, args.Data.KeyCode));
     }
 
@@ -49,7 +50,6 @@ internal sealed class KeyboardHook : IDisposable
         while(!presses.TryDequeue(out data));
         return data;
     }
-
     private Task hookTask;
     private SimpleGlobalHook hook;
 
