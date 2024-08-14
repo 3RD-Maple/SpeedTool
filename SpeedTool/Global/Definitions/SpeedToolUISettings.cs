@@ -18,6 +18,8 @@ public sealed class SpeedToolUISettings : IConfigurationSection
     public Hotkey PauseHotkey;
     
     public Hotkey ResetHotkey;
+
+    public string Theme { get; set; } = "Light";
     
     
     public void FromJSONObject(JsonObject node)
@@ -29,6 +31,8 @@ public sealed class SpeedToolUISettings : IConfigurationSection
         StartHotkey = Hotkey.FromJSONObject(node["StartHotkey"]!.AsObject());
         PauseHotkey = Hotkey.FromJSONObject(node["PauseHotkey"]!.AsObject());
         ResetHotkey = Hotkey.FromJSONObject(node["ResetHotkey"]!.AsObject());
+
+        Theme = (string)node["Theme"]!.AsValue()!;
     }
 
     public JsonObject ToJSONObject()
@@ -38,11 +42,12 @@ public sealed class SpeedToolUISettings : IConfigurationSection
         node["MinutesClockTimeColor"] = MinutesClockTimerColor.ToJsonObject();
         node["HoursClockTimeColor"] = HoursClockTimerColor.ToJsonObject();
         
-        
         node["StartHotkey"] = Hotkey.ToJSONObject(StartHotkey);
         node["PauseHotkey"] = Hotkey.ToJSONObject(PauseHotkey);
         node["ResetHotkey"] = Hotkey.ToJSONObject(ResetHotkey);
 
+        node["Theme"]= Theme;
+        
         return node;
     }
 }

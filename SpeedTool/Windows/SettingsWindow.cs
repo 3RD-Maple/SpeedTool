@@ -2,6 +2,9 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
+using SpeedTool.Global;
+using SpeedTool.Global.Definitions;
+using SpeedTool.Util.ImGui;
 using SpeedTool.Windows.Settings;
 using SpeedTool.Windows.Settings.Tabs;
 using Window = SpeedTool.Platform.Window;
@@ -62,5 +65,61 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
         ImGui.PopFont();
 
         ImGui.End();
+    }
+    
+    public static void SpeedToolThemeWindow(SpeedToolUISettings config)
+    {
+        string[] themes = { "Classic", "Viola", "Melon", "Custom" };
+        
+        if (ImGui.BeginCombo("Theme", config.Theme))
+        {
+            foreach (var theme in themes)
+            {
+                bool isSelected = config.Theme == theme;
+
+
+                if (ImGui.Selectable(theme, isSelected))
+                {
+                    config.Theme = theme;
+                    
+                    switch (config.Theme)
+                    {
+                        case "Classic":
+                            config.SecondsClockTimerColor = new Vector4(1, 0, 0, 1f);
+                            config.MinutesClockTimerColor = new Vector4(0, 1, 0, 1f);
+                            config.HoursClockTimerColor = new Vector4(0, 0, 1, 1f);
+                            break;
+                        
+                        case "Viola":
+                            config.SecondsClockTimerColor = new Vector4(0.5f, 0f, 1, 1f);
+                            config.MinutesClockTimerColor = new Vector4(0.924f, 0.962f, 0.475f, 1f);
+                            config.HoursClockTimerColor = new Vector4(0.470f, 0, 1, 1f);
+                            break;
+
+                        case "Melon":
+                            config.SecondsClockTimerColor = new Vector4(0.9f, 1, 0, 1f);
+                            config.MinutesClockTimerColor = new Vector4(0.1f, 0.4f, 0, 1f);
+                            config.HoursClockTimerColor = new Vector4(0.8f, 0.2f, 0.4f, 1f);
+                            break;
+                    }
+
+                    Configuration.SetSection(config);
+                }
+
+                if (isSelected)
+                {
+                    ImGui.SetItemDefaultFocus();
+                }
+            }
+
+            ImGui.EndCombo();
+        }
+
+        if (config.Theme == "Custom")
+        {
+            ImGuiExtensions.SpeedToolColorPicker("Seconds color", ref config.SecondsClockTimerColor);
+            ImGuiExtensions.SpeedToolColorPicker("Minutes color", ref config.MinutesClockTimerColor);
+            ImGuiExtensions.SpeedToolColorPicker("Hours color", ref config.HoursClockTimerColor);
+        }
     }
 }
