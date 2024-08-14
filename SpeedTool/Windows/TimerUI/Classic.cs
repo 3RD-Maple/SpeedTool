@@ -25,16 +25,15 @@ class ClassicTimerUI : TimerUIBase
         ColorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         UIConfig = Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
         ImGui.BeginTable("##splits_table", 1);
-        ISplitsSource splitsSource = new FakeSplitsSource();
-        foreach(var split in splitsSource.GetSplits(UIConfig.ShownSplitsCount))
+        foreach(var split in splits.GetSplits(UIConfig.ShownSplitsCount))
         {
             ImGui.TableNextColumn();
             if (split.IsCurrent)
-                ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(UIConfig.ActiveSplitColor)); //(uint)UIConfig.ActiveSplitColor.GetHashCode());
+                ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(UIConfig.ActiveSplitColor));
             if(split.Level > 0)
                 ImGui.SetCursorPosX(split.Level * SPLIT_OFFSET);
 
-            ImGui.Text(split.DisplayString);
+            ImGui.TextColored(ColorsConfig.TextColor, split.DisplayString);
             if(split.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
             {
                 ImGui.SameLine();
