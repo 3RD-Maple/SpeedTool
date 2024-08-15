@@ -14,7 +14,7 @@ public struct Hotkey
 
     public KeyCode Key = KeyCode.VcSpace;
 
-    bool IsTriggered
+    public bool IsTriggered
     {
         get
         {
@@ -72,9 +72,9 @@ public struct Hotkey
         var isCtrlPressed = kb.IsPressed(KeyCode.VcLeftControl) || kb.IsPressed(KeyCode.VcRightControl);
         var isShiftPressed = kb.IsPressed(KeyCode.VcLeftShift) || kb.IsPressed(KeyCode.VcRightShift);
 
-        var altCheckPassed = Alt ? isAltPressed : true;
-        var ctrlCheckPassed = Ctrl ? isCtrlPressed : true;
-        var shiftCheckPassed = Shift ? isShiftPressed : true;
+        var altCheckPassed = Alt ? isAltPressed : !isAltPressed;
+        var ctrlCheckPassed = Ctrl ? isCtrlPressed : !isCtrlPressed;
+        var shiftCheckPassed = Shift ? isShiftPressed : !isShiftPressed;
 
         return altCheckPassed && ctrlCheckPassed && shiftCheckPassed;
     }

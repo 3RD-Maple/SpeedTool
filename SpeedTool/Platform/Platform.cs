@@ -53,6 +53,12 @@ public class Platform
         run.Split();
     }
 
+    public void NextSplit()
+    {
+        if(run != null)
+            run.SkipSplit();
+    }
+
     public ITimerSource GetTimerFor(TimingMethod method)
     {
         return sources[(int)method];
@@ -84,6 +90,7 @@ public class Platform
                 //closed.Dispose();
             }
             hook.Cycle();
+            hotkeyController.Cycle();
         }
         hook.Dispose();
     }
@@ -114,6 +121,8 @@ public class Platform
         {
             kb.SetKeyData(data);
         };
+
+        hotkeyController = new();
     }
 
     public void Exit()
@@ -127,6 +136,8 @@ public class Platform
 
     Run? run = null;
     Game? game = null;
+
+    HotkeyController hotkeyController;
 
     NullSplitsSource nullSplits = new();
 
