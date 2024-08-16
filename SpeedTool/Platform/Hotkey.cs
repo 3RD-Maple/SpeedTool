@@ -32,10 +32,10 @@ public struct Hotkey
             if(Alt)
                 sb.Append("ALT + ");
             if(Ctrl)
-                sb.Append("CTR + ");
+                sb.Append("CTRL + ");
             if(Shift)
                 sb.Append("SHIFT + ");
-            sb.Append(Key.ToString());
+            sb.Append(Key.ToString().Substring(2));
             return sb.ToString();
         }
     }
@@ -60,7 +60,7 @@ public struct Hotkey
         hotkey.Shift = (bool)node["CheckShift"]!;
         hotkey.Ctrl = (bool)node["CheckCtrl"]!;
         
-        hotkey.Key =  (KeyCode)((ushort)node["KeyCode"]!);
+        hotkey.Key =  (KeyCode)(ushort)node["KeyCode"]!;
 
         return hotkey;
     }
