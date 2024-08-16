@@ -77,7 +77,7 @@ public sealed class GameEditorWindow : Platform.Window
         if(ImGui.Button("Test save"))
         {
             var g = new Game(Name, CollectCategories());
-            g.SaveToFile("test.stg");
+            FileUtil.SaveFile(fileName => g.SaveToFile(fileName));
         }
 
         // Temporary stuff to debug this mess. Probably will be removed later
