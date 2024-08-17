@@ -13,6 +13,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
     <PackageReference Include="SharpHook" Version="5.3.7" />
     <PackageReference Include="Silk.NET" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL.Extensions.Imgui" Version="2.21.0" />
@@ -23,6 +24,7 @@
   <ItemGroup>
     <EmbeddedResource Include="App\appsettings.json" />
     <EmbeddedResource Include="Resources\arrow_square.png" />
+    <EmbeddedResource Include="Resources\themes.json" />
   </ItemGroup>
 
 </Project>
