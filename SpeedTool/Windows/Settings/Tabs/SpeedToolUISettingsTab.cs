@@ -15,12 +15,26 @@ public sealed class SpeedToolUISettingsTab : TabBase
     private Vector4 secondsClockTimerColor;
     private Vector4 minutesClockTimerColor;
     private Vector4 hoursClockTimerColor;
+    private Dictionary<string, SpeedToolUITheme> themes;
+    
 
     public SpeedToolUISettingsTab(string tabName) : base(tabName)
     {
         secondsClockTimerColor = Config.SecondsClockTimerColor;
         minutesClockTimerColor = Config.MinutesClockTimerColor;
         hoursClockTimerColor = Config.HoursClockTimerColor;
+        
+        using (var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!)
+        {
+            var streamReader = new StreamReader(stream);
+            var content = streamReader.ReadToEnd();
+            var jsonObject = JsonNode.Parse(content)!.AsObject();
+
+            themes = jsonObject.ToDictionary(
+                kvp => kvp.Key,
+                kvp => new SpeedToolUITheme(kvp.Value!.AsObject())
+            );
+        }
     }
 
     protected override void ApplyTabSettings()
@@ -35,18 +49,7 @@ public sealed class SpeedToolUISettingsTab : TabBase
 
     public void SpeedToolThemeWindow(SpeedToolUISettings config)
     {
-        Dictionary<string, SpeedToolUITheme> themes;
-        using (var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!)
-        {
-            var streamReader = new StreamReader(stream);
-            var content = streamReader.ReadToEnd();
-            var jsonObject = JsonNode.Parse(content)!.AsObject();
-            
-            themes = jsonObject.ToDictionary(
-                kvp => kvp.Key,
-                kvp => new SpeedToolUITheme(kvp.Value!.AsObject())
-            );
-        }
+       
 
         if (ImGui.BeginCombo("Theme", config.Theme))
         {
@@ -82,9 +85,6 @@ public sealed class SpeedToolUISettingsTab : TabBase
             ImGuiExtensions.SpeedToolColorPicker("Hours color", ref config.HoursClockTimerColor);
         }
     }
-    
-
 
     private const string RESOURCE_NAME = "SpeedTool.Resources.themes.json";
-
 }
