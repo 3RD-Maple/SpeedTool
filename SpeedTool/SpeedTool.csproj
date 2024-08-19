@@ -23,6 +23,7 @@
   <ItemGroup>
     <EmbeddedResource Include="App\appsettings.json" />
     <EmbeddedResource Include="Resources\arrow_square.png" />
+    <EmbeddedResource Include="Resources\themes.json" />
   </ItemGroup>
 
 </Project>
