@@ -32,7 +32,7 @@ public class Platform
     {
         get
         {
-            return game?.GetCategories()[0];
+            return game?.GetCategories()[activeCategory];
         }
     }
 
@@ -57,6 +57,25 @@ public class Platform
     {
         if(run != null)
             run.SkipSplit();
+    }
+
+    public void PreviousSplit()
+    {
+        // TODO: issue #65
+    }
+
+    public void NextCategory()
+    {
+        if(game == null)
+            return;
+        if(activeCategory + 1 < game!.GetCategories().Length)
+            activeCategory++;
+    }
+
+    public void PreviousCategory()
+    {
+        if(activeCategory > 0)
+            activeCategory--;
     }
 
     public ITimerSource GetTimerFor(TimingMethod method)
@@ -142,6 +161,8 @@ public class Platform
     NullSplitsSource nullSplits = new();
 
     ITimerSource[] sources;
+
+    int activeCategory = 0;
 
     private static Platform? platform;
 }

@@ -72,12 +72,23 @@ class MainWindow : SPWindow, IDisposable
                 onExit = () => platform.AddWindow(platform.Game == null ? new GameEditorWindow() :
                                                                           new GameEditorWindow(platform.Game));
             }
+            if(platform.Game != null)
+            {
+                if(ImGui.MenuItem("Next Category"))
+                {
+                    platform.NextCategory();
+                }
+                if(ImGui.MenuItem("Previous Category"))
+                {
+                    platform.PreviousCategory();
+                }
+            }
             ImGui.Separator();
-            if(ImGui.MenuItem("Сплит"))
+            if(ImGui.MenuItem("Split"))
             {
                 platform.Split();
             }
-            if(ImGui.MenuItem("ポース"))
+            if(ImGui.MenuItem("Pause"))
             {
                 // TODO: Add controls
             }
