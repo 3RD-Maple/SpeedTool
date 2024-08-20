@@ -1,7 +1,9 @@
+using System.Text.Json.Nodes;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
+using SpeedTool.Util;
 
 namespace SpeedTool.Platform;
 
@@ -68,14 +70,23 @@ public class Platform
     {
         if(game == null)
             return;
+        if(run != null && run.Started)
+            return;
+
         if(activeCategory + 1 < game!.GetCategories().Length)
             activeCategory++;
+
+        ReloadRun();
     }
 
     public void PreviousCategory()
     {
+        if(run != null && run.Started)
+            return;
         if(activeCategory > 0)
             activeCategory--;
+        
+        ReloadRun();
     }
 
     public ITimerSource GetTimerFor(TimingMethod method)
@@ -86,8 +97,7 @@ public class Platform
     public void LoadGame(Game game)
     {
         this.game = game;
-        run = new Run(game, game.GetCategories()[0].Splits, null);
-        sources[(int)TimingMethod.RealTime] = run.Timer;
+        ReloadRun();
     }
 
     public void Run()
@@ -112,6 +122,26 @@ public class Platform
             hotkeyController.Cycle();
         }
         hook.Dispose();
+    }
+
+    public void SaveRunAsPB(RunInfo run)
+    {
+        EnsureLocalDir();
+        var fileName = game!.Name + "." + CurrentCategory!.Name;
+        fileName = Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '_'));
+        var dst = ENV.LocalFilesPath + "pbs/" + fileName + ".json";
+        File.WriteAllText(dst, run.ToJson().ToString());
+    }
+
+    public RunInfo? GetPBRun(Game g, Category c)
+    {
+        var fileName = game!.Name + "." + CurrentCategory!.Name;
+        fileName = Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '_'));
+
+        var dst = ENV.LocalFilesPath + "pbs/" + fileName + ".json";
+        if(File.Exists(dst))
+            return RunInfo.FromJson(JsonNode.Parse(File.ReadAllText(dst))!.AsObject());
+        return null;
     }
 
     public void AddWindow(Window w)
@@ -142,6 +172,21 @@ public class Platform
         };
 
         hotkeyController = new();
+    }
+
+    private void EnsureLocalDir()
+    {
+        if(!Directory.Exists(ENV.LocalFilesPath + "/pbs"))
+            Directory.CreateDirectory(ENV.LocalFilesPath + "/pbs");
+    }
+
+    public void ReloadRun()
+    {
+        if(game == null)
+            return;
+
+        run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
+        sources[(int)TimingMethod.RealTime] = run.Timer;
     }
 
     public void Exit()

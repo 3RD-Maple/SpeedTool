@@ -6,11 +6,14 @@ namespace SpeedTool.Platform;
 
 public class Run : ISplitsSource
 {
-    public Run(Game game, Split[] splits, Run? comparisonRun)
+    public Run(Game game, Split[] splits, RunInfo? comparisonRun)
     {
         this.splits = splits;
+        this.game = game;
         FlattenSplits();
-        comparison = comparisonRun;
+
+        if(comparisonRun != null && comparisonRun.Splits.Length == flattened.Length)
+            comparison = comparisonRun;
     }
 
     public bool Started { get; private set; }
@@ -30,6 +33,7 @@ public class Run : ISplitsSource
         {
             if(timer.CurrentState != TimerState.NoState)
             {
+                Platform.SharedPlatform.ReloadRun();
                 timer.Reset();
                 currentSplit = 0;
                 return;
@@ -49,6 +53,7 @@ public class Run : ISplitsSource
             timer.Stop();
             Started = false;
             currentSplit--;
+            SaveRun();
             return;
         }
         flattened[currentSplit].IsCurrent = true;
@@ -201,7 +206,7 @@ public class Run : ISplitsSource
             flattened[currentSplit].IsCurrent = false;
             flattened[currentSplit].Times[TimingMethod.RealTime] = timer.CurrentTime;
             if(comparison != null)
-                flattened[currentSplit].DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.flattened[currentSplit].Times[TimingMethod.RealTime];
+                flattened[currentSplit].DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.Splits[currentSplit].Times[TimingMethod.RealTime];
         }
 
         currentSplit++;
@@ -212,7 +217,7 @@ public class Run : ISplitsSource
             var p = infoStack.Pop();
             p.Times[TimingMethod.RealTime] = timer.CurrentTime;
             if(comparison != null)
-                p.DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.flattened[currentSplit].Times[TimingMethod.RealTime];
+                p.DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.Splits[currentSplit].Times[TimingMethod.RealTime];
         }
 
         // Roll over to the first actual split in the tree
@@ -272,7 +277,23 @@ public class Run : ISplitsSource
         return flattened.Length - 1;
     }
 
-    private Run? comparison;
+    public RunInfo GetRunInfo()
+    {
+        if(game == null)
+            return new RunInfo("unnamed", "unnamed", flattened.Last().Times, flattened);
+        return new RunInfo(game!.Name, Platform.SharedPlatform.CurrentCategory!.Name, flattened.Last().Times, flattened);
+    }
+
+    private void SaveRun()
+    {
+        if(comparison == null || flattened.Last().Times[TimingMethod.RealTime] < comparison!.Times[TimingMethod.RealTime])
+        {
+            Platform.SharedPlatform.SaveRunAsPB(GetRunInfo());
+        }
+    }
+
+    private RunInfo? comparison;
+    private Game game;
 
     private Stack<SplitDisplayInfo> infoStack = new();
 
