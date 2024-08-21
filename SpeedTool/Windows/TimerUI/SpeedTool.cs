@@ -20,6 +20,8 @@ class SpeedToolTimerUI : TimerUIBase
     private SpeedToolUISettings speedToolConfig { get; set; } = 
         Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
 
+    private string currentSplit { get; set; } = "";
+
     public SpeedToolTimerUI(GL gl)
     {
         this.gl = gl;
@@ -37,28 +39,77 @@ class SpeedToolTimerUI : TimerUIBase
 
     public override void DoUI(ISplitsSource splits, ITimerSource timer)
     {
-        colorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
-        var style = ImGui.GetStyle();
-        style.FramePadding = new Vector2(0, 0);
-        style.ItemSpacing = new Vector2(0, 0);
-        style.WindowPadding = new Vector2(0, 0);
-        style.Colors[(int)ImGuiCol.WindowBg] = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
-        ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
-        ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 0.00f));
-        ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.3f, 0.3f, 0.3f, 1.0f));
-        ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
-        ImGui.PushStyleColor(ImGuiCol.Text, colorsConfig.TextColor);
-        DoStartButton(timer);
-        ImGui.SameLine();
-        DoPauseButton(timer);
-        ImGui.PopStyleColor(5);
+        if (splits.CurrentSplit.DisplayString != currentSplit) //if curSplit != CurrentSplit
+        {
+            currentSplit = splits.CurrentSplit.DisplayString;
+        }
+        else
+        {
+            colorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+            var style = ImGui.GetStyle();
+            style.FramePadding = new Vector2(0, 0);
+            style.ItemSpacing = new Vector2(0, 0);
+            style.WindowPadding = new Vector2(0, 0);
+            style.Colors[(int)ImGuiCol.WindowBg] = new Vector4(0.0f, 0.0f, 0.0f, 0.0f);
+            ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.0f, 0.0f, 0.0f, 0.0f));
+            ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.0f, 0.0f, 0.0f, 0.00f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.3f, 0.3f, 0.3f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(1.0f, 1.0f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.Text, colorsConfig.TextColor);
+            DoStartButton(timer);
+            ImGui.SameLine();
+            DoPauseButton(timer);
+            ImGui.PopStyleColor(5);
+            TextCentered(currentSplit);
+            DrawTimeText(timer);
+        }
+        
+    }
+    
+    private void SetTextCenter(string text)
+    {
+        var ts = new Vector2(100, 100);
+        var ws = ImGui.GetWindowSize();
 
-        ImGui.SetCursorPos(new Vector2(250, 250));
-        ImGui.Text(splits.CurrentSplit.DisplayString);
-
-        DrawTimeText(timer);
+        if (!String.IsNullOrEmpty(text))
+        {
+            ts = ImGui.CalcTextSize(text);
+        }
+        
+        ImGui.SetCursorPos(new Vector2((ws.X - ts.X) / 2, (ws.Y - ts.Y) / 2));
     }
 
+    private void TextCentered(string text)
+    {
+        var threeDotsSize = ImGui.CalcTextSize("...").X;
+        var width = ImGui.GetWindowWidth() * 0.6f; // working area is about 2/3 of the entire window size
+
+        if (String.IsNullOrEmpty(text))
+        {
+            SetTextCenter(text);
+            ImGui.Text("");
+            return;
+        }
+
+        if (ImGui.CalcTextSize(text).X <= width)
+        {
+            ImGui.Text(text);
+            return;
+        }
+
+        var symbols = text.Length;
+
+        while ((threeDotsSize + ImGui.CalcTextSize(text.AsSpan(0, symbols)).X) > width)
+        {
+            symbols--;
+        }
+
+        var textResult = text.Substring(0, symbols) + "...";
+        
+        SetTextCenter(textResult);
+        ImGui.Text(textResult);
+    }
+    
     private void DrawTimeText(ITimerSource timer)
     {
         var text = timer.CurrentTime.ToSpeedToolTimerString();
