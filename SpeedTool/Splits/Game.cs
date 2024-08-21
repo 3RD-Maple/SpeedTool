@@ -1,5 +1,4 @@
 using System.IO.Compression;
-using System.Text.Json;
 using System.Text.Json.Nodes;
 using SpeedTool.Util;
 
@@ -54,20 +53,20 @@ public class Game
     public static Game LoadFromFile(string path)
     {
         Game g = new Game("", []);
-        using(var file = ZipFile.OpenRead(path))
-        {
-            EnforceFileExists(file, "meta.json");
-            var text = file.GetEntry("meta.json")!.AsText();
-            var obj = JSONHelper.EnforceParseAsObject(text);
-            g.Name = obj.EnforceGetString("Name");
+        g.source = ZipFile.OpenRead(path);
 
-            var categories = file.Entries.Where(x => x.FullName.StartsWith("categories/")).ToArray();
-            g.categories = new Category[categories.Length];
-            for(int i = 0; i < categories.Length; i++)
-            {
-                g.categories[i] = Category.FromJson(JSONHelper.EnforceParseAsObject(categories[i].AsText()));
-            }
+        EnforceFileExists(g.source, "meta.json");
+        var text = g.source.GetEntry("meta.json")!.AsText();
+        var obj = JSONHelper.EnforceParseAsObject(text);
+        g.Name = obj.EnforceGetString("Name");
+
+        var categories = g.source.Entries.Where(x => x.FullName.StartsWith("categories/")).ToArray();
+        g.categories = new Category[categories.Length];
+        for(int i = 0; i < categories.Length; i++)
+        {
+            g.categories[i] = Category.FromJson(JSONHelper.EnforceParseAsObject(categories[i].AsText()));
         }
+
         return g;
     }
 
@@ -97,4 +96,5 @@ public class Game
         if(archive.GetEntry(file) == null)
             throw new FileLoadException($"Required file {file} missing in game archive");
     }
+    private ZipArchive? source;
 }

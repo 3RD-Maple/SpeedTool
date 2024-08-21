@@ -1,3 +1,4 @@
+using System.Numerics;
 using ImGuiNET;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
@@ -36,8 +37,13 @@ class ClassicTimerUI : TimerUIBase
             ImGui.TextColored(ColorsConfig.TextColor, split.DisplayString);
             if(split.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
             {
+                bool negative = split.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
+                Vector4 col = negative ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
                 ImGui.SameLine();
-                ImGui.TextColored(ColorsConfig.TextColor, split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+                if(negative)
+                    ImGui.TextColored(col, "-" + split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+                else
+                    ImGui.TextColored(col, "+" + split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
             }
             else if(split.Times[TimingMethod.RealTime].TotalMilliseconds != 0)
             {
