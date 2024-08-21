@@ -60,7 +60,14 @@ class SpeedToolTimerUI : TimerUIBase
             ImGui.SameLine();
             DoPauseButton(timer);
             ImGui.PopStyleColor(5);
-            TextCentered(currentSplit);
+            if (Platform.Platform.SharedPlatform.Game == null)
+            {
+                TextCentered("No game");
+            }
+            else
+            {
+                TextCentered(currentSplit);
+            }
             DrawTimeText(timer);
         }
         
@@ -86,13 +93,13 @@ class SpeedToolTimerUI : TimerUIBase
 
         if (String.IsNullOrEmpty(text))
         {
-            SetTextCenter(text);
             ImGui.Text("");
             return;
         }
 
         if (ImGui.CalcTextSize(text).X <= width)
         {
+            SetTextCenter(text);
             ImGui.Text(text);
             return;
         }
