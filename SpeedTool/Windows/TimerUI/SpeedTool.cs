@@ -98,7 +98,7 @@ class SpeedToolTimerUI : TimerUIBase
         }
 
         if (ImGui.CalcTextSize(text).X <= width)
-        {
+        {            
             SetTextCenter(text);
             ImGui.Text(text);
             return;
