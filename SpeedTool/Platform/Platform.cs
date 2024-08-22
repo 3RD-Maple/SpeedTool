@@ -55,6 +55,16 @@ public class Platform
         run.Split();
     }
 
+    public void ResetRun()
+    {
+        ReloadRun();
+    }
+
+    public void Pause()
+    {
+        // TODO: Add later
+    }
+
     public void NextSplit()
     {
         if(run != null)
@@ -63,7 +73,8 @@ public class Platform
 
     public void PreviousSplit()
     {
-        // TODO: issue #65
+        if(run != null)
+            run.UndoSplit();
     }
 
     public void NextCategory()

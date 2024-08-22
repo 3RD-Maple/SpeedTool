@@ -1,3 +1,4 @@
+using Silk.NET.Vulkan;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -177,6 +178,7 @@ public class Run : ISplitsSource
             prev.Add(flattened[zeroLevelSplits[i]]);
             i++;
         }
+        prev = prev.Take(prev.Count - 1).ToList();
         while(i < zeroLevelSplits.Length)
         {
             if(zeroLevelSplits[i] == currentSplit)
@@ -189,7 +191,7 @@ public class Run : ISplitsSource
         }
 
         // Figure out how many splits to take from the left and from the right
-        var wantRight = (int)(weight / 100.0) * zeroLevelCount;
+        var wantRight = (int)(weight / 100.0 * zeroLevelCount);
         wantRight = Math.Min(next.Count, wantRight);
 
         var wantLeft = zeroLevelCount - wantRight;
@@ -289,6 +291,42 @@ public class Run : ISplitsSource
         if(comparison == null || flattened.Last().Times[TimingMethod.RealTime] < comparison!.Times[TimingMethod.RealTime])
         {
             Platform.SharedPlatform.SaveRunAsPB(GetRunInfo());
+        }
+    }
+
+    public void UndoSplit()
+    {
+        while(PreviousFlatSplit != null)
+        {
+            flattened[currentSplit].IsCurrent = false;
+            currentSplit--;
+            flattened[currentSplit].Times.Reset();
+            flattened[currentSplit].DeltaTimes.Reset();
+
+            if(NextFlatSplit!.Value.Level <= CurrentFlatSplit.Level)
+            {
+                break;
+            }
+        }
+        flattened[currentSplit].IsCurrent = true;
+        ResetInfoStack();
+
+        // Reset infoStack somehow
+        foreach(var i in infoStack.AsEnumerable())
+        {
+            i.Times.Reset();
+            i.DeltaTimes.Reset();
+        }
+    }
+
+    private void ResetInfoStack()
+    {
+        var upTo = currentSplit;
+        currentSplit = 0;
+        infoStack = new();
+        while(currentSplit != upTo)
+        {
+            NextSplitNoUpdate();
         }
     }
 

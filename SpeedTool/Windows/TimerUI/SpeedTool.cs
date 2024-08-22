@@ -125,6 +125,6 @@ internal class SpeedToolTimerUI : TimerUIBase
         var sz = new Vector2(250, 50);
         var text = timer.CurrentState == TimerState.Paused ? "Unpause" : "Pause";
         if (ImGui.Button(text, sz))
-            timer.Pause();
+            Platform.Platform.SharedPlatform.Pause();
     }
 }

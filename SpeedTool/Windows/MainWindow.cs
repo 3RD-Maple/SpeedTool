@@ -90,7 +90,11 @@ class MainWindow : SPWindow, IDisposable
             }
             if(ImGui.MenuItem("Pause"))
             {
-                // TODO: Add controls
+                platform.Pause();
+            }
+            if(ImGui.MenuItem("Reset run"))
+            {
+                platform.ResetRun();
             }
             ImGui.Separator();
             if(ImGui.BeginMenu("UI Select"))

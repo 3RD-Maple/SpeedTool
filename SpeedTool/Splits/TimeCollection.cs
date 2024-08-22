@@ -43,6 +43,14 @@ public struct TimeCollection
         return o;
     }
 
+    public void Reset()
+    {
+        for(int i = 0; i < TIMES_COUNT; i++)
+        {
+            spans[i] = new TimeSpan(0);
+        }
+    }
+
     private TimeSpan[] spans = new TimeSpan[TIMES_COUNT];
 
     const int TIMES_COUNT = 6;
