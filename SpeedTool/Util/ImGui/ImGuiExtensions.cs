@@ -120,6 +120,29 @@ public static class ImGuiExtensions
         ImGuiNET.ImGui.Text("");
         ImGuiNET.ImGui.SetKeyboardFocusHere();
     }
+    public static string ShortenStringForWidth(int width, string source)
+    {
+        if (String.IsNullOrEmpty(source))
+        {
+            return "";
+        }
+        
+        if (ImGuiNET.ImGui.CalcTextSize(source).X <= width)
+        {            
+            return source;
+        }
+        
+        var threeDotsSize = ImGuiNET.ImGui.CalcTextSize("...").X;
+
+        var symbols = 1;
+
+        while ((threeDotsSize + ImGuiNET.ImGui.CalcTextSize(source.AsSpan(0, symbols)).X) < width)
+        {
+            symbols++;
+        }
+        
+        return source.Substring(0, symbols) + "...";
+    }
 
     private static KeyCode lastPressed = KeyCode.VcUndefined;
     private static bool listening = false;
