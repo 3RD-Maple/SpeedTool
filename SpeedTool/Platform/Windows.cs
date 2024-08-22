@@ -11,6 +11,7 @@ using Silk.NET.Maths;
 
 using Sizes = Silk.NET.Maths.Vector2D<int>;
 using ImGuiNET;
+using System.Numerics;
 
 public class Window : IDisposable
 {
@@ -28,6 +29,8 @@ public class Window : IDisposable
             input = window.CreateInput();
             images = new Images(gl!);
             controller = new ImGuiController(gl, window, input, () => {
+                LoadDefaultFont();
+                LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 22, "UI");
                 OnLoad();
             });
         };
@@ -36,7 +39,7 @@ public class Window : IDisposable
         {
             controller?.Update((float)delta);
             gl?.Viewport(0, 0, (uint)sizes.X, (uint)sizes.Y);
-            gl?.ClearColor(Color.FromArgb(0, 0, 0, 0));
+            gl?.ClearColor(Color.FromArgb(0, 26, 20, 27));
             gl?.Clear((uint)ClearBufferMask.ColorBufferBit);
 
             OnDraw(delta);
@@ -44,8 +47,26 @@ public class Window : IDisposable
 
             gl?.Viewport(0, 0, (uint)sizes.X, (uint)sizes.Y);
             controller?.MakeCurrent();
+
+            ImGui.PushStyleColor(ImGuiCol.Button, new Vector4(0.25f, 0.22f, 0.31f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonHovered, new Vector4(0.51f, 0.32f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.ButtonActive, new Vector4(0.643f, 0.576f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.HeaderHovered, new Vector4(0.51f, 0.32f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.FrameBg, new Vector4(0.25f, 0.22f, 0.31f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.FrameBgHovered, new Vector4(0.51f, 0.32f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.FrameBgActive, new Vector4(0.25f, 0.22f, 0.31f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.Tab, new Vector4(0.25f, 0.22f, 0.31f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.TabActive, new Vector4(0.51f, 0.32f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.TabHovered, new Vector4(0.643f, 0.576f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.HeaderActive, new Vector4(0.643f, 0.576f, 1.0f, 1.0f));
+            ImGui.PushStyleColor(ImGuiCol.Header, new Vector4(0.643f, 0.576f, 1.0f, 1.0f));
+
+            ImGui.PushStyleVar(ImGuiStyleVar.TabRounding, 0);
             OnUI(delta);
             OnAfterUI(delta);
+
+            ImGui.PopStyleColor(12);
+            ImGui.PopStyleVar();
 
             controller?.Render();
         };
@@ -176,6 +197,27 @@ public class Window : IDisposable
             GlyphRanges = vc.Data
         };
         fonts[name] = ImGui.GetIO().Fonts.AddFontFromFileTTF(font, size, config);
+    }
+
+    public unsafe void LoadFontEx(string fontStd, string fontCJK, int size, string name)
+    {
+        var res = ImGui.GetIO().Fonts.AddFontFromFileTTF(fontStd, size, null, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+
+        ImFontConfigPtr config = new(ImGuiNative.ImFontConfig_ImFontConfig());
+        config.MergeMode = true;
+
+
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontStd, size, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesKorean());
+        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
+        ImGui.GetIO().Fonts.Build();
+        fonts[name] = res;
+    }
+
+    private void LoadDefaultFont()
+    {
+        fonts["default"] = ImGui.GetIO().Fonts.AddFontDefault();
     }
 
     public ImFontPtr GetFont(string name)

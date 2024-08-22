@@ -1,61 +1,221 @@
 {
-  "Classic": {
-    "SecondsClockTimeColor": {
-      "R": 1.0,
-      "G": 0.0,
-      "B": 0.0,
-      "A": 1.0
-    },
-    "MinutesClockTimeColor": {
-      "R": 0.0,
-      "G": 1.0,
-      "B": 0.0,
-      "A": 1.0
-    },
-    "HoursClockTimeColor": {
-      "R": 0.0,
-      "G": 0.0,
-      "B": 1.0,
-      "A": 1.0
-    }
-  },
   "Viola": {
     "SecondsClockTimeColor": {
-      "R": 0.5,
-      "G": 0.0,
+      "R": 0.6,
+      "G": 0.329,
       "B": 1.0,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
       "R": 0.925,
       "G": 0.96,
-      "B": 0.475,
+      "B": 0.564,
       "A": 1.0
     },
     "HoursClockTimeColor": {
-      "R": 0.47,
-      "G": 0.0,
-      "B": 1.0,
+      "R": 0.494,
+      "G": 0.129,
+      "B": 0.5,
       "A": 1.0
     }
   },
-  "Melon": {
+  "Breeze": {
     "SecondsClockTimeColor": {
-      "R": 0.9,
-      "G": 1.0,
-      "B": 0.0,
+      "R": 1.0,
+      "G": 0.85,
+      "B": 0.7,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
-      "R": 0.1,
-      "G": 0.4,
-      "B": 0.0,
+      "R": 0.145,
+      "G": 0.733,
+      "B": 0.90,
       "A": 1.0
     },
     "HoursClockTimeColor": {
-      "R": 0.8,
-      "G": 0.2,
-      "B": 0.4,
+      "R": 0.333,
+      "G": 0.196,
+      "B": 0.811,
+      "A": 1.0
+    }
+  },
+  "Macaw": {
+    "SecondsClockTimeColor": {
+      "R": 0.0,
+      "G": 0.705,
+      "B": 0.733,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.960,
+      "G": 0.835,
+      "B": 0.117,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.321,
+      "G": 0.294,
+      "B": 0.364,
+      "A": 1.0
+    }
+  },
+  "Horse": {
+    "SecondsClockTimeColor": {
+      "R": 0.376,
+      "G": 0.160,
+      "B": 0.070,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.705,
+      "G": 0.490,
+      "B": 0.337,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.941,
+      "G": 0.882,
+      "B": 0.764,
+      "A": 1.0
+    }
+  },
+  "Mould": {
+    "SecondsClockTimeColor": {
+      "R": 0.584,
+      "G": 0.650,
+      "B": 0.760,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.521,
+      "G": 0.258,
+      "B": 0.380,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.898,
+      "G": 0.364,
+      "B": 0.419,
+      "A": 1.0
+    }
+  },
+  "Grapefruit": {
+    "SecondsClockTimeColor": {
+      "R": 1.0,
+      "G": 0.611,
+      "B": 0.349,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.380,
+      "G": 0.015,
+      "B": 0.109,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.905,
+      "G": 0.180,
+      "B": 0.376,
+      "A": 1.0
+    }
+  },
+  "Cold": {
+    "SecondsClockTimeColor": {
+      "R": 0.250,
+      "G": 0.223,
+      "B": 0.317,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.517,
+      "G": 0.325,
+      "B": 1.0,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.584,
+      "G": 0.650,
+      "B": 0.760,
+      "A": 1.0
+    }
+  },
+  "Grass": {
+    "SecondsClockTimeColor": {
+      "R": 0.917,
+      "G": 1.0,
+      "B": 0.317,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.529,
+      "G": 0.627,
+      "B": 0.200,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.313,
+      "G": 0.227,
+      "B": 0.082,
+      "A": 1.0
+    }
+  },
+  "Watermelon": {
+    "SecondsClockTimeColor": {
+      "R": 0.270,
+      "G": 0.317,
+      "B": 0.074,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.952,
+      "G": 0.886,
+      "B": 0.784,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.827,
+      "G": 0.223,
+      "B": 0.192,
+      "A": 1.0
+    }
+  },
+  "Peach": {
+    "SecondsClockTimeColor": {
+      "R": 0.870,
+      "G": 0.360,
+      "B": 0.011,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 1.0,
+      "G": 0.866,
+      "B": 0.560,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.270,
+      "G": 0.145,
+      "B": 0.062,
+      "A": 1.0
+    }
+  },
+  "Neon": {
+    "SecondsClockTimeColor": {
+      "R": 0.960,
+      "G": 0.290,
+      "B": 1.494,
+      "A": 1.0
+    },
+    "MinutesClockTimeColor": {
+      "R": 0.262,
+      "G": 0.149,
+      "B": 0.235,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.203,
+      "G": 0.882,
+      "B": 0.929,
       "A": 1.0
     }
   },

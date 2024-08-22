@@ -24,6 +24,7 @@ class AboutWindow : Platform.Window
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
+        ImGui.PushFont(GetFont("default"));
         var version = Assembly.GetExecutingAssembly().GetName().Version?.ToString(3);
         ImGui.SetCursorPosX(Sizes.X / 2 - Images["logo"].Sizes.X / 2);
         ImGui.Image(Images["logo"].Handle, Images["logo"].Sizes);
@@ -38,6 +39,7 @@ class AboutWindow : Platform.Window
         ImGui.Text("    Anastasiia Drozhzhina aka POPUGAICHIK, the Designer");
         ImGui.Text(" ");
         ImGui.Text("    And all SpeedTool Contributors!");
+        ImGui.PopFont();
 
         ImGui.End();
     }
