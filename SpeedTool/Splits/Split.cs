@@ -5,15 +5,10 @@ namespace SpeedTool.Splits;
 
 public class Split
 {
-    public Split()
+    public Split(string name)
     {
-        Name = "";
-        Subsplits = new Split[0];
+        Subsplits = [];
         SplitTimes = new();
-    }
-
-    public Split(string name) : this()
-    {
         Name = name;
     }
 
