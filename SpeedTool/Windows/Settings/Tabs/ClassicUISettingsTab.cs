@@ -27,9 +27,6 @@ public sealed class ClassicUISettingsTab : TabBase
     protected override void DoTabInternal()
     {
         ImGuiExtensions.SpeedToolColorPicker("Active split", ref Config.ActiveSplitColor);
-        ImGui.Text("Shown splits");
-        ImGui.SameLine();
-        ImGui.SetNextItemWidth(75f);
-        ImGui.InputInt("", ref Config.ShownSplitsCount);
+        ImGui.InputInt("Shown Splits", ref Config.ShownSplitsCount, 1, 1);
     }
 }

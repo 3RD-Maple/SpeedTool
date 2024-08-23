@@ -44,8 +44,7 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnLoad()
     {
-        LoadFont("C:\\Windows\\Fonts\\meiryo.ttc", 42, "Main");
-        LoadFont("C:\\Windows\\Fonts\\meiryo.ttc", 22, "UI");
+        LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 42, "Main");
     }
 
     protected override void OnUI(double dt)

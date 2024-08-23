@@ -49,6 +49,8 @@ public sealed class GameEditorWindow : Platform.Window
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
+        ImGui.PushFont(GetFont("UI"));
+
         TabCount = 0;
 
         ImGui.InputText("##name", ref Name, 255);
@@ -85,6 +87,7 @@ public sealed class GameEditorWindow : Platform.Window
         DoDebugUI();
 #endif
 
+        ImGui.PopFont();
         ImGui.End();
     }
 

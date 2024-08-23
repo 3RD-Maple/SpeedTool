@@ -2,10 +2,12 @@ namespace SpeedTool.Splits;
 
 public class NullSplitsSource : ISplitsSource
 {
-    public SplitDisplayInfo CurrentSplit => new SplitDisplayInfo("", true, 0);
+    public SplitDisplayInfo CurrentSplit => split;
 
     public IEnumerable<SplitDisplayInfo> GetSplits(int count)
     {
-        return [];
+        return [split];
     }
+
+    private SplitDisplayInfo split = new SplitDisplayInfo("No Game", false, 0);
 }
