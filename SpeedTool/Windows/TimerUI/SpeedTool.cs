@@ -72,6 +72,8 @@ internal class SpeedToolTimerUI : TimerUIBase
         else
             TextCentered(stringShortened);
 
+        if(splits.PreviousSplit != null)
+            DrawDtText(splits.PreviousSplit!.Value);
         DrawTimeText(timer);
     }
 
@@ -91,12 +93,21 @@ internal class SpeedToolTimerUI : TimerUIBase
         ImGui.Text(text);
     }
 
+    private void DrawDtText(SplitDisplayInfo split)
+    {
+        var ahead = split.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
+        var color = ahead ? colorsConfig.AheadColor : colorsConfig.BehindColor;
+        var text = split.DeltaTimes[TimingMethod.RealTime].ToSpeedtoolDTString();
+        var sz = ImGui.CalcTextSize(text).X;
+        ImGui.SetCursorPos(new Vector2(250 - sz / 2, 300));
+        ImGui.TextColored(color, text);
+    }
 
     private void DrawTimeText(ITimerSource timer)
     {
         var text = timer.CurrentTime.ToSpeedToolTimerString();
         var sz = ImGui.CalcTextSize(text);
-        ImGui.SetCursorPos(new Vector2(250 - sz.X / 2, 300));
+        ImGui.SetCursorPos(new Vector2(250 - sz.X / 2, 350));
         ImGui.TextColored(colorsConfig.TextColor, text);
     }
 

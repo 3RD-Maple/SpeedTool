@@ -25,6 +25,9 @@ sealed class TimerDrawable : IDisposable
         objects[0] = CreateDrawObject(gl, 1.0f, 0.1f);
         objects[1] = CreateDrawObject(gl, 0.9f, 0.1f);
         objects[2] = CreateDrawObject(gl, 0.8f, 0.1f);
+
+        var no = CreateVerticesNotches(1.0f, 0.3f);
+        notches = new DrawObject(gl, no.Item1, no.Item2);
         this.gl = gl;
     }
 
@@ -36,12 +39,34 @@ sealed class TimerDrawable : IDisposable
 
     static (float[], ushort[]) CreateVertices(float radius, float thickness)
     {
+        const double M_PI = 3.14159265358979323846;
+        return Arch(radius, thickness, (float)M_PI / 2.0f, -3.0f * (float)M_PI / 2.0f);
+    }
+
+    static (float[], ushort[]) CreateVerticesNotches(float radius, float thickness)
+    {
+        const double STEP = Math.PI / 6;
+        List<float> verices = new();
+        List<ushort> indices = new();
+        for(int i = 0; (i * STEP) < (2 * Math.PI); i++)
+        {
+            var dsta = (float)(i * STEP);
+            var dstb = (float)(dsta - 0.003f);
+            var n = Arch(radius, thickness, dsta, dstb);
+            verices.AddRange(n.Item1);
+            indices.AddRange(n.Item2);
+        }
+
+        return (verices.ToArray(), indices.ToArray());
+    }
+
+    static (float[], ushort[]) Arch(float radius, float thickness, float beg, float end, float z = 0.0f)
+    {
         List<float> ret = new List<float>();
         var cos = Math.Cos;
         var sin = Math.Sin;
         const float step = 0.001f;
-        const double M_PI = 3.14159265358979323846;
-        for (float i = (float)(M_PI / 2); i >= -3.0f * M_PI / 2.0f; i -= step)
+        for (float i = beg; i >= end; i -= step)
         {
             float x = (float)(cos(i) * radius);
             float xl = (float)(cos(i) * (radius - thickness));
@@ -53,14 +78,14 @@ sealed class TimerDrawable : IDisposable
             float y2 = (float)(sin(i - step) * radius);
             float y2l = (float)(sin(i - step) * (radius - thickness));
 
-            ret.Add(x); ret.Add(y); ret.Add(0.0f);
+            ret.Add(x); ret.Add(y); ret.Add(z);
 
-            ret.Add(xl); ret.Add(yl); ret.Add(0.0f);
-            ret.Add(x2l); ret.Add(y2l); ret.Add(0.0f);
+            ret.Add(xl); ret.Add(yl); ret.Add(z);
+            ret.Add(x2l); ret.Add(y2l); ret.Add(z);
 
-            ret.Add(x); ret.Add(y); ret.Add(0.0f);
-            ret.Add(x2); ret.Add(y2); ret.Add(0.0f);
-            ret.Add(x2l); ret.Add(y2l); ret.Add(0.0f);
+            ret.Add(x); ret.Add(y); ret.Add(z);
+            ret.Add(x2); ret.Add(y2); ret.Add(z);
+            ret.Add(x2l); ret.Add(y2l); ret.Add(z);
         }
 
         ushort[] indices = new ushort[ret.Count / 3];
@@ -68,6 +93,7 @@ sealed class TimerDrawable : IDisposable
             indices[i] = (ushort)i;
         return (ret.ToArray(), indices);
     }
+
     public void Draw(ITimerSource source, SpeedToolUISettings config)
     {
         SecondsColor = config.SecondsClockTimerColor;
@@ -76,6 +102,16 @@ sealed class TimerDrawable : IDisposable
         
         gl.Enable(GLEnum.PolygonSmooth);
         s.DrawWith(() => DrawBuffers(source));
+
+        // TODO: The notches code is wrong somehow, fix later
+        /*s.DrawWith(() =>
+        {
+            var mat = GetOrtho(-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 100.0f);
+            s.SetUniform("projection", mat);
+            s.SetUniform("clr", new Vector3D<float>(1.0f, 1.0f, 1.0f));
+            var coor = s.GetAttribLocation("coordinates");
+            notches.DrawAll((uint)coor);
+        });*/
     }
 
     /// <summary>
@@ -140,4 +176,6 @@ sealed class TimerDrawable : IDisposable
     GL gl;
     private STShader s;
     private DrawObject[] objects;
+
+    private DrawObject notches;
 }

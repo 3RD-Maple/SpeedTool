@@ -5,6 +5,7 @@ using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
+using SpeedTool.Util.ImGui;
 
 namespace SpeedTool.Windows.TimerUI;
 
@@ -25,43 +26,84 @@ class ClassicTimerUI : TimerUIBase
     {
         ColorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         UIConfig = Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
-        ImGui.BeginTable("##splits_table", 1);
-        foreach(var split in splits.GetSplits(UIConfig.ShownSplitsCount))
+        ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.IndentSpacing, 0);
+        ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, 0);
+        ImGui.PushStyleColor(ImGuiCol.TableBorderLight, new Vector4(0.349f, 0.341f, 0.384f, 1.0f));
+        ImGui.BeginTable("##splits_table", 1, ImGuiTableFlags.BordersInner);
+        var gotSplits = splits.GetSplits(UIConfig.ShownSplitsCount).ToArray();
+        for(int i = 0; i < gotSplits.Count(); i++)
         {
+            var split = gotSplits[i];
+            var isLast = i == (gotSplits.Length - 1) && split.Times[TimingMethod.RealTime].Ticks != 0;
+
+            var timeText = isLast ? GetTimeStringForLastSplit(ref split) : GetTimeString(ref split, source);
+            var timeTextLen = timeText.Item2 == "" ? 0 : ImGui.CalcTextSize(timeText.Item2).X;
+            var splitOffset = split.Level * SPLIT_OFFSET;
+            var splitText = ImGuiExtensions.ShortenStringForWidth((int)(ImGui.GetWindowSize().X - timeTextLen - splitOffset - 35), split.DisplayString);
+
             ImGui.TableNextColumn();
             if (split.IsCurrent)
                 ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(UIConfig.ActiveSplitColor));
+            else if(i % 2 != 0)
+            {
+                ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(new Vector4(0.2f, 0.2f, 0.2f, 1.0f)));
+            }
             if(split.Level > 0)
                 ImGui.SetCursorPosX(split.Level * SPLIT_OFFSET);
 
-            ImGui.TextColored(ColorsConfig.TextColor, split.DisplayString);
-            if(split.IsCurrent)
-            {
-                ImGui.SameLine();
-                TextRightAlign(ColorsConfig.TextColor,source.CurrentTime.ToSpeedToolTimerString());
-            }
-            else if(split.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
-            {
-                bool negative = split.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
-                Vector4 col = negative ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
-                ImGui.SameLine();
-                if(negative)
-                    TextRightAlign(col, "-" + split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
-                else
-                    TextRightAlign(col, "+" + split.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
-            }
-            else if(split.Times[TimingMethod.RealTime].TotalMilliseconds != 0)
-            {
-                ImGui.SameLine();
-                TextRightAlign(ColorsConfig.TextColor, split.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
-            }
-            ImGui.Separator();
+            ImGui.TextColored(ColorsConfig.TextColor, splitText);
+            ImGui.SameLine();
+            TextRightAlign(timeText.Item1, timeText.Item2);
+            ImGui.TableNextRow();
         }
         ImGui.EndTable();
+        ImGui.PopStyleColor();
+        ImGui.PopStyleVar(5);
+    }
+
+    private (Vector4, string) GetTimeString(ref SplitDisplayInfo displayInfo, ITimerSource source)
+    {
+        if(displayInfo.IsCurrent)
+        {
+            return (ColorsConfig.TextColor, source.CurrentTime.ToSpeedToolTimerString());
+        }
+        else if(displayInfo.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
+        {
+            bool negative = displayInfo.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
+            Vector4 col = negative ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
+            ImGui.SameLine();
+            if(negative)
+                return (ColorsConfig.AheadColor, "-" + displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+            else
+                return (ColorsConfig.BehindColor, "+" + displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+        }
+        else if(displayInfo.Times[TimingMethod.RealTime].TotalMilliseconds != 0)
+        {
+            return (ColorsConfig.TextColor, displayInfo.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
+        }
+
+        return (ColorsConfig.TextColor, "");
+    }
+
+    private (Vector4, string) GetTimeStringForLastSplit(ref SplitDisplayInfo displayInfo)
+    {
+        var color = IsSplitAhead(ref displayInfo, TimingMethod.RealTime) ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
+
+        return (color, displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedtoolDTString() + " " + displayInfo.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
+    }
+
+    private bool IsSplitAhead(ref SplitDisplayInfo displayInfo, TimingMethod timingMethod)
+    {
+        return displayInfo.DeltaTimes[timingMethod].Ticks < 0;
     }
 
     private static void TextRightAlign(Vector4 color, string text)
     {
+        if(text == "")
+            return;
         var sz = ImGui.CalcTextSize(text).X;
         var posX = ImGui.GetWindowWidth() - sz - 10;
         ImGui.SetCursorPosX(posX);
