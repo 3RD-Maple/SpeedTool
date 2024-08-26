@@ -5,12 +5,12 @@ public static class TimeSpanExtension
     /// <summary>
     /// Time format used for times less than 1 hour
     /// </summary>
-    private const string TIME_FORMAT_MINUTES = @"m\:ss\.fff";
+    private const string TIME_FORMAT_MINUTES = @"m\:ss\.f";
 
     /// <summary>
     /// Time format used for times over 1 hour
     /// </summary>
-    private const string TIME_FROMAT_HOURS = @"h\:mm\:ss\.fff";
+    private const string TIME_FROMAT_HOURS = @"h\:mm\:ss\.f";
 
     public static float FloatSeconds(this TimeSpan span)
     {
@@ -32,5 +32,14 @@ public static class TimeSpanExtension
         if (span.Hours == 0)
             return span.ToString(TIME_FORMAT_MINUTES);
         return span.ToString(TIME_FROMAT_HOURS);
+    }
+
+    public static string ToSpeedtoolDTString(this TimeSpan span)
+    {
+        bool negative = span.Ticks < 0;
+        if(negative)
+            return "-" + span.ToSpeedToolTimerString();
+        else
+            return "+" + span.ToSpeedToolTimerString();
     }
 }

@@ -61,21 +61,21 @@
   },
   "Horse": {
     "SecondsClockTimeColor": {
-      "R": 0.376,
-      "G": 0.160,
-      "B": 0.070,
+      "R": 0.552,
+      "G": 0.423,
+      "B": 0.396,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
-      "R": 0.705,
-      "G": 0.490,
-      "B": 0.337,
-      "A": 1.0
-    },
-    "HoursClockTimeColor": {
       "R": 0.941,
       "G": 0.882,
       "B": 0.764,
+      "A": 1.0
+    },
+    "HoursClockTimeColor": {
+      "R": 0.588,
+      "G": 0.533,
+      "B": 0.600,
       "A": 1.0
     }
   },
@@ -141,29 +141,29 @@
   },
   "Grass": {
     "SecondsClockTimeColor": {
-      "R": 0.917,
-      "G": 1.0,
-      "B": 0.317,
+      "R": 0.301,
+      "G": 0.462,
+      "B": 0.486,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
-      "R": 0.529,
-      "G": 0.627,
-      "B": 0.200,
+      "R": 0.803,
+      "G": 0.882,
+      "B": 0.254,
       "A": 1.0
     },
     "HoursClockTimeColor": {
-      "R": 0.313,
-      "G": 0.227,
-      "B": 0.082,
+      "R": 0.290,
+      "G": 0.301,
+      "B": 0.337,
       "A": 1.0
     }
   },
   "Watermelon": {
     "SecondsClockTimeColor": {
-      "R": 0.270,
-      "G": 0.317,
-      "B": 0.074,
+      "R": 0.290,
+      "G": 0.650,
+      "B": 0.396,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
@@ -173,17 +173,17 @@
       "A": 1.0
     },
     "HoursClockTimeColor": {
-      "R": 0.827,
-      "G": 0.223,
-      "B": 0.192,
+      "R": 0.776,
+      "G": 0.278,
+      "B": 0.313,
       "A": 1.0
     }
   },
   "Peach": {
     "SecondsClockTimeColor": {
-      "R": 0.870,
-      "G": 0.360,
-      "B": 0.011,
+      "R": 0.952,
+      "G": 0.439,
+      "B": 0.258,
       "A": 1.0
     },
     "MinutesClockTimeColor": {
@@ -193,9 +193,9 @@
       "A": 1.0
     },
     "HoursClockTimeColor": {
-      "R": 0.270,
-      "G": 0.145,
-      "B": 0.062,
+      "R": 0.552,
+      "G": 0.423,
+      "B": 0.396,
       "A": 1.0
     }
   },

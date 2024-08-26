@@ -339,6 +339,31 @@ public class Run : ISplitsSource
     private SplitDisplayInfo CurrentFlatSplit => flattened[currentSplit];
     private SplitDisplayInfo? PreviousFlatSplit => currentSplit <= 0 ? null : flattened[currentSplit - 1];
 
+    public SplitDisplayInfo? PreviousSplit
+    {
+        get
+        {
+            if(PreviousFlatSplit == null)
+                return null;
+            
+            int i = currentSplit;
+            while(i > 0)
+            {
+                i--;
+
+                if(flattened[i + 1].Level <= flattened[i].Level)
+                {
+                    break;
+                }
+            }
+
+            if(i >= 0)
+                return flattened[i];
+
+            return null;
+        }
+    }
+
     const int weight = 75;
 
     BasicTimer timer = new();

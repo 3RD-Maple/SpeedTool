@@ -13,4 +13,9 @@ public interface ISplitsSource
     /// Get currently active split
     /// </summary>
     SplitDisplayInfo CurrentSplit { get; }
+
+    /// <summary>
+    /// Get previous split
+    /// </summary>
+    SplitDisplayInfo? PreviousSplit { get; }
 }

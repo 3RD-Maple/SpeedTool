@@ -42,6 +42,11 @@ sealed class DrawObject : IDisposable
         Unbind();
     }
 
+    public void DrawAll(uint unif)
+    {
+        Draw(Length, unif);
+    }
+
     public int Length { get; private set; }
 
     private void Bind()
