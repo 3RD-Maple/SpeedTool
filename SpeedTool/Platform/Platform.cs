@@ -1,6 +1,7 @@
 using System.Text.Json.Nodes;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
+using SpeedTool.Injector;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -196,6 +197,8 @@ public class Platform
         if(game == null)
             return;
 
+        if(InjectorHandler.IsInjectionAvailable)
+            injector = game.ExeName == "" ? null : new InjectorHandler(game.ExeName);
         run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
         sources[(int)TimingMethod.RealTime] = run.Timer;
     }
@@ -211,6 +214,8 @@ public class Platform
 
     Run? run = null;
     Game? game = null;
+
+    InjectorHandler? injector;
 
     HotkeyController hotkeyController;
 

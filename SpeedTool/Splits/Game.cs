@@ -12,6 +12,11 @@ public class Game
         categories = cats;
     }
 
+    public Game(string name, string exeName, Category[] cats) : this(name, cats)
+    {
+        ExeName = exeName;
+    }
+
     public bool HasCategory(string name)
     {
         return categories.Any(c => c.Name == name);
