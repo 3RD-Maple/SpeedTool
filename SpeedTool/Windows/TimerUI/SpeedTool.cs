@@ -41,6 +41,15 @@ internal class SpeedToolTimerUI : TimerUIBase
         gl.Viewport(0, 0, 500, 500);
         drw.Draw(timer, speedToolConfig);
     }
+    
+    public override void ReloadConfig(object? sender, IConfigurationSection? section)
+    {
+        colorsConfig = Configuration.GetSection<ColorSettings>() 
+                       ?? throw new Exception();
+        
+        speedToolConfig = Configuration.GetSection<SpeedToolUISettings>() 
+                   ?? throw new Exception();
+    }
 
     public override void DoUI(ISplitsSource splits, ITimerSource timer)
     {

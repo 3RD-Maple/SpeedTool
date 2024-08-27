@@ -29,8 +29,7 @@ class MainWindow : SPWindow, IDisposable
         {
             return;
         }
-
-        Configuration.ReloadConfig(ref config);
+        ui.ReloadConfig(sender, section);
     }
 
     override public void Dispose()

@@ -60,10 +60,7 @@ namespace SpeedTool.Global
             return ret;
         }
         
-        public static void ReloadConfig<T>(ref T config) where T : IConfigurationSection, new()
-        {
-            config = Configuration.GetSection<T>()!;
-        }
+       
 
         /// <summary>
         /// Update loaded in-memory config and update it file on disc
