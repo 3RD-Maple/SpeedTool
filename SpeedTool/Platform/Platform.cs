@@ -2,6 +2,7 @@ using System.Text.Json.Nodes;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 using SpeedTool.Injector;
+using SpeedTool.Platform.Debugging;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -108,6 +109,7 @@ public class Platform
 
     public void LoadGame(Game game)
     {
+        DebugLog.SharedInstance.Write($"Loading game {game.Name}");
         this.game = game;
         ReloadRun();
     }
@@ -199,6 +201,8 @@ public class Platform
 
         if(InjectorHandler.IsInjectionAvailable)
             injector = game.ExeName == "" ? null : new InjectorHandler(game.ExeName);
+        else
+            DebugLog.SharedInstance.Write("Injector unavailable, skipping injection");
         run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
         sources[(int)TimingMethod.RealTime] = run.Timer;
     }

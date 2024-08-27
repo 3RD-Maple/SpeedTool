@@ -122,6 +122,10 @@ class MainWindow : SPWindow, IDisposable
             {
                 onExit = () => platform.AddWindow(new AboutWindow());
             }
+            if(ImGui.MenuItem("Debug log"))
+            {
+                onExit = () => platform.AddWindow(new DebugMessagesWindow());
+            }
             if(ImGui.MenuItem("Exit"))
             {
                 platform.Exit();
