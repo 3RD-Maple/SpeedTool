@@ -201,6 +201,8 @@ public class Platform
 
         if(InjectorHandler.IsInjectionAvailable)
             injector = game.ExeName == "" ? null : new InjectorHandler(game.ExeName);
+        else
+            DebugLog.SharedInstance.Write("Injector unavailable, skipping injection");
         run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
         sources[(int)TimingMethod.RealTime] = run.Timer;
     }

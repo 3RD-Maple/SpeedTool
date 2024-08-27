@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using SpeedTool.Platform.Debugging;
 
 namespace SpeedTool.Injector;
 
@@ -9,6 +10,7 @@ public sealed class InjectorHandler
         exeName = lookForExe.Replace(".exe", "");
         workerThread = new Thread(Worker);
         workerThread.Start();
+        DebugLog.SharedInstance.Write($"Attempting to inject timer into {lookForExe}");
     }
 
     public static bool IsInjectionAvailable
@@ -37,6 +39,7 @@ public sealed class InjectorHandler
                 {
                     loadedProcess = process[0];
                     IsHooked = true;
+                    DebugLog.SharedInstance.Write($"Found {exeName}, injecting");
                 }
                 else
                 {
@@ -54,14 +57,18 @@ public sealed class InjectorHandler
             var injector = Process.Start(psi);
             if(injector == null)
             {
+                DebugLog.SharedInstance.Write($"Failed to start injector process");
                 IsHooked = false;
                 continue;
             }
             injector.WaitForExit();
             if(injector.ExitCode != 0)
             {
+                DebugLog.SharedInstance.Write($"Failed to inject timer with code {injector.ExitCode}");
                 IsHooked = false;
             }
+            else
+                DebugLog.SharedInstance.Write($"Injecting successful");
         }
     }
 

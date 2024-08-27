@@ -19,7 +19,7 @@ public sealed class DebugMessagesWindow : Platform.Window
         ImGui.SetNextWindowSize(viewport.Size);
         ImGui.PushFont(GetFont("UI"));
         ImGui.SetNextWindowBgAlpha(0.0f);
-        ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
+        ImGui.Begin("DebugMessagesWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
         var messages = DebugLog.SharedInstance.GetMessages(500);
         foreach(var msg in messages)
