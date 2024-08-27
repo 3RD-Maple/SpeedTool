@@ -3,7 +3,7 @@ using SpeedTool.Global.Definitions;
 
 namespace SpeedTool.Platform;
 
-sealed class HotkeyController
+sealed class HotkeyController : IDisposable
 {
     private sealed class HotkeyCycler
     {
@@ -35,9 +35,15 @@ sealed class HotkeyController
 
         public bool IgnoreGlobalSettings { get; private set; } = false;
     }
+    
+    private void HandleConfigChanges(object? sender, IConfigurationSection section)
+    {
+        RefreshSettings();
+    }
 
     public HotkeyController()
     {
+        Configuration.OnConfigurationChanged += HandleConfigChanges;
         RefreshSettings();
     }
 
@@ -79,4 +85,8 @@ sealed class HotkeyController
 
     bool enabled = true;
     HotkeyCycler[] cyclers = [];
+    public void Dispose()
+    {
+        Configuration.OnConfigurationChanged -= HandleConfigChanges;
+    }
 }

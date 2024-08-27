@@ -39,12 +39,20 @@ public sealed class SpeedToolUISettingsTab : TabBase
 
     protected override void ApplyTabSettings()
     {
-        Configuration.SetSection(Config);
+       Configuration.SetSection(Config);
     }
 
     protected override void DoTabInternal()
     {
         SpeedToolThemeWindow(Config);
+    }
+    
+    protected override void OnConfigChanges(object? sender, IConfigurationSection section)
+    {
+        if (!(section is SpeedToolUISettings))
+            return;
+        
+        // event handling 
     }
 
     public void SpeedToolThemeWindow(SpeedToolUISettings config)

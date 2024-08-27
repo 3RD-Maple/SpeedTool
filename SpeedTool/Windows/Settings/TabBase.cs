@@ -1,14 +1,16 @@
 using ImGuiNET;
+using SpeedTool.Global;
 
 namespace SpeedTool.Windows.Settings;
 
-public abstract class TabBase
+public abstract class TabBase : IDisposable
 {
     public string TabName { get; private set; }
 
-    public TabBase(string tabName)
+    protected TabBase(string tabName)
     {
         TabName = tabName;
+        Configuration.OnConfigurationChanged += HandleConfigChanges;
     }
     
     
@@ -28,4 +30,18 @@ public abstract class TabBase
     protected abstract void DoTabInternal();
 
     protected abstract void ApplyTabSettings();
+    
+    private void HandleConfigChanges(object? sender, IConfigurationSection section)
+    {
+        OnConfigChanges(sender, section);
+    }
+
+    protected virtual void OnConfigChanges(object? sender, IConfigurationSection section)
+    {
+    }
+
+    public virtual void Dispose()
+    {            
+        Configuration.OnConfigurationChanged -= HandleConfigChanges;
+    }
 }

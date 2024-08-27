@@ -1,3 +1,5 @@
+using SpeedTool.Global;
+
 namespace SpeedTool.Platform;
 
 using Silk.NET.Windowing;
@@ -99,6 +101,13 @@ public class Window : IDisposable
 
         window.Initialize();
         window.Size = sizes;
+
+        Configuration.OnConfigurationChanged += HandleConfigUpdate;
+    }
+
+    private void HandleConfigUpdate(object? sender, IConfigurationSection section)
+    {
+        OnConfigUpdated(sender, section);
     }
 
     public Sizes Sizes
@@ -180,6 +189,8 @@ public class Window : IDisposable
     /// Called when the window is closing
     /// </summary>
     protected virtual void OnClosing() { }
+
+    protected virtual void OnConfigUpdated(object? sender, IConfigurationSection? section) { }
 
     private IWindow window;
 

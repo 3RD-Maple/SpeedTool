@@ -23,7 +23,14 @@ public sealed class ColorsSettingsTab : TabBase
        behindColor = Config.BehindColor;
        PBColor = Config.PBColor;
    }
-    
+
+   protected override void OnConfigChanges(object? sender, IConfigurationSection section)
+   {
+       if (!(section is ColorSettings))
+           return;
+               
+       // event handling 
+   }
     
     protected override void ApplyTabSettings()
     {
