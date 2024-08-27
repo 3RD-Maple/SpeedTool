@@ -59,6 +59,11 @@ namespace SpeedTool.Global
             ret.FromJSONObject(_mappedValues.Single(x => x.Key == section).Value!.AsObject());
             return ret;
         }
+        
+        public static void ReloadConfig<T>(ref T config) where T : IConfigurationSection, new()
+        {
+            config = Configuration.GetSection<T>()!;
+        }
 
         /// <summary>
         /// Update loaded in-memory config and update it file on disc

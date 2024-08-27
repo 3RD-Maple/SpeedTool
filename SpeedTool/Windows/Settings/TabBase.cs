@@ -10,9 +10,7 @@ public abstract class TabBase : IDisposable
     protected TabBase(string tabName)
     {
         TabName = tabName;
-        Configuration.OnConfigurationChanged += HandleConfigChanges;
     }
-    
     
     public void DoTab()
     {
