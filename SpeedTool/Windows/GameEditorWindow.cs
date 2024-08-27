@@ -31,6 +31,7 @@ public sealed class GameEditorWindow : Platform.Window
     public GameEditorWindow(Game game) : this()
     {
         Name = game.Name;
+        ExeName = game.ExeName;
         categories = new EditableCategory[game.GetCategories().Length];
         for(int i = 0; i < categories.Length; i++)
         {
@@ -53,9 +54,8 @@ public sealed class GameEditorWindow : Platform.Window
 
         TabCount = 0;
 
-        ImGui.InputText("##name", ref Name, 255);
-        ImGui.SameLine();
-        ImGui.Text("Game Name");
+        ImGui.InputText("Game Name", ref Name, 255);
+        ImGui.InputText("Exe Name", ref ExeName, 255);
         ImGui.Separator();
         if(ImGui.Button("Add category"))
         {
@@ -93,7 +93,7 @@ public sealed class GameEditorWindow : Platform.Window
 
     protected override void OnClosing()
     {
-        platform.LoadGame(new Game(Name, CollectCategories()));
+        platform.LoadGame(new Game(Name, ExeName, CollectCategories()));
     }
 
     private void DoTab(ref string name, ref Split[] splits)
@@ -246,6 +246,8 @@ public sealed class GameEditorWindow : Platform.Window
     EditableCategory[] categories;
 
     private string Name = "";
+
+    private string ExeName = "";
 
     private int TabCount = 0;
 
