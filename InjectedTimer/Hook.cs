@@ -46,6 +46,20 @@ namespace Hook
             EasyHook.RemoteHooking.WakeUpProcess();
 
             p = new Pipe();
+            p.OnIncomingCmd += (object sender, string cmd) =>
+            {
+                if(cmd.StartsWith("script "))
+                {
+                    p.SendString("debug_message Loading script line: " + cmd.Substring(7));
+                    script += cmd.Substring(7) + "\n";
+                    return;
+                }
+                if(cmd.StartsWith("script_load"))
+                {
+                    p.SendString("debug_message Loaded script");
+                    engine = new ScriptEngine(script, p);
+                }
+            };
 
             try
             {
@@ -78,15 +92,18 @@ namespace Hook
 
         uint MySwapBuffers(IntPtr unnamedParam1)
         {
-            cnt++;
-            if(cnt % 1000 == 0)
+            try
             {
                 if(p != null)
-                    p.SendString("debug_message 1000 frames have passed");
-                cnt = 0;
+                    p.Cycle();
+                if(engine != null)
+                    engine.OnFrame();
             }
-            if(p != null)
-                p.Cycle();
+            catch
+            {
+                if(p != null)
+                    p.SendString("debug_message Something went wrong");
+            }
             return SwapBuffers(unnamedParam1);
         }
 
@@ -95,7 +112,9 @@ namespace Hook
                     SetLastError = true)]
         delegate uint SwapBuffers_Delegate(IntPtr unnamedParam1);
 
+        string script;
+
         Pipe p;
-        int cnt = 0;
+        ScriptEngine engine;
     }
 }

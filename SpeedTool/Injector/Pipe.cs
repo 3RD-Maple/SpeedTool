@@ -15,6 +15,13 @@ public sealed class Pipe : IDisposable
             DebugLog.SharedInstance.Write("Pipe connected");
             pipeReader = new PipeReader(client);
             pipeWriter = new StreamWriter(client);
+            foreach(var str in TEST_CODE.Split('\n'))
+            {
+                pipeWriter.WriteLine("script " + str);
+            }
+
+            pipeWriter.WriteLine("script_load");
+            pipeWriter.Flush();
         });
     }
 
@@ -68,4 +75,13 @@ public sealed class Pipe : IDisposable
     private PipeReader? pipeReader;
     private StreamWriter? pipeWriter;
     private NamedPipeClientStream client;
+
+    private const string TEST_CODE =
+    "function on_load()\n" +
+    "   debug_message_address(module_base_address('kernel32.dll'))\n" +
+    "   debug_message('hello from luad')\n" +
+    "end\n"+
+
+    "function on_frame()\n" +
+    "end";
 }

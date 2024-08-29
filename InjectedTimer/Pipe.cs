@@ -16,7 +16,10 @@ namespace InjectedTimer
             server.WaitForConnection();
             pipeWriter = new StreamWriter(server);
             pipeReader = new PipeReader(server);
+            Console.Error.WriteLine("Test");
         }
+
+        public event EventHandler<string> OnIncomingCmd;
 
         public void Dispose()
         {
@@ -38,6 +41,18 @@ namespace InjectedTimer
                 SendNext();
             }
             pipeWriter.Flush();
+
+            if(!pipeReader.IsOK)
+            {
+                SendString("debug_message PipeReader is not OK");
+            }
+
+            if(pipeReader.HasData)
+            {
+                var cmd = pipeReader.ReadLine();
+                SendString("debug_message Received stuff");
+                OnIncomingCmd?.Invoke(this, cmd);
+            }
         }
 
         private void SendNext()
