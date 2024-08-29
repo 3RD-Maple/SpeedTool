@@ -25,11 +25,9 @@ class MainWindow : SPWindow, IDisposable
 
     protected override void OnConfigUpdated(object? sender, IConfigurationSection? section)
     {
-        if (!(section is GeneralConfiguration))
-        {
-            return;
-        }
         ui.ReloadConfig(sender, section);
+        if ((section as GeneralConfiguration) != null)
+            config = (section as GeneralConfiguration)!;
     }
 
     override public void Dispose()

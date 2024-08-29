@@ -133,6 +133,7 @@ public class Platform
             hotkeyController.Cycle();
         }
         hook.Dispose();
+        hotkeyController.Dispose();
     }
 
     public void SaveRunAsPB(RunInfo run)

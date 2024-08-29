@@ -44,11 +44,11 @@ internal class SpeedToolTimerUI : TimerUIBase
     
     public override void ReloadConfig(object? sender, IConfigurationSection? section)
     {
-        colorsConfig = Configuration.GetSection<ColorSettings>() 
-                       ?? throw new Exception();
-        
-        speedToolConfig = Configuration.GetSection<SpeedToolUISettings>() 
-                   ?? throw new Exception();
+        if((section as ColorSettings) != null)
+        colorsConfig = (section as ColorSettings)!;
+
+        if((section as SpeedToolUISettings) != null)
+            speedToolConfig = (section as SpeedToolUISettings)!;
     }
 
     public override void DoUI(ISplitsSource splits, ITimerSource timer)

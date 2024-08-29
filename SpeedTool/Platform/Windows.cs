@@ -84,6 +84,8 @@ public class Window : IDisposable
             OnClosing();
             input?.Dispose();
             gl?.Dispose();
+            Configuration.OnConfigurationChanged -= HandleConfigUpdate;
+
             // FIXME:
             //  Disposing of ImGuiController leads to a catastrophic failure of some sort.
             //  I don't really know what exactly causes it, I suspect it has something to do with fonts.
@@ -153,7 +155,6 @@ public class Window : IDisposable
 
     public void Close()
     {
-        Configuration.OnConfigurationChanged -= HandleConfigUpdate;
         window.Close();
     }
 
