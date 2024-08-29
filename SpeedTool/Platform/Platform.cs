@@ -9,7 +9,7 @@ using SpeedTool.Util;
 
 namespace SpeedTool.Platform;
 
-public class Platform
+public sealed class Platform
 {
     public static Platform SharedPlatform
     {
@@ -22,6 +22,14 @@ public class Platform
 
             return platform!;
         }
+    }
+
+    /// <summary>
+    /// Frees all plaform resources
+    /// </summary>
+    public void Release() // TODO: This is ugly, but I'm a bit lazy to deal with it rn
+    {
+        injector?.Dispose();
     }
 
     public Game? Game
@@ -127,13 +135,12 @@ public class Platform
             windows = windows.Where(x => !x.IsClosed).ToList();
             foreach (var closed in toClose)
             {
-                closed.Reset();
-
-                // FEXME: See Platform.Window class for explanation
-                //closed.Dispose();
+                //closed.Reset();
+                closed.Dispose();
             }
             hook.Cycle();
             hotkeyController.Cycle();
+            injector?.Cycle();
         }
         hook.Dispose();
     }
@@ -200,7 +207,10 @@ public class Platform
             return;
 
         if(InjectorHandler.IsInjectionAvailable)
+        {
+            injector?.Dispose();
             injector = game.ExeName == "" ? null : new InjectorHandler(game.ExeName);
+        }
         else
             DebugLog.SharedInstance.Write("Injector unavailable, skipping injection");
         run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));

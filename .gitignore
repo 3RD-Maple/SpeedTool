@@ -69,3 +69,5 @@ imgui.ini
 *.stg
 *.exe
 *.dll
+*.pdb
+*.exe.config

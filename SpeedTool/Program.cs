@@ -10,3 +10,5 @@ Configuration.Init(configPath);
 Platform.SharedPlatform.AddWindow(new MainWindow());
 
 Platform.SharedPlatform.Run();
+
+Platform.SharedPlatform.Release();

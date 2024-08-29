@@ -13,7 +13,7 @@ namespace SpeedTool.Windows;
 
 using SPWindow = Platform.Window;
 
-class MainWindow : SPWindow, IDisposable
+class MainWindow : SPWindow
 {
     public MainWindow() : base(options, new Vector2D<int>(500, 550))
     {

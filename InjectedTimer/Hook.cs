@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Runtime.InteropServices;
 using EasyHook;
+using InjectedTimer;
 
 namespace Hook
 {
@@ -39,15 +39,13 @@ namespace Hook
             string channelName)
         {
             // Install hooks
-            sw = new StreamWriter("sharptest.txt");
-            sw.WriteLine("Hook runs!");
-            sw.Flush();
-
             var buffersHook = LocalHook.Create(LocalHook.GetProcAddress("Gdi32.dll", "SwapBuffers"), new SwapBuffers_Delegate(MySwapBuffers), this);
             buffersHook.ThreadACL.SetExclusiveACL( new int[] { 0 });
 
             // Wake up the process (required if using RemoteHooking.CreateAndInject)
             EasyHook.RemoteHooking.WakeUpProcess();
+
+            p = new Pipe();
 
             try
             {
@@ -80,8 +78,15 @@ namespace Hook
 
         uint MySwapBuffers(IntPtr unnamedParam1)
         {
-            sw.WriteLine(DateTime.Now.ToUniversalTime().ToLongTimeString());
-            sw.Flush();
+            cnt++;
+            if(cnt % 1000 == 0)
+            {
+                if(p != null)
+                    p.SendString("debug_message 1000 frames have passed");
+                cnt = 0;
+            }
+            if(p != null)
+                p.Cycle();
             return SwapBuffers(unnamedParam1);
         }
 
@@ -90,6 +95,7 @@ namespace Hook
                     SetLastError = true)]
         delegate uint SwapBuffers_Delegate(IntPtr unnamedParam1);
 
-        StreamWriter sw;
+        Pipe p;
+        int cnt = 0;
     }
 }
