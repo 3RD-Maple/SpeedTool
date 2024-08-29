@@ -21,6 +21,15 @@ class ClassicTimerUI : TimerUIBase
     {
 
     }
+    
+    public override void ReloadConfig(object? sender, IConfigurationSection? section)
+    {
+        if((section as ColorSettings) != null)
+            ColorsConfig = (section as ColorSettings)!;
+
+        if((section as ClassicUISettings) != null)
+            UIConfig = (section as ClassicUISettings)!;
+    }
 
     public override void DoUI(ISplitsSource splits, ITimerSource source)
     {

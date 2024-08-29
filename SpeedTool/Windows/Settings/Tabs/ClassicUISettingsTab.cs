@@ -23,6 +23,14 @@ public sealed class ClassicUISettingsTab : TabBase
     {
         Configuration.SetSection(Config);
     }
+    
+    protected override void OnConfigChanges(object? sender, IConfigurationSection section)
+    {
+        if (!(section is ClassicUISettings))
+            return;
+        
+        // event handling 
+    }
 
     protected override void DoTabInternal()
     {

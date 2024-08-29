@@ -1,7 +1,5 @@
-﻿using System.Reflection;
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using System.Text.Json.Serialization;
+﻿using System.Text.Json.Nodes;
+
 
 namespace SpeedTool.Global
 {
@@ -57,10 +55,12 @@ namespace SpeedTool.Global
             T ret = new T();
             if(!_mappedValues!.ContainsKey(section))
                 throw new InvalidOperationException($"Section {section} is missing");
-
+            
             ret.FromJSONObject(_mappedValues.Single(x => x.Key == section).Value!.AsObject());
             return ret;
         }
+        
+       
 
         /// <summary>
         /// Update loaded in-memory config and update it file on disc
@@ -72,6 +72,7 @@ namespace SpeedTool.Global
         /// <exception cref="NotInitializedException"
         public static bool SetSection<T>(T value, string? section = null) where T : IConfigurationSection
         {
+
             if (!_init) throw new NotInitializedException();
 
             lock (_lock)
@@ -82,9 +83,17 @@ namespace SpeedTool.Global
                 _loadedCfg = _mappedValues.ToString();
                 using var writer = new StreamWriter(File.Create(_filepath!));
                 writer.Write(_loadedCfg);
+                NotifyConfigurationChanged(value);
                 return true;
             }
         }
+        
+        public static void NotifyConfigurationChanged(IConfigurationSection section)
+        {
+            OnConfigurationChanged?.Invoke(Platform.Platform.SharedPlatform, section);
+        }
+    
+        public static event EventHandler<IConfigurationSection>? OnConfigurationChanged;
 
 
         /// <summary>

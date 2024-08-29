@@ -143,6 +143,7 @@ public sealed class Platform
             injector?.Cycle();
         }
         hook.Dispose();
+        hotkeyController.Dispose();
     }
 
     public void SaveRunAsPB(RunInfo run)

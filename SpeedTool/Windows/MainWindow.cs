@@ -19,14 +19,22 @@ class MainWindow : SPWindow
     {
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
-
+        config = Configuration.GetSection<GeneralConfiguration>()!;
         ui = SelectUI();
+    }
+
+    protected override void OnConfigUpdated(object? sender, IConfigurationSection? section)
+    {
+        ui.ReloadConfig(sender, section);
+        if ((section as GeneralConfiguration) != null)
+            config = (section as GeneralConfiguration)!;
     }
 
     override public void Dispose()
     {
         drw.Dispose();
         base.Dispose();
+        Configuration.OnConfigurationChanged -= OnConfigUpdated;
     }
 
     protected override void OnDraw(double dt)
@@ -100,16 +108,14 @@ class MainWindow : SPWindow
             {
                 if(ImGui.MenuItem("SpeedTool"))
                 {
-                    var conf = Configuration.GetSection<GeneralConfiguration>()!;
-                    conf.TimerUI = "SpeedTool";
-                    Configuration.SetSection(conf);
+                    config.TimerUI = "SpeedTool";
+                    Configuration.SetSection(config);
                     ui = SelectUI();
                 }
                 if(ImGui.MenuItem("Classic"))
                 {
-                    var conf = Configuration.GetSection<GeneralConfiguration>()!;
-                    conf.TimerUI = "Classic";
-                    Configuration.SetSection(conf);
+                    config.TimerUI = "Classic";
+                    Configuration.SetSection(config);
                     ui = SelectUI();
                 }
                 ImGui.EndMenu();
@@ -198,7 +204,7 @@ class MainWindow : SPWindow
     bool hasError = false;
     string errorMessage = "";
     TimerDrawable drw;
-
+    private GeneralConfiguration config;
     Platform.Platform platform;
 
     TimerUIBase ui;
