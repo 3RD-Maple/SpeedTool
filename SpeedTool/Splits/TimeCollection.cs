@@ -1,3 +1,4 @@
+using System.Numerics;
 using System.Text.Json.Nodes;
 using SpeedTool.Timer;
 
@@ -28,6 +29,18 @@ public struct TimeCollection
         {
             spans[(int)timingMethod] = value;
         }
+    }
+
+    public static TimeCollection operator-(TimeCollection a, TimeCollection b)
+    {
+        var res = new TimeCollection();
+        for(int i = 0; i < TIMES_COUNT; i++)
+        {
+            var TM = (TimingMethod)i;
+            res[TM] = a[TM] - b[TM];
+        }
+
+        return res;
     }
 
     public JsonObject ToJson()

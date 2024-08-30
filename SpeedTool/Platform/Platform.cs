@@ -61,7 +61,9 @@ public sealed class Platform
         {
             return;
         }
-
+        
+        if(!run.Started)
+            injector?.Start();
         run.Split();
     }
 
@@ -211,6 +213,7 @@ public sealed class Platform
         {
             injector?.Dispose();
             injector = game.ExeName == "" ? null : new InjectorHandler(game.ExeName);
+            sources[(int)TimingMethod.Loadless] = injector == null ? new NoTimer() : injector;
         }
         else
             DebugLog.SharedInstance.Write("Injector unavailable, skipping injection");

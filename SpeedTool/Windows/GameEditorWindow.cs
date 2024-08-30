@@ -3,6 +3,7 @@ using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
 using SpeedTool.Splits;
+using SpeedTool.Timer;
 using SpeedTool.Util;
 using SpeedTool.Util.ImGui;
 
@@ -32,6 +33,8 @@ public sealed class GameEditorWindow : Platform.Window
     {
         Name = game.Name;
         ExeName = game.ExeName;
+        timingMethod = game.DefaultTimingMethod;
+        script = game.Script;
         categories = new EditableCategory[game.GetCategories().Length];
         for(int i = 0; i < categories.Length; i++)
         {
@@ -56,6 +59,14 @@ public sealed class GameEditorWindow : Platform.Window
 
         ImGui.InputText("Game Name", ref Name, 255);
         ImGui.InputText("Exe Name", ref ExeName, 255);
+        if(ExeName != "")
+        {
+            if(ImGui.Button("Load script"))
+            {
+                FileUtil.OpenFile(file => script = File.ReadAllText(file));
+            }
+        }
+        ImGuiExtensions.TimingMethodSelector("Default timimng method", ref timingMethod);
         ImGui.Separator();
         if(ImGui.Button("Add category"))
         {
@@ -78,8 +89,7 @@ public sealed class GameEditorWindow : Platform.Window
         ImGui.Separator();
         if(ImGui.Button("Test save"))
         {
-            var g = new Game(Name, CollectCategories());
-            FileUtil.SaveFile(fileName => g.SaveToFile(fileName));
+            FileUtil.SaveFile(fileName => CollectGame().SaveToFile(fileName));
         }
 
         // Temporary stuff to debug this mess. Probably will be removed later
@@ -93,7 +103,12 @@ public sealed class GameEditorWindow : Platform.Window
 
     protected override void OnClosing()
     {
-        platform.LoadGame(new Game(Name, ExeName, CollectCategories()));
+        platform.LoadGame(CollectGame());
+    }
+
+    private Game CollectGame()
+    {
+        return new Game(Name, ExeName, timingMethod, script, CollectCategories());
     }
 
     private void DoTab(ref string name, ref Split[] splits)
@@ -245,11 +260,15 @@ public sealed class GameEditorWindow : Platform.Window
 
     EditableCategory[] categories;
 
+    private TimingMethod timingMethod;
+
     private string Name = "";
 
     private string ExeName = "";
 
     private int TabCount = 0;
+
+    private string script = "";
 
     private const string POPUP_NAME = "popup_meun";
 }

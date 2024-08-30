@@ -104,9 +104,9 @@ internal class SpeedToolTimerUI : TimerUIBase
 
     private void DrawDtText(SplitDisplayInfo split)
     {
-        var ahead = split.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
+        var ahead = split.DeltaTimes[DisplayTimingMethod].Ticks < 0;
         var color = ahead ? colorsConfig.AheadColor : colorsConfig.BehindColor;
-        var text = split.DeltaTimes[TimingMethod.RealTime].ToSpeedtoolDTString();
+        var text = split.DeltaTimes[DisplayTimingMethod].ToSpeedtoolDTString();
         var sz = ImGui.CalcTextSize(text).X;
         ImGui.SetCursorPos(new Vector2(250 - sz / 2, 300));
         ImGui.TextColored(color, text);

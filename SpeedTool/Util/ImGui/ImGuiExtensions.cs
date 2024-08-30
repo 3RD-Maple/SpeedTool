@@ -2,6 +2,7 @@ using System.Numerics;
 using SharpHook.Native;
 using SpeedTool.Platform;
 using SpeedTool.Splits;
+using SpeedTool.Timer;
 
 namespace SpeedTool.Util.ImGui;
 
@@ -99,6 +100,22 @@ public static class ImGuiExtensions
         }
 
         return ctx;
+    }
+
+    public static void TimingMethodSelector(string name, ref TimingMethod tm)
+    {
+        if(ImGuiNET.ImGui.BeginCombo(name, tm.ToString()))
+        {
+            for(int i = 0; i < (int)TimingMethod.Last; i++)
+            {
+                var ctm = (TimingMethod)i;
+                if(ImGuiNET.ImGui.Selectable(ctm.ToString()))
+                {
+                    tm = ctm;
+                }
+            }
+            ImGuiNET.ImGui.EndCombo();
+        }
     }
 
     public static void TextCentered(string text)

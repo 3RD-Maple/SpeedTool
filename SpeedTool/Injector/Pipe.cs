@@ -5,7 +5,7 @@ namespace SpeedTool.Injector;
 
 public sealed class Pipe : IDisposable
 {
-    public Pipe()
+    public Pipe(string script)
     {
         client = new NamedPipeClientStream(".", "SpeedToolPipe", PipeDirection.InOut, PipeOptions.Asynchronous);
         connectCancellation = new();
@@ -15,7 +15,7 @@ public sealed class Pipe : IDisposable
             DebugLog.SharedInstance.Write("Pipe connected");
             pipeReader = new PipeReader(client);
             pipeWriter = new StreamWriter(client);
-            foreach(var str in TEST_CODE.Split('\n'))
+            foreach(var str in script.Split('\n'))
             {
                 pipeWriter.WriteLine("script " + str);
             }
@@ -25,6 +25,8 @@ public sealed class Pipe : IDisposable
         });
     }
 
+    public event EventHandler<string>? OnMessage;
+
     public bool IsOpened
     {
         get
@@ -33,6 +35,12 @@ public sealed class Pipe : IDisposable
                 return true;
             return pipeReader.IsOK;
         }
+    }
+
+    public void SendString(string str)
+    {
+        pipeWriter?.WriteLine(str);
+        pipeWriter?.Flush();
     }
 
     public void Dispose()
@@ -62,13 +70,9 @@ public sealed class Pipe : IDisposable
             DebugLog.SharedInstance.Write($"InjectedTimer said: {data.Substring(14)}");
             return;
         }
-        var tokens = data.Split(' ', StringSplitOptions.RemoveEmptyEntries);
-        switch(tokens[0])
-        {
-        default:
-            break;
-        }
+        OnMessage?.Invoke(this, data);
     }
+
     Task? connectionTask;
     CancellationTokenSource connectCancellation;
 

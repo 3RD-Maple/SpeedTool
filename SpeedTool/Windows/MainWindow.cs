@@ -39,7 +39,8 @@ class MainWindow : SPWindow
 
     protected override void OnDraw(double dt)
     {
-        ui.Draw(dt, platform.GetSplits(), platform.GetTimerFor(TimingMethod.RealTime));
+        var tm = platform.Game == null ? TimingMethod.RealTime : platform.Game.DefaultTimingMethod;
+        ui.Draw(dt, platform.GetSplits(), platform.GetTimerFor(tm));
         if(platform.Game != null)
             Text = $"Speedtool -- {platform.Game.Name} -- {platform.CurrentCategory?.Name}";
         else
@@ -64,7 +65,8 @@ class MainWindow : SPWindow
         ImGui.SetNextWindowBgAlpha(0.0f);
         ImGui.Begin("MainWindowWindow", ImGuiWindowFlags.NoResize | ImGuiWindowFlags.NoDecoration | ImGuiWindowFlags.NoTitleBar | ImGuiWindowFlags.NoMove);
 
-        ui.DoUI(platform.GetSplits(), platform.GetTimerFor(TimingMethod.RealTime));
+        var tm = platform.Game == null ? TimingMethod.RealTime : platform.Game.DefaultTimingMethod;
+        ui.DoUI(platform.GetSplits(), platform.GetTimerFor(tm));
 
         // Opening windows in between ImGui calls screws up ImGui's stack, so we need to do that on function exit
         Action? onExit = null;

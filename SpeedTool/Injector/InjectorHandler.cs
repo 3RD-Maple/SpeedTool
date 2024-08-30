@@ -1,9 +1,10 @@
 using System.Diagnostics;
 using SpeedTool.Platform.Debugging;
+using SpeedTool.Timer;
 
 namespace SpeedTool.Injector;
 
-public sealed class InjectorHandler : IDisposable
+public sealed class InjectorHandler : IDisposable, ITimerSource
 {
     public InjectorHandler(string lookForExe)
     {
@@ -31,6 +32,10 @@ public sealed class InjectorHandler : IDisposable
 
     public bool IsHooked { get; private set; }
 
+    public TimeSpan CurrentTime => time;
+
+    public TimerState CurrentState => TimerState.NoState;
+
     private void Worker()
     {
         while(!IsClosing)
@@ -45,6 +50,7 @@ public sealed class InjectorHandler : IDisposable
                         IsHooked = false;
                         DebugLog.SharedInstance.Write("Pipe connection lost!");
                         DebugLog.SharedInstance.Write("Attempting to re-inject");
+                        p.OnMessage -= OnMessage;
                         p.Dispose();
                         p = null;
                     }
@@ -89,7 +95,8 @@ public sealed class InjectorHandler : IDisposable
             else
             {
                 DebugLog.SharedInstance.Write($"Injecting successful, connecting to pipe now");
-                p = new Pipe();
+                p = new Pipe(Platform.Platform.SharedPlatform.Game!.Script);
+                p.OnMessage += OnMessage;
             }
         }
     }
@@ -100,6 +107,37 @@ public sealed class InjectorHandler : IDisposable
         workerThread.Join();
         p?.Dispose();
     }
+
+    public void Pause()
+    {
+        p?.SendString("pause");
+    }
+
+    public void Start()
+    {
+        p?.SendString("start");
+    }
+
+    public void Reset()
+    {
+        p?.SendString("reset");
+    }
+
+    public void Stop()
+    {
+        p?.SendString("stop");
+    }
+
+    private void OnMessage(object? sender, string message)
+    {
+        if(message.StartsWith("timer "))
+        {
+            var ticks = long.Parse(message.Split(" ")[1]);
+            time = new TimeSpan(ticks);
+        }
+    }
+
+    TimeSpan time;
 
     bool IsClosing = false;
     Pipe? p;

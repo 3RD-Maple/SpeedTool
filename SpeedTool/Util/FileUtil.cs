@@ -14,4 +14,14 @@ public static class FileUtil
         else
             throw new NotImplementedException();
     }
+
+    public static void OpenFile(Action<string> onLoad)
+    {
+        if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+        {
+            Dialogs.ShowOpenDialog(onLoad);
+        }
+        else
+            throw new NotImplementedException();
+    }
 }

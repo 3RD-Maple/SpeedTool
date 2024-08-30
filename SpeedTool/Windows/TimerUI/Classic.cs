@@ -46,7 +46,7 @@ class ClassicTimerUI : TimerUIBase
         for(int i = 0; i < gotSplits.Count(); i++)
         {
             var split = gotSplits[i];
-            var isLast = i == (gotSplits.Length - 1) && split.Times[TimingMethod.RealTime].Ticks != 0;
+            var isLast = i == (gotSplits.Length - 1) && split.Times[DisplayTimingMethod].Ticks != 0;
 
             var timeText = isLast ? GetTimeStringForLastSplit(ref split) : GetTimeString(ref split, source);
             var timeTextLen = timeText.Item2 == "" ? 0 : ImGui.CalcTextSize(timeText.Item2).X;
@@ -79,19 +79,19 @@ class ClassicTimerUI : TimerUIBase
         {
             return (ColorsConfig.TextColor, source.CurrentTime.ToSpeedToolTimerString());
         }
-        else if(displayInfo.DeltaTimes[TimingMethod.RealTime].TotalMilliseconds != 0)
+        else if(displayInfo.DeltaTimes[DisplayTimingMethod].TotalMilliseconds != 0)
         {
-            bool negative = displayInfo.DeltaTimes[TimingMethod.RealTime].Ticks < 0;
+            bool negative = displayInfo.DeltaTimes[DisplayTimingMethod].Ticks < 0;
             Vector4 col = negative ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
             ImGui.SameLine();
             if(negative)
-                return (ColorsConfig.AheadColor, "-" + displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+                return (ColorsConfig.AheadColor, "-" + displayInfo.DeltaTimes[DisplayTimingMethod].ToSpeedToolTimerString());
             else
-                return (ColorsConfig.BehindColor, "+" + displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedToolTimerString());
+                return (ColorsConfig.BehindColor, "+" + displayInfo.DeltaTimes[DisplayTimingMethod].ToSpeedToolTimerString());
         }
-        else if(displayInfo.Times[TimingMethod.RealTime].TotalMilliseconds != 0)
+        else if(displayInfo.Times[DisplayTimingMethod].TotalMilliseconds != 0)
         {
-            return (ColorsConfig.TextColor, displayInfo.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
+            return (ColorsConfig.TextColor, displayInfo.Times[DisplayTimingMethod].ToSpeedToolTimerString());
         }
 
         return (ColorsConfig.TextColor, "");
@@ -99,9 +99,9 @@ class ClassicTimerUI : TimerUIBase
 
     private (Vector4, string) GetTimeStringForLastSplit(ref SplitDisplayInfo displayInfo)
     {
-        var color = IsSplitAhead(ref displayInfo, TimingMethod.RealTime) ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
+        var color = IsSplitAhead(ref displayInfo, DisplayTimingMethod) ? ColorsConfig.AheadColor : ColorsConfig.BehindColor;
 
-        return (color, displayInfo.DeltaTimes[TimingMethod.RealTime].ToSpeedtoolDTString() + " " + displayInfo.Times[TimingMethod.RealTime].ToSpeedToolTimerString());
+        return (color, displayInfo.DeltaTimes[DisplayTimingMethod].ToSpeedtoolDTString() + " " + displayInfo.Times[DisplayTimingMethod].ToSpeedToolTimerString());
     }
 
     private bool IsSplitAhead(ref SplitDisplayInfo displayInfo, TimingMethod timingMethod)

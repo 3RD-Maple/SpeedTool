@@ -58,6 +58,14 @@ namespace Hook
                 {
                     p.SendString("debug_message Loaded script");
                     engine = new ScriptEngine(script, p);
+                    return;
+                }
+                if(cmd.StartsWith("start"))
+                {
+                    timer = new Timer();
+                    timer.Start();
+                    p.SendString("debug_message Timer starting");
+                    return;
                 }
             };
 
@@ -98,6 +106,12 @@ namespace Hook
                     p.Cycle();
                 if(engine != null)
                     engine.OnFrame();
+                if(timer != null)
+                {
+                    timer.Cycle(ScriptFunction.IsLoading);
+                    if(p != null)
+                        p.SendString("timer " + timer.Value.Ticks.ToString());
+                }
             }
             catch
             {
@@ -116,5 +130,6 @@ namespace Hook
 
         Pipe p;
         ScriptEngine engine;
+        Timer timer;
     }
 }

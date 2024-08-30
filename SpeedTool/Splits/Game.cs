@@ -1,5 +1,6 @@
 using System.IO.Compression;
 using System.Text.Json.Nodes;
+using SpeedTool.Timer;
 using SpeedTool.Util;
 
 namespace SpeedTool.Splits;
@@ -15,6 +16,12 @@ public class Game
     public Game(string name, string exeName, Category[] cats) : this(name, cats)
     {
         ExeName = exeName;
+    }
+
+    public Game(string name, string exeName, TimingMethod defTiming, string script, Category[] cats) : this(name, exeName, cats)
+    {
+        DefaultTimingMethod = defTiming;
+        Script = script;
     }
 
     public bool HasCategory(string name)
@@ -34,6 +41,10 @@ public class Game
             using(var file = new ZipArchive(ms, ZipArchiveMode.Create))
             {
                 file.CreateEntry("meta.json", GetMetaJson().ToString());
+                if(Script != "")
+                {
+                    file.CreateEntry("script.lua", Script);
+                }
 
                 for(int i = 0; i < categories.Length; i++)
                 {
@@ -55,6 +66,16 @@ public class Game
     /// </summary>
     public string ExeName { get; private set; } = "";
 
+    /// <summary>
+    /// Preffered timing for this game. Default is `TimingMethod.RealTime`
+    /// </summary>
+    public TimingMethod DefaultTimingMethod { get; private set; } = TimingMethod.RealTime;
+
+    /// <summary>
+    /// Game script to run on the injected timer
+    /// </summary>
+    public string Script { get; private set; } = "";
+
     public static Game LoadFromFile(string path)
     {
         Game g = new Game("", []);
@@ -64,6 +85,14 @@ public class Game
         var text = g.source.GetEntry("meta.json")!.AsText();
         var obj = JSONHelper.EnforceParseAsObject(text);
         g.Name = obj.EnforceGetString("Name");
+        if(obj.ContainsKey("DefaultTimingMethod"))
+            g.DefaultTimingMethod = (TimingMethod)obj.EnforceGetInt("DefaultTimingMethod");
+
+        var script = g.source.GetEntry("script.lua");
+        if(script != null)
+        {
+            g.Script = script!.AsText();
+        }
 
         var categories = g.source.Entries.Where(x => x.FullName.StartsWith("categories/")).ToArray();
         g.categories = new Category[categories.Length];
@@ -91,7 +120,8 @@ public class Game
     {
         JsonObject o = new JsonObject();
         o["Name"] = Name;
-        o[ExeName] = ExeName;
+        o["DefaultTimingMethod"] = (int)DefaultTimingMethod;
+        o["ExeName"] = ExeName;
 
         return o;
     }

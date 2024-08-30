@@ -22,6 +22,15 @@ static class JSONHelper
         return ret!;
     }
 
+    public static int EnforceGetInt(this JsonObject obj, string name)
+    {
+        if(!obj.ContainsKey(name))
+            throw new FormatException();
+        var ret = (int)obj[name]!;
+
+        return ret;
+    }
+
     public static JsonObject EnforceParseAsObject(string text)
     {
         var parsed = JsonNode.Parse(text);

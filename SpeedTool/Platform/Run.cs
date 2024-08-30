@@ -1,4 +1,3 @@
-using Silk.NET.Vulkan;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -206,9 +205,13 @@ public class Run : ISplitsSource
         if(currentSplit >= 0)
         {
             flattened[currentSplit].IsCurrent = false;
-            flattened[currentSplit].Times[TimingMethod.RealTime] = timer.CurrentTime;
+            for(int i = 0; i < (int)TimingMethod.Last; i++)
+            {
+                var tm = (TimingMethod)i; 
+                flattened[currentSplit].Times[tm] = Platform.SharedPlatform.GetTimerFor(tm).CurrentTime;
+            }
             if(comparison != null)
-                flattened[currentSplit].DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.Splits[currentSplit].Times[TimingMethod.RealTime];
+                flattened[currentSplit].DeltaTimes = flattened[currentSplit].Times - comparison.Splits[currentSplit].Times;
         }
 
         currentSplit++;
@@ -217,9 +220,13 @@ public class Run : ISplitsSource
         while(infoStack.Count > 0 && infoStack.Peek().Level >= flattened[currentSplit].Level)
         {
             var p = infoStack.Pop();
-            p.Times[TimingMethod.RealTime] = timer.CurrentTime;
+            for(int i = 0; i < (int)TimingMethod.Last; i++)
+            {
+                var tm = (TimingMethod)i; 
+                p.Times[tm] = Platform.SharedPlatform.GetTimerFor(tm).CurrentTime;
+            }
             if(comparison != null)
-                p.DeltaTimes[TimingMethod.RealTime] = flattened[currentSplit].Times[TimingMethod.RealTime] - comparison.Splits[currentSplit].Times[TimingMethod.RealTime];
+                p.DeltaTimes = flattened[currentSplit].Times - comparison.Splits[currentSplit].Times;
         }
 
         // Roll over to the first actual split in the tree
@@ -288,7 +295,8 @@ public class Run : ISplitsSource
 
     private void SaveRun()
     {
-        if(comparison == null || flattened.Last().Times[TimingMethod.RealTime] < comparison!.Times[TimingMethod.RealTime])
+        var tm = game.DefaultTimingMethod;
+        if(comparison == null || flattened.Last().Times[tm] < comparison!.Times[tm])
         {
             Platform.SharedPlatform.SaveRunAsPB(GetRunInfo());
         }
