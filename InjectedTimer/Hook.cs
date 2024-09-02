@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using EasyHook;
 using InjectedTimer;
+using InjectedTimer.D3D;
+using InjectedTimer.Hooking;
 
 namespace Hook
 {
@@ -39,13 +41,62 @@ namespace Hook
             string channelName)
         {
             // Install hooks
-            var buffersHook = LocalHook.Create(LocalHook.GetProcAddress("Gdi32.dll", "SwapBuffers"), new SwapBuffers_Delegate(MySwapBuffers), this);
-            buffersHook.ThreadACL.SetExclusiveACL( new int[] { 0 });
 
             // Wake up the process (required if using RemoteHooking.CreateAndInject)
             EasyHook.RemoteHooking.WakeUpProcess();
 
+            bool d3d9 = false;
             p = new Pipe();
+            LocalHook buffersHook = null;
+            if(APIHelper.HasModule("d3d9.dll"))
+            {
+                d3d9 = true;
+                p.SendString("debug_message Detected as Direct3D 9");
+                try
+                {
+                    using(var D3D = new D3D9())
+                    {
+                        var hWnd = APIHelper.GetCurrentProcessWindows()[0];
+                        var para = new D3DHook.D3DPRESENT_PARAMETERS()
+                        {
+                            Windowed = 1,
+                            SwapEffect = D3DHook.D3DSWAPEFFECT_DISCARD,
+                            hDeviceWindow = hWnd
+                        };
+
+                        using(var device = D3D.CreateDevice(0, D3DHook.D3DDEVTYPE_HAL, hWnd, D3DHook.D3DCREATE_HARDWARE_VERTEXPROCESSING, para))
+                        {
+                            endSceneHook = new HookedFunction<D3D9Device.EndScene_Delegate>(device.EndSceneFuncPtr, new D3D9Device.EndScene_Delegate(MyEndScene));
+                            presentHook = new HookedFunction<D3D9Device.Present_Delegate>(device.PresentFuncPtr, new D3D9Device.Present_Delegate(MyPresent));
+                        }
+                    }
+                    using(var D3DEx = new D3D9Ex())
+                    {
+                        var hWnd = APIHelper.GetCurrentProcessWindows()[0];
+                        var para = new D3DHook.D3DPRESENT_PARAMETERS()
+                        {
+                            Windowed = 1,
+                            SwapEffect = D3DHook.D3DSWAPEFFECT_DISCARD,
+                            hDeviceWindow = hWnd
+                        };
+
+                        using(var device = D3DEx.CreateDeviceEx(0, D3DHook.D3DDEVTYPE_HAL, hWnd, D3DHook.D3DCREATE_HARDWARE_VERTEXPROCESSING, para))
+                        {
+                            presentExHook = new HookedFunction<D3D9DeviceEx.PresentEx_Delegate>(device.PresentExFuncPtr, new D3D9DeviceEx.PresentEx_Delegate(MyPresentEx));
+                        }
+                    }
+                }
+                catch
+                {
+                    p.SendString("debug_message Installing DirectX hook failed");
+                }
+            }
+
+            if(!d3d9)
+                buffersHook = LocalHook.Create(LocalHook.GetProcAddress("Gdi32.dll", "SwapBuffers"), new SwapBuffers_Delegate(MySwapBuffers), this);
+            if(buffersHook != null)
+                buffersHook.ThreadACL.SetExclusiveACL( new int[] { 0 });
+
             p.OnIncomingCmd += (object sender, string cmd) =>
             {
                 if(cmd.StartsWith("script "))
@@ -98,7 +149,7 @@ namespace Hook
         [DllImport("Gdi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
         static extern uint SwapBuffers(IntPtr unnamedParam1);
 
-        uint MySwapBuffers(IntPtr unnamedParam1)
+        private void CycleInternal()
         {
             try
             {
@@ -118,6 +169,29 @@ namespace Hook
                 if(p != null)
                     p.SendString("debug_message Something went wrong");
             }
+        }
+
+        int MyEndScene(IntPtr pThis)
+        {
+            // CycleInternal();
+            return endSceneHook.Original(pThis);
+        }
+
+        int MyPresent(IntPtr pThis, IntPtr pSourceRect, IntPtr pDestRect, IntPtr hDestWindowOverride, IntPtr pDirtyRegion)
+        {
+            CycleInternal();
+            return presentHook.Original(pThis, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion);
+        }
+
+        int MyPresentEx(IntPtr pThis, IntPtr pSourceRect, IntPtr pDestRect, IntPtr hDestWindowOverride, IntPtr pDirtyRegion, int flags)
+        {
+            CycleInternal();
+            return presentExHook.Original(pThis, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, flags);
+        }
+
+        uint MySwapBuffers(IntPtr unnamedParam1)
+        {
+            CycleInternal();
             return SwapBuffers(unnamedParam1);
         }
 
@@ -131,5 +205,9 @@ namespace Hook
         Pipe p;
         ScriptEngine engine;
         Timer timer;
+
+        HookedFunction<D3D9Device.EndScene_Delegate> endSceneHook;
+        HookedFunction<D3D9Device.Present_Delegate> presentHook;
+        HookedFunction<D3D9DeviceEx.PresentEx_Delegate> presentExHook;
     }
 }
