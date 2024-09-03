@@ -164,10 +164,10 @@ namespace Hook
                         p.SendString("timer " + timer.Value.Ticks.ToString());
                 }
             }
-            catch
+            catch(Exception ex)
             {
                 if(p != null)
-                    p.SendString("debug_message Something went wrong");
+                    p.SendString("debug_message " + ex.Message.Replace("/r", "").Replace("\n", "__"));
             }
         }
 

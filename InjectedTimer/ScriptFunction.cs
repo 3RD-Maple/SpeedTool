@@ -14,7 +14,7 @@ namespace InjectedTimer
             Sink.SendString("debug_message " + message);
         }
 
-        public static void DebugMessageAddress(IntPtr addr)
+        public static void DebugMessageAddress(long addr)
         {
             Sink.SendString("debug_message 0x" + addr.ToString(IntPtr.Size == 8 ? "X16" : "X8"));
         }
@@ -29,9 +29,9 @@ namespace InjectedTimer
             IsLoading = false;
         }
 
-        public static int ReadInt32(IntPtr addr)
+        public static int ReadInt32(long addr)
         {
-            return APIHelper.ReadInt32(addr);
+            return APIHelper.ReadInt32((IntPtr)addr);
         }
 
         public static Pipe Sink;

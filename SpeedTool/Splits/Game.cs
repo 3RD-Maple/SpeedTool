@@ -87,6 +87,8 @@ public class Game
         g.Name = obj.EnforceGetString("Name");
         if(obj.ContainsKey("DefaultTimingMethod"))
             g.DefaultTimingMethod = (TimingMethod)obj.EnforceGetInt("DefaultTimingMethod");
+        if(obj.ContainsKey("ExeName"))
+            g.ExeName = obj.EnforceGetString("ExeName");
 
         var script = g.source.GetEntry("script.lua");
         if(script != null)

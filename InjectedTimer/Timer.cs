@@ -32,6 +32,8 @@ namespace InjectedTimer
                 return;
             }
 
+            lastFrameLoading = false;
+
             value = accumulatedValue + sw.Elapsed;
         }
 
