@@ -14,6 +14,7 @@ using Silk.NET.Maths;
 using Sizes = Silk.NET.Maths.Vector2D<int>;
 using ImGuiNET;
 using System.Numerics;
+using SpeedTool.Platform.EventsArgs;
 
 public class Window : IDisposable
 {
@@ -81,6 +82,10 @@ public class Window : IDisposable
 
         window.Closing += () =>
         {
+            var args = new BeforeClosingEventArgs();
+            BeforeClosing?.Invoke(this, args);
+            if(!args.ShouldClose)
+                return;
             OnClosing();
             input?.Dispose();
             gl?.Dispose();
@@ -105,6 +110,8 @@ public class Window : IDisposable
 
         Configuration.OnConfigurationChanged += HandleConfigUpdate;
     }
+
+    public event EventHandler<BeforeClosingEventArgs>? BeforeClosing;
 
     private void HandleConfigUpdate(object? sender, IConfigurationSection section)
     {
