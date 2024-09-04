@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
+using SpeedTool.Platform.Linux;
 using Dialogs = SpeedTool.Platform.Windows.WindowsFileDialog;
+
 
 namespace SpeedTool.Util;
 
@@ -23,5 +25,10 @@ public static class FileUtil
         }
         else
             throw new NotImplementedException();
+    }
+    
+    public static void OpenFileLinuxOrMacOS()
+    {
+        Platform.Platform.SharedPlatform.AddWindow(new UniversalFileDialog());
     }
 }

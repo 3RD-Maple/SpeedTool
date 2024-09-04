@@ -65,6 +65,12 @@ public sealed class GameEditorWindow : Platform.Window
             {
                 FileUtil.OpenFile(file => script = File.ReadAllText(file));
             }
+            if(ImGui.Button("Load script Linux"))
+            {
+                ImGui.PopFont(); //Popping current Font and then pushing it back in order to avoid memory corruption
+                FileUtil.OpenFileLinuxOrMacOS();
+                ImGui.PushFont(GetFont("UI"));
+            }
         }
         ImGuiExtensions.TimingMethodSelector("Default timimng method", ref timingMethod);
         ImGui.Separator();
