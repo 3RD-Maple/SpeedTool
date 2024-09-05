@@ -8,11 +8,14 @@ public sealed class ClassicUISettings : IConfigurationSection
 {
     public Vector4 ActiveSplitColor;
     public int ShownSplitsCount;
+
+    public bool ShowRTA = true;
     
     public void FromJSONObject(JsonObject node)
     {
         ActiveSplitColor = JSONHelper.Vector4FromJsonObject(node[$"ActiveSplitColor"]!.AsObject());
         ShownSplitsCount = (int)node["ShownSplitsCount"]!;
+        ShowRTA = (bool)node["ShowRTA"]!;
     }
 
     public JsonObject ToJSONObject()
@@ -20,6 +23,7 @@ public sealed class ClassicUISettings : IConfigurationSection
         var node = new JsonObject();
         node["ActiveSplitColor"] = ActiveSplitColor.ToJsonObject();
         node["ShownSplitsCount"] = ShownSplitsCount;
+        node["ShowRTA"] = ShowRTA;
         
         return node;
     }

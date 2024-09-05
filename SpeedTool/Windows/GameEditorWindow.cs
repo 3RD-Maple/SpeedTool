@@ -103,7 +103,7 @@ public sealed class GameEditorWindow : Platform.Window
         }
 
         ImGui.Separator();
-        if(ImGui.Button("Test save"))
+        if(ImGui.Button("Save game"))
         {
             FileUtil.SaveFile(fileName => CollectGame().SaveToFile(fileName));
         }
@@ -143,7 +143,7 @@ public sealed class GameEditorWindow : Platform.Window
                 string tmpName = name;
                 categories = categories.Where(x => x.Name != tmpName).ToArray();
             }
-            ImGui.Text("Splits:");
+            ImGui.Text("Splits: [Right click on split for options]");
 
             for(int i = 0; i < splits.Length; i++)
             {
