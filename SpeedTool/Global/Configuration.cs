@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Nodes;
+﻿using System.Text.Json;
+using System.Text.Json.Nodes;
 
 
 namespace SpeedTool.Global
@@ -47,20 +48,17 @@ namespace SpeedTool.Global
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="NotInitializedException"></exception>
-        public static T? GetSection<T>(string? section = null) where T : IConfigurationSection, new()
+        public static T? GetSection<T>(string? section = null) where T : class, IConfigurationSection, new()
         {
             if (!_init) throw new NotInitializedException();
 
             section ??= typeof(T).Name;
-            T ret = new T();
             if(!_mappedValues!.ContainsKey(section))
-                throw new InvalidOperationException($"Section {section} is missing");
-            
-            ret.FromJSONObject(_mappedValues.Single(x => x.Key == section).Value!.AsObject());
-            return ret;
+                return new();
+
+            var value = _mappedValues.Single(x => x.Key == section).Value!;
+            return JsonSerializer.Deserialize(value, typeof(T), SourceGeneratorContext.Default) as T;
         }
-        
-       
 
         /// <summary>
         /// Update loaded in-memory config and update it file on disc
@@ -70,7 +68,7 @@ namespace SpeedTool.Global
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="NotInitializedException"
-        public static bool SetSection<T>(T value, string? section = null) where T : IConfigurationSection
+        public static bool SetSection<T>(T value, string? section = null) where T : class, IConfigurationSection
         {
 
             if (!_init) throw new NotInitializedException();
@@ -79,7 +77,7 @@ namespace SpeedTool.Global
             {
                 section ??= typeof(T).Name;
                 _mappedValues!.Remove(section);
-                _mappedValues![section] = value.ToJSONObject();
+                _mappedValues![section] = JsonSerializer.SerializeToNode(value, typeof(T), SourceGeneratorContext.Default);
                 _loadedCfg = _mappedValues.ToString();
                 using var writer = new StreamWriter(File.Create(_filepath!));
                 writer.Write(_loadedCfg);
@@ -87,14 +85,13 @@ namespace SpeedTool.Global
                 return true;
             }
         }
-        
+
         public static void NotifyConfigurationChanged(IConfigurationSection section)
         {
             OnConfigurationChanged?.Invoke(Platform.Platform.SharedPlatform, section);
         }
-    
-        public static event EventHandler<IConfigurationSection>? OnConfigurationChanged;
 
+        public static event EventHandler<IConfigurationSection>? OnConfigurationChanged;
 
         /// <summary>
         /// Thrown when application tries to use service that was not properly initialized

@@ -34,7 +34,6 @@ internal class SpeedToolTimerUI : TimerUIBase
 
     public override void Draw(double dt, ISplitsSource splits, ITimerSource timer)
     {
-        speedToolConfig = Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
         drw.SecondsColor = speedToolConfig.SecondsClockTimerColor;
         drw.MinutesColor = speedToolConfig.MinutesClockTimerColor;
         drw.HoursColor = speedToolConfig.HoursClockTimerColor;
@@ -45,7 +44,7 @@ internal class SpeedToolTimerUI : TimerUIBase
     public override void ReloadConfig(object? sender, IConfigurationSection? section)
     {
         if((section as ColorSettings) != null)
-        colorsConfig = (section as ColorSettings)!;
+            colorsConfig = (section as ColorSettings)!;
 
         if((section as SpeedToolUISettings) != null)
             speedToolConfig = (section as SpeedToolUISettings)!;
@@ -61,7 +60,6 @@ internal class SpeedToolTimerUI : TimerUIBase
             stringShortened = ImGuiExtensions.ShortenStringForWidth((int)width, currentSplit);
         }
 
-        colorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
         var style = ImGui.GetStyle();
         style.FramePadding = new Vector2(0, 0);
         style.ItemSpacing = new Vector2(0, 0);

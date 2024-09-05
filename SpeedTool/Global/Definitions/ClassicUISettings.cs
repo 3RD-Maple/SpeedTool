@@ -1,30 +1,18 @@
 using System.Numerics;
-using System.Text.Json.Nodes;
-using SpeedTool.Util;
+using System.Text.Json.Serialization;
+using SpeedTool.JSON;
 
 namespace SpeedTool.Global.Definitions;
 
 public sealed class ClassicUISettings : IConfigurationSection
 {
+    [JsonInclude]
+    [JsonConverter(typeof(Vector4Converter))]
     public Vector4 ActiveSplitColor;
-    public int ShownSplitsCount;
 
+    [JsonInclude]
+    public int ShownSplitsCount = 7;
+
+    [JsonInclude]
     public bool ShowRTA = true;
-    
-    public void FromJSONObject(JsonObject node)
-    {
-        ActiveSplitColor = JSONHelper.Vector4FromJsonObject(node[$"ActiveSplitColor"]!.AsObject());
-        ShownSplitsCount = (int)node["ShownSplitsCount"]!;
-        ShowRTA = (bool)node["ShowRTA"]!;
-    }
-
-    public JsonObject ToJSONObject()
-    {
-        var node = new JsonObject();
-        node["ActiveSplitColor"] = ActiveSplitColor.ToJsonObject();
-        node["ShownSplitsCount"] = ShownSplitsCount;
-        node["ShowRTA"] = ShowRTA;
-        
-        return node;
-    }
 }

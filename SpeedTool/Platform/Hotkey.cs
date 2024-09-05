@@ -8,11 +8,11 @@ using SharpHook.Native;
 public struct Hotkey
 {
     public Hotkey() { }
-    public bool Alt = false;
-    public bool Ctrl = false;
-    public bool Shift = false;
+    public bool Alt { get; set; }= false;
+    public bool Ctrl { get; set; }= false;
+    public bool Shift { get; set; }= false;
 
-    public KeyCode Key = KeyCode.VcSpace;
+    public KeyCode Key { get; set; }= KeyCode.VcSpace;
 
     public bool IsTriggered
     {

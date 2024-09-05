@@ -1,18 +1,18 @@
 {
   "Viola": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.6,
       "G": 0.329,
       "B": 1.0,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.925,
       "G": 0.96,
       "B": 0.564,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.494,
       "G": 0.129,
       "B": 0.5,
@@ -20,19 +20,19 @@
     }
   },
   "Breeze": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 1.0,
       "G": 0.85,
       "B": 0.7,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.145,
       "G": 0.733,
       "B": 0.90,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.333,
       "G": 0.196,
       "B": 0.811,
@@ -40,19 +40,19 @@
     }
   },
   "Macaw": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.0,
       "G": 0.705,
       "B": 0.733,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.960,
       "G": 0.835,
       "B": 0.117,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.321,
       "G": 0.294,
       "B": 0.364,
@@ -60,19 +60,19 @@
     }
   },
   "Horse": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.552,
       "G": 0.423,
       "B": 0.396,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.941,
       "G": 0.882,
       "B": 0.764,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.588,
       "G": 0.533,
       "B": 0.600,
@@ -80,19 +80,19 @@
     }
   },
   "Mould": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.584,
       "G": 0.650,
       "B": 0.760,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.521,
       "G": 0.258,
       "B": 0.380,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.898,
       "G": 0.364,
       "B": 0.419,
@@ -100,19 +100,19 @@
     }
   },
   "Grapefruit": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 1.0,
       "G": 0.611,
       "B": 0.349,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.380,
       "G": 0.015,
       "B": 0.109,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.905,
       "G": 0.180,
       "B": 0.376,
@@ -120,19 +120,19 @@
     }
   },
   "Cold": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.250,
       "G": 0.223,
       "B": 0.317,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.517,
       "G": 0.325,
       "B": 1.0,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.584,
       "G": 0.650,
       "B": 0.760,
@@ -140,19 +140,19 @@
     }
   },
   "Grass": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.301,
       "G": 0.462,
       "B": 0.486,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.803,
       "G": 0.882,
       "B": 0.254,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.290,
       "G": 0.301,
       "B": 0.337,
@@ -160,19 +160,19 @@
     }
   },
   "Watermelon": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.290,
       "G": 0.650,
       "B": 0.396,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.952,
       "G": 0.886,
       "B": 0.784,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.776,
       "G": 0.278,
       "B": 0.313,
@@ -180,19 +180,19 @@
     }
   },
   "Peach": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.952,
       "G": 0.439,
       "B": 0.258,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 1.0,
       "G": 0.866,
       "B": 0.560,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.552,
       "G": 0.423,
       "B": 0.396,
@@ -200,19 +200,19 @@
     }
   },
   "Neon": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 0.960,
       "G": 0.290,
       "B": 1.494,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.262,
       "G": 0.149,
       "B": 0.235,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.203,
       "G": 0.882,
       "B": 0.929,
@@ -220,19 +220,19 @@
     }
   },
   "Custom": {
-    "SecondsClockTimeColor": {
+    "SecondsClockTimerColor": {
       "R": 1.0,
       "G": 0.0,
       "B": 0.0,
       "A": 1.0
     },
-    "MinutesClockTimeColor": {
+    "MinutesClockTimerColor": {
       "R": 0.0,
       "G": 1.0,
       "B": 0.0,
       "A": 1.0
     },
-    "HoursClockTimeColor": {
+    "HoursClockTimerColor": {
       "R": 0.0,
       "G": 0.0,
       "B": 1.0,

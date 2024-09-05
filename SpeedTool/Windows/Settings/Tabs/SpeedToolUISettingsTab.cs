@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using ImGuiNET;
 using SpeedTool.Global;
@@ -32,7 +33,7 @@ public sealed class SpeedToolUISettingsTab : TabBase
 
             themes = jsonObject.ToDictionary(
                 kvp => kvp.Key,
-                kvp => new SpeedToolUITheme(kvp.Value!.AsObject())
+                kvp => (JsonSerializer.Deserialize(kvp.Value, typeof(SpeedToolUITheme), SourceGeneratorContext.Default) as SpeedToolUITheme)!
             );
         }
     }

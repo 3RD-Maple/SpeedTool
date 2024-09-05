@@ -1,18 +1,17 @@
 using System.Numerics;
-using System.Text.Json.Nodes;
-using SpeedTool.Util;
+using System.Text.Json.Serialization;
+using SpeedTool.JSON;
 
 namespace SpeedTool.Global.Definitions;
 
 public sealed class SpeedToolUITheme
 {
-    public SpeedToolUITheme(JsonObject node)
-    {
-        SecondsClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"SecondsClockTimeColor"]!.AsObject());
-        MinutesClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"MinutesClockTimeColor"]!.AsObject());
-        HoursClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"HoursClockTimeColor"]!.AsObject());
-    }
+    [JsonConverter(typeof(Vector4Converter))]
     public Vector4 SecondsClockTimerColor { get; set; }
+
+    [JsonConverter(typeof(Vector4Converter))]
     public Vector4 MinutesClockTimerColor { get; set; }
+
+    [JsonConverter(typeof(Vector4Converter))]
     public Vector4 HoursClockTimerColor { get; set; }
 }

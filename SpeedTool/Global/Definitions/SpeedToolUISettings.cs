@@ -1,34 +1,23 @@
 using System.Numerics;
-using System.Text.Json.Nodes;
-using SpeedTool.Util;
+using System.Text.Json.Serialization;
+using SpeedTool.JSON;
 
 namespace SpeedTool.Global.Definitions;
 
 public sealed class SpeedToolUISettings : IConfigurationSection
 {
+    [JsonConverter(typeof(Vector4Converter))]
+    [JsonInclude]
     public Vector4 SecondsClockTimerColor;
+
+    [JsonConverter(typeof(Vector4Converter))]
+    [JsonInclude]
     public Vector4 MinutesClockTimerColor;
+
+    [JsonConverter(typeof(Vector4Converter))]
+    [JsonInclude]
     public Vector4 HoursClockTimerColor;
 
-    public string Theme { get; set; } = "Light";
-
-    public void FromJSONObject(JsonObject node)
-    {
-        SecondsClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"SecondsClockTimeColor"]!.AsObject());
-        MinutesClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"MinutesClockTimeColor"]!.AsObject());
-        HoursClockTimerColor = JSONHelper.Vector4FromJsonObject(node[$"HoursClockTimeColor"]!.AsObject());
-        Theme = (string)node["Theme"]!.AsValue()!;
-    }
-
-    public JsonObject ToJSONObject()
-    {
-        var node = new JsonObject();
-        node["SecondsClockTimeColor"] = SecondsClockTimerColor.ToJsonObject();
-        node["MinutesClockTimeColor"] = MinutesClockTimerColor.ToJsonObject();
-        node["HoursClockTimeColor"] = HoursClockTimerColor.ToJsonObject();
-
-        node["Theme"]= Theme;
-
-        return node;
-    }
+    [JsonInclude]
+    public string Theme = "Light";
 }
