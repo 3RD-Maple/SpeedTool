@@ -56,10 +56,14 @@ public sealed class CodeEditorWindow : Window
     {
         var lang = LanguageDefinition.Lua;
         lang.mIdentifiers.Clear();
+        lang.mIdentifiers["module_base_address"] = new() { mDeclaration = "Get module's base address. Module search is case-insensitive" };
         lang.mIdentifiers["read_int"] = new() { mDeclaration = "Read a 32-bit integer" };
+        lang.mIdentifiers["read_ascii"] = new() { mDeclaration = "Read a sequence of ASCII characters" };
         lang.mIdentifiers["timer_set_loading"] = new() { mDeclaration = "Set timer to loading" };
         lang.mIdentifiers["timer_set_not_loading"] = new() { mDeclaration = "Set timer to not loading" };
+
         lang.mIdentifiers["debug_message"] = new() { mDeclaration = "Send a debug message" };
+        lang.mIdentifiers["debug_message_address"] = new() { mDeclaration = "Send a debug message containing an address" };
         return lang;
     }
 

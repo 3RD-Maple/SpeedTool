@@ -40,6 +40,16 @@ public sealed class Platform
         }
     }
 
+    public bool IsRunStarted
+    {
+        get
+        {
+            if(run == null)
+                return false;
+            return run.Started;
+        }
+    }
+
     public Category? CurrentCategory
     {
         get
