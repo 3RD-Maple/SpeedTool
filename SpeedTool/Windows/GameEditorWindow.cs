@@ -2,6 +2,7 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
+using SpeedTool.Platform.EventsArgs;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -47,6 +48,7 @@ public sealed class GameEditorWindow : Platform.Window
 
     protected override void OnUI(double dt)
     {
+        Action? afterUi = null;
         var viewport = ImGui.GetMainViewport();
         ImGui.SetNextWindowPos(new Vector2(0, 0));
         ImGui.SetNextWindowSize(viewport.Size);
@@ -61,9 +63,23 @@ public sealed class GameEditorWindow : Platform.Window
         ImGui.InputText("Exe Name", ref ExeName, 255);
         if(ExeName != "")
         {
-            if(ImGui.Button("Load script"))
+            if(ImGui.Button("Edit script"))
             {
-                FileUtil.OpenFile(file => script = File.ReadAllText(file));
+                if(script == "")
+                {
+                    script = DEFAULT_SCRIPT;
+                }
+                afterUi = () =>
+                {
+                    var code = new CodeEditorWindow(script);
+
+                    // This is hella bad because no unsubscirbe, but should be good enough for now
+                    code.BeforeClosing += (object? sender, BeforeClosingEventArgs args) =>
+                    {
+                        script = (sender as CodeEditorWindow)!.Code;
+                    };
+                    platform.AddWindow(code);
+                };
             }
             if(ImGui.Button("Load script Linux"))
             {
@@ -105,6 +121,8 @@ public sealed class GameEditorWindow : Platform.Window
 
         ImGui.PopFont();
         ImGui.End();
+
+        afterUi?.Invoke();
     }
 
     protected override void OnClosing()
@@ -277,4 +295,16 @@ public sealed class GameEditorWindow : Platform.Window
     private string script = "";
 
     private const string POPUP_NAME = "popup_meun";
+
+    private const string DEFAULT_SCRIPT = 
+@"
+function on_load()
+    -- this function will be executed when the script is loaded
+end
+
+function on_frame()
+    -- this function will be executed on each frame
+end
+";
+
 }
