@@ -121,27 +121,17 @@ internal class SpeedToolTimerUI : TimerUIBase
     private void DoStartButton(ITimerSource timer)
     {
         var sz = new Vector2(250, 50);
-        switch (timer.CurrentState)
-        {
-            case TimerState.NoState:
-                if (ImGui.Button("Start", sz))
-                    timer.Start();
-                break;
-            case TimerState.Running:
-                if (ImGui.Button("Split", sz))
-                    timer.Stop();
-                break;
-            default:
-                if (ImGui.Button("Reset", sz))
-                    timer.Reset();
-                break;
-        }
+        var text = Platform.Platform.SharedPlatform.IsRunStarted ? "Split" : "Start";
+        if(Platform.Platform.SharedPlatform.IsRunFinished)
+            text = "Reset";
+        if(ImGui.Button(text, sz))
+            Platform.Platform.SharedPlatform.Split();
     }
 
     private void DoPauseButton(ITimerSource timer)
     {
-        var sz = new Vector2(250, 50);
         var text = timer.CurrentState == TimerState.Paused ? "Unpause" : "Pause";
+        var sz = new Vector2(250, 50);
         if (ImGui.Button(text, sz))
             Platform.Platform.SharedPlatform.Pause();
     }

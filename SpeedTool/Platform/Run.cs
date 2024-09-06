@@ -17,6 +17,8 @@ public class Run : ISplitsSource
     }
 
     public bool Started { get; private set; }
+    public bool IsFinished { get; private set; }
+
     public ITimerSource Timer
     {
         get
@@ -29,6 +31,10 @@ public class Run : ISplitsSource
 
     public void Split()
     {
+        // No splitting when paused!
+        if(timer.CurrentState == TimerState.Paused)
+            return;
+
         if(!Started)
         {
             if(timer.CurrentState != TimerState.NoState)
@@ -36,6 +42,7 @@ public class Run : ISplitsSource
                 Platform.SharedPlatform.ReloadRun();
                 timer.Reset();
                 currentSplit = 0;
+                IsFinished = false;
                 return;
             }
             Started = true;
@@ -52,11 +59,18 @@ public class Run : ISplitsSource
         {
             timer.Stop();
             Started = false;
+            IsFinished = true;
             currentSplit--;
             SaveRun();
             return;
         }
         flattened[currentSplit].IsCurrent = true;
+    }
+
+    public void Pause()
+    {
+        if(Started)
+            timer.Pause();
     }
 
     public void SkipSplit()

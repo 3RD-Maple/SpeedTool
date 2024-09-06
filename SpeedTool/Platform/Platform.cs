@@ -50,6 +50,16 @@ public sealed class Platform
         }
     }
 
+    public bool IsRunFinished
+    {
+        get
+        {
+            if(run == null)
+                return false;
+            return run.IsFinished;
+        }
+    }
+
     public Category? CurrentCategory
     {
         get
@@ -84,7 +94,8 @@ public sealed class Platform
 
     public void Pause()
     {
-        // TODO: Add later
+        run?.Pause();
+        injector?.Pause();
     }
 
     public void NextSplit()
