@@ -81,10 +81,21 @@ public sealed class GameEditorWindow : Platform.Window
                     platform.AddWindow(code);
                 };
             }
-            if(ImGui.Button("Load script Linux"))
+            
+            if(ImGui.Button("Load script"))
+            {
+                FileUtil.OpenFile(file => script = File.ReadAllText(file));
+            }
+            if(ImGui.Button("Load script universal"))
             {
                 ImGui.PopFont(); //Popping current Font and then pushing it back in order to avoid memory corruption
-                FileUtil.OpenFileLinuxOrMacOS();
+                FileUtil.OpenFileLinuxOrMacOS(file =>
+                {
+                    if (File.Exists(file))
+                    {
+                        script = File.ReadAllText(file);
+                    }
+                });
                 ImGui.PushFont(GetFont("UI"));
             }
         }
@@ -121,7 +132,7 @@ public sealed class GameEditorWindow : Platform.Window
 
         ImGui.PopFont();
         ImGui.End();
-
+        
         afterUi?.Invoke();
     }
 
@@ -295,7 +306,7 @@ public sealed class GameEditorWindow : Platform.Window
     private string script = "";
 
     private const string POPUP_NAME = "popup_meun";
-
+    
     private const string DEFAULT_SCRIPT = 
 @"
 function on_load()

@@ -14,21 +14,33 @@ public static class FileUtil
             Dialogs.ShowSaveDialog(onSave);
         }
         else
-            throw new NotImplementedException();
+        {
+            SaveFileLinuxOrMacOS(onSave);
+        }
     }
 
     public static void OpenFile(Action<string> onLoad)
     {
         if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
-        {
+        { 
             Dialogs.ShowOpenDialog(onLoad);
         }
         else
-            throw new NotImplementedException();
+        {
+            OpenFileLinuxOrMacOS(onLoad);
+        }
     }
     
-    public static void OpenFileLinuxOrMacOS()
+    public static void OpenFileLinuxOrMacOS(Action<string> onLoad)
     {
-        Platform.Platform.SharedPlatform.AddWindow(new UniversalFileDialog());
+        var dialog = new UniversalFileDialog(onLoad, DialogOperation.Open);
+        Platform.Platform.SharedPlatform.AddWindow(dialog);
+        dialog.OpenFolder(onLoad);
+    }
+    
+    public static void SaveFileLinuxOrMacOS(Action<string> onSave)
+    {
+        var dialog = new UniversalFileDialog(onSave, DialogOperation.Save);
+        Platform.Platform.SharedPlatform.AddWindow(dialog);
     }
 }

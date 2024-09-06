@@ -7,12 +7,13 @@ namespace SpeedTool.Platform.Linux;
 
 public sealed class UniversalFileDialog : Window
 {
-
     private UniversalDirectory directory;
 
-    public UniversalFileDialog() : base(options, new Vector2D<int>(500, 550))
+    public UniversalFileDialog(Action<string> onLoad, DialogOperation operation) : base(options, new Vector2D<int>(500, 550))
     {
-        directory = new UniversalDirectory(AppContext.BaseDirectory.ToString());
+        directory = new UniversalDirectory(AppContext.BaseDirectory);
+        this.onLoad = onLoad;
+        operationMode = operation;
     }
 
     private static WindowOptions options
@@ -59,28 +60,16 @@ public sealed class UniversalFileDialog : Window
                 if (directory.TotalFiles!.Count > 0)
                 {
                     selectedDirectory = Path.Combine(directory.CurrentPath, directory.TotalFiles[0]);
-                    folderSelected = directory.Directories!.Contains(directory.TotalFiles[0]);
+                    isfolderSelected = directory.Directories!.Contains(directory.TotalFiles[0]);
                 }
             }
         }
 
-        ImGui.SameLine();
-        
-        ImGui.BeginDisabled(!folderSelected);
-        
-        if (ImGui.Button("Open", new Vector2(ImGui.GetWindowWidth() * 0.1f, ImGui.GetWindowHeight() * 0.1f)))
-        {
-            if (folderSelected)
-            {
-                OpenFolder(selectedDirectory!);
-            }
-        }
-        
-        ImGui.EndDisabled();
+       
 
         ImGui.Text(directory.CurrentPath);
 
-        if (ImGui.BeginListBox("", new Vector2(ImGui.GetWindowWidth() * 0.75f, ImGui.GetWindowHeight() * 0.6f)))
+        if (ImGui.BeginListBox("", new Vector2(ImGui.GetWindowWidth() * 1f, ImGui.GetWindowHeight() * 0.6f)))
         {
             for (int i = 0; i < directory.TotalFiles!.Count; i++)
             {
@@ -89,11 +78,11 @@ public sealed class UniversalFileDialog : Window
                 {
                     currentItem = i;
                     selectedDirectory = Path.Combine(directory.CurrentPath, directory.TotalFiles[i]);
-                    folderSelected = directory.Directories!.Contains(directory.TotalFiles[i]);
+                    isfolderSelected = directory.Directories!.Contains(directory.TotalFiles[i]);
 
                     if (ImGui.IsMouseDoubleClicked(ImGuiMouseButton.Left))
                     {
-                        OpenFolder(selectedDirectory);
+                        OpenFolder(onLoad);
                     }
                 }
 
@@ -104,27 +93,86 @@ public sealed class UniversalFileDialog : Window
             }
         }
         ImGui.EndListBox();
+
+        
+        
+        
+        ImGui.InputText("", ref fileName, 255);
+        
+        ImGui.SameLine();
+        
+        
+        ImGui.SameLine();
+        
+        if (operationMode == DialogOperation.Open)
+        {
+            if (ImGui.Button("Open", new Vector2(ImGui.GetWindowWidth() * 0.3f, ImGui.GetWindowHeight() * 0.05f)))
+            {
+                if (isfolderSelected)
+                {
+                    OpenFolder(path => onLoad(path));
+                }
+            }
+        }
+        else
+        {
+           
+            if (ImGui.Button("Save", new Vector2(ImGui.GetWindowWidth() * 0.3f, ImGui.GetWindowHeight() * 0.05f)))
+            {
+                SaveFile(path => onLoad(path));
+            }
+        }
+        
+        if (ImGui.Button("Cancel", new Vector2(ImGui.GetWindowWidth() * 0.4f, ImGui.GetWindowHeight() * 0.05f)))
+        {
+            Close();
+        }
     }
 
     
-    private void OpenFolder(string selectedFolder)
+    
+    public void OpenFolder(Action<string> onOpen)
     {
-        if (Directory.Exists(selectedFolder))
+        if (Directory.Exists(selectedDirectory))
         {
-            directory.CurrentPath = selectedFolder;
+            directory.CurrentPath = selectedDirectory;
             directory.RefreshDirectory();
 
             if (directory.TotalFiles!.Count > 0)
             {
                 selectedDirectory = Path.Combine(directory.CurrentPath, directory.TotalFiles[0]);
-                folderSelected = directory.Directories!.Contains(directory.TotalFiles[0]);
+                isfolderSelected = directory.Directories!.Contains(directory.TotalFiles[0]);
+
+                onOpen(selectedDirectory);
             }
         }
+        else
+        {
+            onOpen(Path.GetFullPath(directory.CurrentPath));
+            onOpen?.Invoke(Path.GetFullPath(directory.CurrentPath));
+            Close();
+        }
+    }
+    
+    public void SaveFile(Action<string> onSave)
+    {
+        var fullPath = Path.Combine(directory.CurrentPath, fileName) + ".stg";
+
+       if (!string.IsNullOrEmpty(fileName))
+       {
+           onSave?.Invoke(fullPath);
+       }
     }
 
+    private readonly DialogOperation operationMode;
+
+    private string fileName = "";
+    
+    private Action<string> onLoad;
+    
     private string? selectedDirectory = AppContext.BaseDirectory;
 
-    private bool folderSelected;
+    private bool isfolderSelected;
 
     private int currentItem;
 }
