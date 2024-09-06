@@ -42,7 +42,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         {
             if(IsHooked)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(50);
                 if(p != null)
                 {
                     if(!p.IsOpened)
@@ -68,7 +68,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
                 }
                 else
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(500);
                     continue;
                 }
             }
