@@ -103,6 +103,9 @@ public class Game
             g.categories[i] = Category.FromJson(JSONHelper.EnforceParseAsObject(categories[i].AsText()));
         }
 
+        g.source.Dispose();
+        g.source = null;
+
         return g;
     }
 

@@ -94,6 +94,12 @@ namespace Hook
                     p.SendString("debug_message Timer starting");
                     return;
                 }
+                if(cmd == "reset")
+                {
+                    timer = null;
+                    p.SendString("debug_message Timer reset");
+                    return;
+                }
             };
 
             try

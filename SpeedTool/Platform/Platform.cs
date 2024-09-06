@@ -218,6 +218,24 @@ public sealed class Platform
     {
         if(game == null)
             return;
+        if(injector == null)
+            LoadInjector();
+        if(injector != null)
+            injector.Reset();
+
+        run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
+        sources[(int)TimingMethod.RealTime] = run.Timer;
+    }
+
+    public void Exit()
+    {
+        windows.ForEach(x => x.Close());
+    }
+
+    private void LoadInjector()
+    {
+        if(game == null)
+            return;
 
         if(InjectorHandler.IsInjectionAvailable)
         {
@@ -227,13 +245,6 @@ public sealed class Platform
         }
         else
             DebugLog.SharedInstance.Write("Injector unavailable, skipping injection");
-        run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
-        sources[(int)TimingMethod.RealTime] = run.Timer;
-    }
-
-    public void Exit()
-    {
-        windows.ForEach(x => x.Close());
     }
 
     List<Window> windows;
