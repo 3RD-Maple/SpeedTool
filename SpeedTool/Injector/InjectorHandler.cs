@@ -42,7 +42,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         {
             if(IsHooked)
             {
-                Thread.Sleep(10);
+                Thread.Sleep(50);
                 if(p != null)
                 {
                     if(!p.IsOpened)
@@ -68,7 +68,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
                 }
                 else
                 {
-                    Thread.Sleep(10);
+                    Thread.Sleep(500);
                     continue;
                 }
             }
@@ -134,6 +134,16 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         {
             var ticks = long.Parse(message.Split(" ")[1]);
             time = new TimeSpan(ticks);
+            return;
+        }
+        if(message == "start")
+        {
+            if(!Platform.Platform.SharedPlatform.IsRunStarted)
+                Platform.Platform.SharedPlatform.Split();
+        }
+        if(message == "split")
+        {
+            Platform.Platform.SharedPlatform.Split();
         }
     }
 

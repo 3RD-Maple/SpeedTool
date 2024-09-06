@@ -1,12 +1,13 @@
 using System;
+using System.Text;
 
 namespace InjectedTimer
 {
     public static class ScriptFunction
     {
-        public static IntPtr GetModuleAddress(string name)
+        public static long GetModuleAddress(string name)
         {
-            return APIHelper.GetModuleBaseAddress(name);
+            return (long)APIHelper.GetModuleBaseAddress(name);
         }
 
         public static void DebugMessage(string message)
@@ -32,6 +33,29 @@ namespace InjectedTimer
         public static int ReadInt32(long addr)
         {
             return APIHelper.ReadInt32((IntPtr)addr);
+        }
+
+        public static void Split()
+        {
+            Sink.SendString("split");
+        }
+
+        public static void Start()
+        {
+            Sink.SendString("start");
+        }
+
+        public static string ReadASCII(long addr, int count)
+        {
+            try
+            {
+                var data = APIHelper.ReadRaw((IntPtr)addr, count);
+                return Encoding.ASCII.GetString(data);
+            }
+            catch
+            {
+                return "";
+            }
         }
 
         public static Pipe Sink;

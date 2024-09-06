@@ -68,6 +68,11 @@ class ClassicTimerUI : TimerUIBase
             TextRightAlign(timeText.Item1, timeText.Item2);
             ImGui.TableNextRow();
         }
+        if(DisplayTimingMethod != TimingMethod.RealTime && UIConfig.ShowRTA)
+        {
+            ImGui.TableNextColumn();
+            TextRightAlign(ColorsConfig.TextColor, "RTA: " + Platform.Platform.SharedPlatform.GetTimerFor(TimingMethod.RealTime).CurrentTime.ToSpeedToolTimerString());
+        }
         ImGui.EndTable();
         ImGui.PopStyleColor();
         ImGui.PopStyleVar(5);

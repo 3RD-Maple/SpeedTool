@@ -50,7 +50,6 @@ namespace InjectedTimer
             if(pipeReader.HasData)
             {
                 var cmd = pipeReader.ReadLine();
-                SendString("debug_message Received stuff");
                 OnIncomingCmd?.Invoke(this, cmd);
             }
         }

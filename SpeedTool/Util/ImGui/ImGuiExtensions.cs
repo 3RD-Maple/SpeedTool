@@ -12,6 +12,15 @@ public static class ImGuiExtensions
     {
         SpeedToolColorPicker(text, ref color, new Vector4(1));
     }
+
+    public static void TooltipHint(string hint)
+    {
+        if(ImGuiNET.ImGui.IsItemHovered(ImGuiNET.ImGuiHoveredFlags.AllowWhenDisabled) && ImGuiNET.ImGui.BeginTooltip())
+        {
+            ImGuiNET.ImGui.Text(hint);
+            ImGuiNET.ImGui.EndTooltip();
+        }
+    }
     
     public static void SpeedToolColorPicker(string text, ref Vector4 color, Vector4 textColor)
     {

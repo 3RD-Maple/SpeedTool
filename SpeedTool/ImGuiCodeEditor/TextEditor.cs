@@ -822,6 +822,7 @@ public class TextEditor
         mColorRangeMin = Math.Max(0, mColorRangeMin);
         mColorRangeMax = Math.Max(mColorRangeMin, mColorRangeMax);
         mCheckComments = true;
+        ColorizeRange(aFromLine, toLine);
     }
 
     void ColorizeRange(int aFromLine = 0, int aToLine = 0)
@@ -1284,15 +1285,20 @@ public class TextEditor
             if (aEnd.mColumn >= n)
                 line = line.Take(start).ToList();
             else
-                line = line.Take(start).Take(end - start).ToList();//line.erase(line.begin() + start, line.begin() + end);
+                line = line.Take(start).Take(end - start).ToList();
+            mLines[aStart.mLine] = line;
         }
         else
         {
             var firstLine = mLines[aStart.mLine];
             var lastLine = mLines[aEnd.mLine];
 
-            firstLine = firstLine.TakeLast(firstLine.Count - start).ToList();//firstLine.erase(firstLine.begin() + start, firstLine.end());
-            firstLine = firstLine.Take(end).ToList();//lastLine.erase(lastLine.begin(), lastLine.begin() + end);
+            lastLine = lastLine.TakeLast(lastLine.Count - end).ToList();
+            firstLine = firstLine.Take(start).ToList();
+
+            firstLine.AddRange(lastLine);
+            mLines[aStart.mLine] = firstLine;
+            mLines[aEnd.mLine] = lastLine;
 
             if (aStart.mLine < aEnd.mLine)
                 firstLine.AddRange(lastLine);
@@ -1300,7 +1306,6 @@ public class TextEditor
             if (aStart.mLine < aEnd.mLine)
                 RemoveLine(aStart.mLine + 1, aEnd.mLine + 1);
         }
-
         mTextChanged = true;
     }
 
@@ -1621,35 +1626,8 @@ public class TextEditor
 
     void RemoveLine(int aStart, int aEnd)
     {
-        // assert(!mReadOnly);
-        // assert(aEnd >= aStart);
-        // assert(mLines.size() > (size_t)(aEnd - aStart));
-
-        ErrorMarkers etmp = new();
-        foreach (var i in mErrorMarkers)
-        {
-            KeyValuePair<int, string> e = new(i.Key >= aStart ? i.Key - 1 : i.Key, i.Value);
-            if (e.Key >= aStart && e.Key <= aEnd)
-                continue;
-            etmp[e.Key] = e.Value;
-        }
-        mErrorMarkers = etmp;
-
-        Breakpoints btmp = new();
-        foreach (var i in mBreakpoints)
-        {
-            if (i >= aStart && i <= aEnd)
-                continue;
-            btmp.Add(i >= aStart ? i - 1 : i);
-        }
-        mBreakpoints = btmp;
-
-        mLines = mLines.TakeLast(mLines.Count - aStart).ToList();
-
-        //mLines.erase(mLines.begin() + aStart, mLines.begin() + aEnd);
-        //assert(!mLines.empty());
-
-        mTextChanged = true;
+        for(int i = aStart; i < aEnd; i++)
+            RemoveLine(aStart);
     }
 
     void RemoveLine(int aIndex)

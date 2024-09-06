@@ -36,6 +36,16 @@ namespace InjectedTimer
             return BitConverter.ToInt32(data, 0);
         }
 
+        public static byte[] ReadRaw(IntPtr address, int count)
+        {
+            byte[] data = new byte[count];
+            int read = 0;
+            ReadProcessMemory(CurrentProcess, address, data, count, out read);
+            if(read != count)
+                throw new Exception("Couldn't read enough");
+            return data;
+        }
+
         public static IntPtr GetModuleBaseAddress(string name)
         {
             var searchName = name.ToLower();

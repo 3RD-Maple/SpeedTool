@@ -35,6 +35,8 @@ public sealed class ClassicUISettingsTab : TabBase
     protected override void DoTabInternal()
     {
         ImGuiExtensions.SpeedToolColorPicker("Active split", ref Config.ActiveSplitColor);
+        ImGui.Checkbox("Show extra RTA timer", ref Config.ShowRTA);
+        ImGuiExtensions.TooltipHint("When checked, an additional RTA timer\nwill be shown for games with other default timing methods");
         ImGui.InputInt("Shown Splits", ref Config.ShownSplitsCount, 1, 1);
     }
 }
