@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using SpeedTool.Platform.Debugging;
 using SpeedTool.Timer;
 
@@ -53,6 +54,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
                         p.OnMessage -= OnMessage;
                         p.Dispose();
                         p = null;
+                        Thread.Sleep(500);
                     }
                 }
                 continue;
@@ -65,6 +67,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
                     loadedProcess = process[0];
                     IsHooked = true;
                     DebugLog.SharedInstance.Write($"Found {exeName}, injecting");
+                    PrepareLUALibrary();
                 }
                 else
                 {
@@ -147,6 +150,38 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         }
     }
 
+    private void PrepareLUALibrary()
+    {
+        var exeDir = Path.GetDirectoryName(AppContext.BaseDirectory);
+        var luaLib = exeDir + "/lua54.dll";
+        if(File.Exists(luaLib))
+            File.Delete(luaLib);
+
+        if(IsWin64Emulator())
+        {
+            File.Copy(exeDir + "/x86/lua54.dll", luaLib);
+        }
+        else
+        {
+            File.Copy(exeDir + "/x64/lua54.dll", luaLib);
+        }
+    }
+
+    private bool IsWin64Emulator()
+    {
+        if(loadedProcess == null)
+            return false;
+        if ((Environment.OSVersion.Version.Major > 5)
+            || ((Environment.OSVersion.Version.Major == 5) && (Environment.OSVersion.Version.Minor >= 1)))
+        {
+            bool retVal;
+
+            return IsWow64Process(loadedProcess.Handle, out retVal) && retVal;
+        }
+
+        return false; // not on 64-bit Windows Emulator
+    }
+
     TimeSpan time;
 
     bool IsClosing = false;
@@ -155,4 +190,8 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
     Thread workerThread;
     Process? loadedProcess;
     private string exeName;
+
+    [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    internal static extern bool IsWow64Process([In] IntPtr process, [Out] out bool wow64Process);
 }
