@@ -15,6 +15,8 @@ using Sizes = Silk.NET.Maths.Vector2D<int>;
 using ImGuiNET;
 using System.Numerics;
 using SpeedTool.Platform.EventsArgs;
+using StbImageSharp;
+using Silk.NET.Core;
 
 public class Window : IDisposable
 {
@@ -34,6 +36,10 @@ public class Window : IDisposable
             controller = new ImGuiController(gl, window, input, () => {
                 LoadDefaultFont();
                 LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 22, "UI");
+                var stream = GetType().Assembly.GetManifestResourceStream(ICON_RESOURCE_NAME)!;
+                var img = ImageResult.FromStream(stream);
+                var rawImg = new RawImage(img.Width, img.Height, new(img.Data));
+                window.SetWindowIcon(ref rawImg);
                 OnLoad();
             });
         };
@@ -253,4 +259,6 @@ public class Window : IDisposable
     private Images? images;
 
     Vector2D<int> sizes;
+
+    private const string ICON_RESOURCE_NAME = "SpeedTool.Resources.icon.png";
 }

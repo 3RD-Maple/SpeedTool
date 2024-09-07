@@ -10,6 +10,7 @@
     <PublishAOT>true</PublishAOT>
     <Version>0.2.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -22,6 +23,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="App\appsettings.json" />
+    <EmbeddedResource Include="Resources\icon.png" />
     <EmbeddedResource Include="Resources\arrow_square.png" />
     <EmbeddedResource Include="Resources\themes.json" />
   </ItemGroup>
