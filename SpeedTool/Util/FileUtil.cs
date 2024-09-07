@@ -1,5 +1,7 @@
 using System.Runtime.InteropServices;
+using Silk.NET.SDL;
 using SpeedTool.Platform.Linux;
+using SpeedTool.Windows;
 using Dialogs = SpeedTool.Platform.Windows.WindowsFileDialog;
 
 
@@ -27,18 +29,26 @@ public static class FileUtil
         }
         else
         {
-            OpenFileLinuxOrMacOS(onLoad);
+            var font = ImGuiNET.ImGui.GetFont();
+            ImGuiNET.ImGui.PopFont();
+            OpenFileLinuxOrMacOS(file =>
+            {
+                if (File.Exists(file))
+                { 
+                    File.ReadAllText(file);
+                }
+            });
+            ImGuiNET.ImGui.PushFont(font);
         }
     }
     
-    public static void OpenFileLinuxOrMacOS(Action<string> onLoad)
+    private static void OpenFileLinuxOrMacOS(Action<string> onLoad)
     {
         var dialog = new UniversalFileDialog(onLoad, DialogOperation.Open);
         Platform.Platform.SharedPlatform.AddWindow(dialog);
-        dialog.OpenFolder(onLoad);
     }
     
-    public static void SaveFileLinuxOrMacOS(Action<string> onSave)
+    private static void SaveFileLinuxOrMacOS(Action<string> onSave)
     {
         var dialog = new UniversalFileDialog(onSave, DialogOperation.Save);
         Platform.Platform.SharedPlatform.AddWindow(dialog);
