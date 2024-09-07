@@ -17,7 +17,12 @@ public static class FileUtil
         }
         else
         {
+            var font = ImGuiNET.ImGui.GetFont();
+            ImGuiNET.ImGui.PopFont();
+            
             SaveFileLinuxOrMacOS(onSave);
+            
+            ImGuiNET.ImGui.PushFont(font);
         }
     }
 
@@ -31,6 +36,7 @@ public static class FileUtil
         {
             var font = ImGuiNET.ImGui.GetFont();
             ImGuiNET.ImGui.PopFont();
+            
             OpenFileLinuxOrMacOS(file =>
             {
                 if (File.Exists(file))
@@ -38,6 +44,7 @@ public static class FileUtil
                     File.ReadAllText(file);
                 }
             });
+            
             ImGuiNET.ImGui.PushFont(font);
         }
     }
