@@ -1,4 +1,6 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Text;
 
 namespace InjectedTimer
@@ -33,6 +35,32 @@ namespace InjectedTimer
         public static int ReadInt32(long addr)
         {
             return APIHelper.ReadInt32((IntPtr)addr);
+        }
+
+        public static long ReadInt64(long addr)
+        {
+            return APIHelper.ReadInt64((IntPtr)addr);
+        }
+
+        public static float ReadFloat(long addr)
+        {
+            return APIHelper.ReadSingle((IntPtr)addr);
+        }
+
+        public static double ReadDouble(long addr)
+        {
+            return APIHelper.ReadDouble((IntPtr)addr);
+        }
+
+        public static long PointerPath(params long[] addresses)
+        {
+            Func<IntPtr, long> ReadAddr = (IntPtr addr) => IntPtr.Size == 4 ? APIHelper.ReadInt32(addr) : APIHelper.ReadInt64(addr);
+            var len = addresses.Length;
+            var begin = ReadAddr((IntPtr)addresses[0]);
+            for(int i = 1; i < len - 1; i++)
+                begin = ReadAddr((IntPtr)(begin + addresses[i]));
+
+            return begin + addresses.Last();
         }
 
         public static void Split()

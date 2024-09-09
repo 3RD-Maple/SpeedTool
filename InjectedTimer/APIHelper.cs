@@ -36,6 +36,30 @@ namespace InjectedTimer
             return BitConverter.ToInt32(data, 0);
         }
 
+        public static long ReadInt64(IntPtr address)
+        {
+            byte[] data = new byte[8];
+            int read = 0;
+            ReadProcessMemory(CurrentProcess, address, data, 8, out read);
+            return BitConverter.ToInt64(data, 0);
+        }
+
+        public static float ReadSingle(IntPtr address)
+        {
+            byte[] data = new byte[4];
+            int read = 0;
+            ReadProcessMemory(CurrentProcess, address, data, 4, out read);
+            return BitConverter.ToSingle(data, 0);
+        }
+
+        public static double ReadDouble(IntPtr address)
+        {
+            byte[] data = new byte[8];
+            int read = 0;
+            ReadProcessMemory(CurrentProcess, address, data, 8, out read);
+            return BitConverter.ToDouble(data, 0);
+        }
+
         public static byte[] ReadRaw(IntPtr address, int count)
         {
             byte[] data = new byte[count];

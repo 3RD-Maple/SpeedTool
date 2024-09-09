@@ -89,6 +89,7 @@ public sealed class Platform
 
     public void ResetRun()
     {
+        injector?.Reset();
         ReloadRun();
     }
 

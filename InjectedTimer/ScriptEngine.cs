@@ -22,7 +22,11 @@ namespace InjectedTimer
             luaState.RegisterFunction("timer_start", ((Action)ScriptFunction.Start).GetMethodInfo());
 
             luaState.RegisterFunction("read_int", ((Func<long, int>)ScriptFunction.ReadInt32).GetMethodInfo());
+            luaState.RegisterFunction("read_long", ((Func<long, long>)ScriptFunction.ReadInt64).GetMethodInfo());
+            luaState.RegisterFunction("read_float", ((Func<long, float>)ScriptFunction.ReadFloat).GetMethodInfo());
+            luaState.RegisterFunction("read_double", ((Func<long, double>)ScriptFunction.ReadDouble).GetMethodInfo());
             luaState.RegisterFunction("read_ascii", ((Func<long, int, string>)ScriptFunction.ReadASCII).GetMethodInfo());
+            luaState.RegisterFunction("pointer_path", ((Func<long[], long>)ScriptFunction.PointerPath).GetMethodInfo());
 
             luaState.DoString(script);
             luaState.DoString("on_load()");

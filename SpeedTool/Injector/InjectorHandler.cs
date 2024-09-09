@@ -35,7 +35,15 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
 
     public TimeSpan CurrentTime => time;
 
-    public TimerState CurrentState => TimerState.NoState;
+    public TimerState CurrentState
+    {
+        get
+        {
+            if(time.Ticks == 0)
+                return TimerState.NoState;
+            return TimerState.Running;
+        }
+    }
 
     private void Worker()
     {
@@ -123,6 +131,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
 
     public void Reset()
     {
+        time = new(0);
         p?.SendString("reset");
     }
 
