@@ -78,5 +78,7 @@ public sealed class HotkeyConverter : JsonConverter<Hotkey>
         writer.WriteBoolean("CheckShift", value.Shift);
         writer.WriteBoolean("CheckCtrl", value.Ctrl);
         writer.WriteNumber("KeyCode", (int)value.Key);
+
+        writer.WriteEndObject();
     }
 }
