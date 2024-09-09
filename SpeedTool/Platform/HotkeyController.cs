@@ -71,6 +71,8 @@ sealed class HotkeyController : IDisposable
             new HotkeyCycler(hotkeys.PreviousSplitHotkey, () => Platform.SharedPlatform.PreviousSplit()),
             new HotkeyCycler(hotkeys.NextCategoryHotkey, () => Platform.SharedPlatform.NextCategory()),
             new HotkeyCycler(hotkeys.PreviousCategoryHotkey, () => Platform.SharedPlatform.PreviousCategory()),
+            new HotkeyCycler(hotkeys.PauseHotkey, () => Platform.SharedPlatform.Pause()),
+            new HotkeyCycler(hotkeys.ResetHotkey, () => Platform.SharedPlatform.ResetRun()),
             new HotkeyCycler(hotkeys.ToggleHotkeysHotkey, () => ToggleHotkeys(), true)
         ];
     }
