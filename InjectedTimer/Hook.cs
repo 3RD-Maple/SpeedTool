@@ -4,6 +4,8 @@ using System.Runtime.InteropServices;
 using System.Threading;
 using EasyHook;
 using InjectedTimer;
+using InjectedTimer.D3D;
+using InjectedTimer.D3D.D3D11;
 
 namespace Hook
 {
@@ -47,6 +49,19 @@ namespace Hook
             bool d3d9 = false;
             p = new Pipe();
             LocalHook buffersHook = null;
+            if(APIHelper.HasModule("d3d11.dll"))
+            {
+                p.SendString("debug_message Detected as Direct3D 11");
+                p.Cycle();
+                using(var wind = new TempWindow("SPeedToolD3D11"))
+                {
+                    using(var d11 = new D3D11(wind.HWND))
+                    {
+                        p.SendString("debug_message " + d11.PresentPtr.ToString());
+                        p.Cycle();
+                    }
+                }
+            }
             if(APIHelper.HasModule("d3d9.dll"))
             {
                 d3d9 = true;

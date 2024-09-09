@@ -24,19 +24,19 @@ namespace InjectedTimer.D3D
             }
         }
 
-        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=true)]
+        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=false)]
         private static extern bool RegisterClass([In] ref WNDCLASSA lpWndClass);
 
-        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=true)]
+        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=false)]
         private static extern bool UnregisterClass(string lpWndClass, IntPtr hInstnace);
 
-        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=true)]
+        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=false)]
         private static extern bool DefWindowProc(IntPtr hWnd, uint uMsg, IntPtr lParam, IntPtr wParam);
 
-        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=true)]
+        [DllImport("user32.dll", CharSet=CharSet.Auto, SetLastError=false)]
         private static extern bool DestroyWindow(IntPtr hWnd);
 
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "CreateWindowEx")]
+        [DllImport("user32.dll", SetLastError = false, EntryPoint = "CreateWindowEx")]
         public static extern IntPtr CreateWindowEx(
            int dwExStyle,
            string lpClassName,
