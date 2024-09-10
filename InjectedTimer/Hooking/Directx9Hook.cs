@@ -1,13 +1,11 @@
 using System;
 using InjectedTimer.D3D;
-using InjectedTimer.Hooking;
 
-namespace InjectedTimer
+namespace InjectedTimer.Hooking
 {
-    public sealed class DirectXHook
+    public sealed class DirectX9Hook : PresentationHookBase
     {
-        public Action OnFrame;
-        public DirectXHook()
+        internal DirectX9Hook()
         {
             using(var wnd = new TempWindow("SpeedToolHookWindow"))
             {
@@ -36,6 +34,15 @@ namespace InjectedTimer
             }
         }
 
+        public override string HookName => "DirectX 9";
+
+        protected override void Release()
+        {
+            presentExHook.Dispose();
+            presentHook.Dispose();
+            base.Release();
+        }
+
         HookedFunction<D3D9Device.Present_Delegate> presentHook;
         HookedFunction<D3D9DeviceEx.PresentEx_Delegate> presentExHook;
 
@@ -50,5 +57,6 @@ namespace InjectedTimer
             OnFrame?.Invoke();
             return presentExHook.Original(pThis, pSourceRect, pDestRect, hDestWindowOverride, pDirtyRegion, flags);
         }
+
     }
 }

@@ -18,7 +18,7 @@ namespace InjectedTimer.D3D
             int hresult = NativeCreateDevice(d3d, Adapter, DeviceType, hWnd, flags, ref PresentationParams, out result);
             if(result == IntPtr.Zero)
             {
-                throw new Exception("Cannot create D3D Device");
+                throw new InvalidOperationException("Cannot create D3D Device");
             }
 
             return new D3D9Device(result);

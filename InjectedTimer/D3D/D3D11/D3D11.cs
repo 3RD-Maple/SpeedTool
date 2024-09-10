@@ -24,7 +24,7 @@ namespace InjectedTimer.D3D.D3D11
             D3D11CreateDeviceAndSwapChain(IntPtr.Zero, (int)D3D_DRIVER_TYPE.D3D_DRIVER_TYPE_NULL, IntPtr.Zero, 0x20, null, 0, D3D11_SDK_VERSION, ref desc, out swapChain, out device, out featureLevel, out context);
             if(swapChain == null)
             {
-                throw new Exception("Could not create DX11");
+                throw new InvalidOperationException("Could not create DX11");
             }
         }
 
@@ -33,13 +33,18 @@ namespace InjectedTimer.D3D.D3D11
             get
             {
                 var vtbl = *(IntPtr*)swapChain;
-                return ((IntPtr*)vtbl)[9];
+                return ((IntPtr*)vtbl)[8];
             }
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            if(device != IntPtr.Zero)
+                Marshal.Release(device);
+            if(swapChain != IntPtr.Zero)
+                Marshal.Release(swapChain);
+            if(context != IntPtr.Zero)
+                Marshal.Release(context);
         }
 
         IntPtr device;
@@ -61,5 +66,8 @@ namespace InjectedTimer.D3D.D3D11
                                                                 [Out] out IntPtr ppImmediateContext);
 
         private const int D3D11_SDK_VERSION = 7;
+
+        [UnmanagedFunctionPointer(CallingConvention.StdCall, CharSet = CharSet.Auto, SetLastError = true)]
+        public delegate int Present_Delegate(IntPtr pThis, uint SyncInterval, uint Flags);
     }
 }

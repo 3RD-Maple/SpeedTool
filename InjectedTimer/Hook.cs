@@ -5,8 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using EasyHook;
 using InjectedTimer;
-using InjectedTimer.D3D;
-using InjectedTimer.D3D.D3D11;
+using InjectedTimer.Hooking;
 
 namespace Hook
 {
@@ -46,54 +45,23 @@ namespace Hook
 
             // Wake up the process (required if using RemoteHooking.CreateAndInject)
             EasyHook.RemoteHooking.WakeUpProcess();
-
             shutdownToken = new CancellationTokenSource();
-
-            bool d3d9 = false;
             var server = Task.Run(() => CreateServer(shutdownToken.Token), shutdownToken.Token);
 
             while(p == null)
                 Thread.Sleep(1);
-            LocalHook buffersHook = null;
-            if(APIHelper.HasModule("d3d11.dll"))
-            {
-                p.SendString("debug_message Detected as Direct3D 11");
-                p.Cycle();
-                using(var wind = new TempWindow("SPeedToolD3D11"))
-                {
-                    using(var d11 = new D3D11(wind.HWND))
-                    {
-                        p.SendString("debug_message " + d11.PresentPtr.ToString());
-                        p.Cycle();
-                    }
-                }
-            }
-            if(APIHelper.HasModule("d3d9.dll"))
-            {
-                d3d9 = true;
-                p.SendString("debug_message Detected as Direct3D 9");
-                while(dxHook == null)
-                {
-                    try
-                    {
-                        dxHook = new DirectXHook
-                        {
-                            OnFrame = () => CycleInternal()
-                        };
-                    }
-                    catch
-                    {
-                        p.SendString("debug_message Installing DirectX hook failed");
-                        p.Cycle();
-                        Thread.Sleep(1000);
-                    }
-                }
-            }
 
-            if(!d3d9)
-                buffersHook = LocalHook.Create(LocalHook.GetProcAddress("Gdi32.dll", "SwapBuffers"), new SwapBuffers_Delegate(MySwapBuffers), this);
-            if(buffersHook != null)
-                buffersHook.ThreadACL.SetExclusiveACL( new int[] { 0 });
+            try
+            {
+                hook = PresentationHookBase.AutoDetectCreateHook();
+                p.SendString("debug_message Game Auto-detected as " + hook.HookName);
+                hook.OnFrame = CycleInternal;
+            }
+            catch
+            {
+                p.SendString("debug_message Failed to auto-detect; Scripting is disabled");
+            }
+            p.Cycle();
 
             try
             {
@@ -118,7 +86,7 @@ namespace Hook
             server.Wait();
 
             // Remove hooks
-            buffersHook.Dispose();
+            hook.Dispose();
 
             // Finalise cleanup of hooks
             EasyHook.LocalHook.Release();
@@ -195,22 +163,11 @@ namespace Hook
             }
         }
 
-        uint MySwapBuffers(IntPtr unnamedParam1)
-        {
-            CycleInternal();
-            return SwapBuffers(unnamedParam1);
-        }
-
-        [UnmanagedFunctionPointer(CallingConvention.StdCall,
-                    CharSet = CharSet.Unicode,
-                    SetLastError = true)]
-        delegate uint SwapBuffers_Delegate(IntPtr unnamedParam1);
-
         string script;
         CancellationTokenSource shutdownToken;
         Pipe p;
         ScriptEngine engine;
         InjectedTimer.Timer timer;
-        DirectXHook dxHook;
+        PresentationHookBase hook;
     }
 }
