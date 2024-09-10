@@ -138,7 +138,7 @@ public sealed class GameEditorWindow : Platform.Window
 
             ImGui.InputText("Category Name", ref name, 256);
             ImGui.SameLine();
-            if(ImGui.Button("Delete category"))
+            if(ImGui.Button("Delete category") && categories.Length != 1)
             {
                 string tmpName = name;
                 categories = categories.Where(x => x.Name != tmpName).ToArray();
