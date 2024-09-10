@@ -4,7 +4,7 @@ using NLua;
 
 namespace InjectedTimer
 {
-    public sealed class ScriptEngine
+    public sealed class ScriptEngine : IDisposable
     {
         public ScriptEngine(string script, Pipe sink)
         {
@@ -36,6 +36,11 @@ namespace InjectedTimer
         public void OnFrame()
         {
             luaState.DoString("on_frame()");
+        }
+
+        public void Dispose()
+        {
+            luaState.Dispose();
         }
 
         Lua luaState;

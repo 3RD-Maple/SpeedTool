@@ -14,12 +14,31 @@ namespace InjectedTimer
             toSend = new ConcurrentQueue<string>();
 
             server.WaitForConnection();
+            connected = true;
             pipeWriter = new StreamWriter(server);
             pipeReader = new PipeReader(server);
             Console.Error.WriteLine("Test");
         }
 
         public event EventHandler<string> OnIncomingCmd;
+
+        public bool IsConnected
+        {
+            get
+            {
+                return connected;
+            }
+        }
+
+        public bool IsOk
+        {
+            get
+            {
+                if(connected)
+                    return server.IsConnected;
+                return true;
+            }
+        }
 
         public void Dispose()
         {
@@ -28,7 +47,8 @@ namespace InjectedTimer
 
         public void SendString(string str)
         {
-            toSend.Enqueue(str);
+            if(connected)
+                toSend.Enqueue(str);
         }
 
         public void Cycle()
@@ -62,6 +82,8 @@ namespace InjectedTimer
             while(!toSend.TryDequeue(out res));
             pipeWriter.WriteLine(res);
         }
+
+        bool connected = false;
 
         ConcurrentQueue<string> toSend;
 

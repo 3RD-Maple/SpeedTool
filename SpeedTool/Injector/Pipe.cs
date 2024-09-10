@@ -15,13 +15,7 @@ public sealed class Pipe : IDisposable
             DebugLog.SharedInstance.Write("Pipe connected");
             pipeReader = new PipeReader(client);
             pipeWriter = new StreamWriter(client);
-            foreach(var str in script.Split('\n'))
-            {
-                pipeWriter.WriteLine("script " + str);
-            }
-
-            pipeWriter.WriteLine("script_load");
-            pipeWriter.Flush();
+            SendScript(script);
         });
     }
 
@@ -35,6 +29,17 @@ public sealed class Pipe : IDisposable
                 return true;
             return pipeReader.IsOK;
         }
+    }
+
+    public void SendScript(string script)
+    {
+        foreach(var str in script.Split('\n'))
+        {
+            pipeWriter?.WriteLine("script " + str);
+        }
+
+        pipeWriter?.WriteLine("script_load");
+        pipeWriter?.Flush();
     }
 
     public void SendString(string str)

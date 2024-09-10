@@ -143,6 +143,15 @@ public sealed class Platform
     {
         DebugLog.SharedInstance.Write($"Loading game {game.Name}");
         this.game = game;
+        if(injector != null && injector.InjectedExeName != game.ExeName)
+        {
+            injector.Dispose();
+            injector = null;
+        }
+        else
+        {
+            injector?.ReloadScript(game.Script);
+        }
         ReloadRun();
     }
 

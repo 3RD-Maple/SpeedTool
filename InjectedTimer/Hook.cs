@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using EasyHook;
 using InjectedTimer;
 using InjectedTimer.D3D;
@@ -46,8 +47,13 @@ namespace Hook
             // Wake up the process (required if using RemoteHooking.CreateAndInject)
             EasyHook.RemoteHooking.WakeUpProcess();
 
+            shutdownToken = new CancellationTokenSource();
+
             bool d3d9 = false;
-            p = new Pipe();
+            var server = Task.Run(() => CreateServer(shutdownToken.Token), shutdownToken.Token);
+
+            while(p == null)
+                Thread.Sleep(1);
             LocalHook buffersHook = null;
             if(APIHelper.HasModule("d3d11.dll"))
             {
@@ -89,34 +95,6 @@ namespace Hook
             if(buffersHook != null)
                 buffersHook.ThreadACL.SetExclusiveACL( new int[] { 0 });
 
-            p.OnIncomingCmd += (object sender, string cmd) =>
-            {
-                if(cmd.StartsWith("script "))
-                {
-                    script += cmd.Substring(7) + "\n";
-                    return;
-                }
-                if(cmd.StartsWith("script_load"))
-                {
-                    p.SendString("debug_message Script loaded");
-                    engine = new ScriptEngine(script, p);
-                    return;
-                }
-                if(cmd.StartsWith("start"))
-                {
-                    timer = new InjectedTimer.Timer();
-                    timer.Start();
-                    p.SendString("debug_message Timer starting");
-                    return;
-                }
-                if(cmd == "reset")
-                {
-                    timer = null;
-                    p.SendString("debug_message Timer reset");
-                    return;
-                }
-            };
-
             try
             {
                 while (true)
@@ -136,11 +114,45 @@ namespace Hook
             {
             }
 
+            shutdownToken.Cancel();
+            server.Wait();
+
             // Remove hooks
             buffersHook.Dispose();
 
             // Finalise cleanup of hooks
             EasyHook.LocalHook.Release();
+        }
+
+        void OnMsg(object sender, string cmd)
+        {
+            if(cmd.StartsWith("script "))
+            {
+                script += cmd.Substring(7) + "\n";
+                return;
+            }
+            if(cmd.StartsWith("script_load"))
+            {
+                p.SendString("debug_message Script loaded");
+                if(engine != null)
+                    engine.Dispose();
+                engine = new ScriptEngine(script, p);
+                script = "";
+                return;
+            }
+            if(cmd.StartsWith("start"))
+            {
+                timer = new InjectedTimer.Timer();
+                timer.Start();
+                p.SendString("debug_message Timer starting");
+                return;
+            }
+            if(cmd == "reset")
+            {
+                timer = null;
+                p.SendString("debug_message Timer reset");
+                return;
+            }
         }
 
         [DllImport("Gdi32.dll", SetLastError = true, CharSet = CharSet.Auto)]
@@ -168,6 +180,21 @@ namespace Hook
             }
         }
 
+        async void CreateServer(CancellationToken can)
+        {
+            while(!can.IsCancellationRequested)
+            {
+                if(p != null)
+                {
+                    p.OnIncomingCmd -= OnMsg;
+                    p.Dispose();
+                }
+                p = new Pipe();
+                p.OnIncomingCmd += OnMsg;
+                while(p.IsOk) await Task.Delay(500);
+            }
+        }
+
         uint MySwapBuffers(IntPtr unnamedParam1)
         {
             CycleInternal();
@@ -180,7 +207,7 @@ namespace Hook
         delegate uint SwapBuffers_Delegate(IntPtr unnamedParam1);
 
         string script;
-
+        CancellationTokenSource shutdownToken;
         Pipe p;
         ScriptEngine engine;
         InjectedTimer.Timer timer;

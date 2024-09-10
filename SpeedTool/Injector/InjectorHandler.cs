@@ -10,9 +10,17 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
     public InjectorHandler(string lookForExe)
     {
         exeName = lookForExe.Replace(".exe", "");
+        InjectedExeName = lookForExe;
+        DebugLog.SharedInstance.Write($"Attempting to inject timer into {lookForExe}");
+        if(File.Exists(@"\\.\pipe\SpeedToolPipe"))
+        {
+            DebugLog.SharedInstance.Write($"Already injected, reconnecting");
+            IsHooked = true;
+            ConnectToPipe();
+        }
         workerThread = new Thread(Worker);
         workerThread.Start();
-        DebugLog.SharedInstance.Write($"Attempting to inject timer into {lookForExe}");
+
     }
 
     public static bool IsInjectionAvailable
@@ -45,6 +53,13 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         }
     }
 
+    public void ReloadScript(string script)
+    {
+        p?.SendScript(script);
+    }
+
+    public string InjectedExeName { get; private set; }
+
     private void Worker()
     {
         while(!IsClosing)
@@ -59,9 +74,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
                         IsHooked = false;
                         DebugLog.SharedInstance.Write("Pipe connection lost!");
                         DebugLog.SharedInstance.Write("Attempting to re-inject");
-                        p.OnMessage -= OnMessage;
-                        p.Dispose();
-                        p = null;
+                        DisconnectPipe();
                         Thread.Sleep(500);
                     }
                 }
@@ -106,8 +119,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
             else
             {
                 DebugLog.SharedInstance.Write($"Injecting successful, connecting to pipe now");
-                p = new Pipe(Platform.Platform.SharedPlatform.Game!.Script);
-                p.OnMessage += OnMessage;
+                ConnectToPipe();
             }
         }
     }
@@ -189,6 +201,23 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         }
 
         return false; // not on 64-bit Windows Emulator
+    }
+
+    private void ConnectToPipe()
+    {
+        DisconnectPipe();
+        p = new Pipe(Platform.Platform.SharedPlatform.Game!.Script);
+        p.OnMessage += OnMessage;
+    }
+
+    private void DisconnectPipe()
+    {
+        if(p != null)
+        {
+            p.OnMessage -= OnMessage;
+            p.Dispose();
+            p = null;
+        }
     }
 
     TimeSpan time;
