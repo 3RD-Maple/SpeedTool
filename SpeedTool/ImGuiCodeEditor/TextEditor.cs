@@ -822,7 +822,28 @@ public class TextEditor
         mColorRangeMin = Math.Max(0, mColorRangeMin);
         mColorRangeMax = Math.Max(mColorRangeMin, mColorRangeMax);
         mCheckComments = true;
-        ColorizeRange(aFromLine, toLine);
+        ColorizeRange(Math.Max(0, aFromLine), toLine);
+    }
+
+    (bool result, int begin, int end, PaletteIndex color) FirstToken(string str, int first)
+    {
+        bool hasTokenizeResult = false;
+        int token_begin = int.MaxValue;
+        int token_end = 0;
+        PaletteIndex token_color = PaletteIndex.Default;
+        foreach(var p in mRegexList)
+        {
+            var match = p.Item1.Match(str);
+            if(match.Success && token_begin > match.Captures[0].Index + first)
+            {
+                hasTokenizeResult = true;
+                token_begin = match.Captures[0].Index + first;
+                token_end = match.Captures[0].Length + token_begin;
+                token_color = p.Item2;
+            }
+        }
+
+        return (result: hasTokenizeResult, begin: token_begin, end: token_end, color: token_color);
     }
 
     void ColorizeRange(int aFromLine = 0, int aToLine = 0)
@@ -871,17 +892,13 @@ public class TextEditor
                     // todo : remove
                     //printf("using regex for %.*s\n", first + 10 < last ? 10 : int(last - first), first);
 
-                    foreach(var p in mRegexList)
+                    var tok = FirstToken(buffer.ToString().Substring(first), first);
+                    if(tok.result)
                     {
-                        var match = p.Item1.Match(buffer.ToString().Substring(first));
-                        if(match.Success)
-                        {
-                            hasTokenizeResult = true;
-                            token_begin = match.Captures[0].Index + first;
-                            token_end = match.Captures[0].Length + token_begin;
-                            token_color = p.Item2;
-                            break;
-                        }
+                        hasTokenizeResult = tok.result;
+                        token_begin = tok.begin;
+                        token_end = tok.end;
+                        token_color = tok.color;
                     }
                 }
 
@@ -1861,7 +1878,7 @@ public class TextEditor
 
         AddUndo(u);
 
-        Colorize(coord.mLine - 1, 3);
+        Colorize(Math.Max(0, coord.mLine - 1), 3);
         EnsureCursorVisible();
     }
 
