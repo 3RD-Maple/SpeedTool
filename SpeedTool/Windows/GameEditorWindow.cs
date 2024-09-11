@@ -59,46 +59,57 @@ public sealed class GameEditorWindow : Platform.Window
 
         TabCount = 0;
 
-        ImGui.InputText("Game Name", ref Name, 255);
-        ImGui.InputText("Exe Name", ref ExeName, 255);
-        if(ExeName != "")
+        if(ImGui.BeginTabBar("GameEditBar"))
         {
-            if(ImGui.Button("Edit script"))
+            if(ImGui.BeginTabItem("Game Info"))
             {
-                if(script == "")
+                ImGui.InputText("Game Name", ref Name, 255);
+                ImGui.InputText("Exe Name", ref ExeName, 255);
+                if(ExeName != "")
                 {
-                    script = DEFAULT_SCRIPT;
-                }
-                afterUi = () =>
-                {
-                    var code = new CodeEditorWindow(script);
-
-                    // This is hella bad because no unsubscirbe, but should be good enough for now
-                    code.BeforeClosing += (object? sender, BeforeClosingEventArgs args) =>
+                    if(ImGui.Button("Edit script"))
                     {
-                        script = (sender as CodeEditorWindow)!.Code;
-                    };
-                    platform.AddWindow(code);
-                };
+                        if(script == "")
+                        {
+                            script = DEFAULT_SCRIPT;
+                        }
+                        afterUi = () =>
+                        {
+                            var code = new CodeEditorWindow(script);
+
+                            // This is hella bad because no unsubscirbe, but should be good enough for now
+                            code.BeforeClosing += (object? sender, BeforeClosingEventArgs args) =>
+                            {
+                                script = (sender as CodeEditorWindow)!.Code;
+                            };
+                            platform.AddWindow(code);
+                        };
+                    }
+                }
+                ImGuiExtensions.TimingMethodSelector("Default timing method", ref timingMethod);
+                ImGui.EndTabItem();
             }
-        }
-        ImGuiExtensions.TimingMethodSelector("Default timimng method", ref timingMethod);
-        ImGui.Separator();
-        if(ImGui.Button("Add category"))
-        {
-            var cat = new EditableCategory()
+            if(ImGui.BeginTabItem("Categories"))
             {
-                Name = GetNewCategoryName(),
-                Splits = [new Split("New split")]
-            };
-            categories = categories.Append(cat).ToArray();
-        }
+                if(ImGui.Button("Add category"))
+                {
+                    var cat = new EditableCategory()
+                    {
+                        Name = GetNewCategoryName(),
+                        Splits = [new Split("New split")]
+                    };
+                    categories = categories.Append(cat).ToArray();
+                }
 
-        if(ImGui.BeginTabBar("Categories"))
-        {
-            for(int i = 0; i < categories.Length; i++)
-                DoTab(ref categories[i].Name, ref categories[i].Splits);
+                if(ImGui.BeginTabBar("CategoriesTabBar"))
+                {
+                    for(int i = 0; i < categories.Length; i++)
+                        DoTab(ref categories[i].Name, ref categories[i].Splits);
 
+                    ImGui.EndTabBar();
+                }
+                ImGui.EndTabItem();
+            }
             ImGui.EndTabBar();
         }
 
@@ -137,13 +148,13 @@ public sealed class GameEditorWindow : Platform.Window
             Split? parent = null;
 
             ImGui.InputText("Category Name", ref name, 256);
-            ImGui.SameLine();
             if(ImGui.Button("Delete category") && categories.Length != 1)
             {
                 string tmpName = name;
                 categories = categories.Where(x => x.Name != tmpName).ToArray();
             }
-            ImGui.Text("Splits: [Right click on split for options]");
+            ImGui.Separator();
+            ImGui.Text("Splits:");
 
             for(int i = 0; i < splits.Length; i++)
             {
@@ -158,6 +169,10 @@ public sealed class GameEditorWindow : Platform.Window
                     popupSplit = editable;
                     popupSplitParent = parent;
                 }
+            }
+            if(ImGui.Button("Add Split"))
+            {
+                splits = splits.Append(new Split("New Split")).ToArray();
             }
 
             if(popupSplit != null)

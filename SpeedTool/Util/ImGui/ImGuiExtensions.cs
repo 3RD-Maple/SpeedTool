@@ -78,6 +78,7 @@ public static class ImGuiExtensions
         if(split.Subsplits.Length == 0)
         {
             ImGuiNET.ImGui.InputText(name, ref split.Name, 255);
+            TooltipHint("Right-click for options");
             ctx.IsHovered = ImGuiNET.ImGui.IsItemHovered();
             if(ctx.IsHovered)
             {
