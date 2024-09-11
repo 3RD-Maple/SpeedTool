@@ -27,6 +27,7 @@ namespace InjectedTimer
             luaState.RegisterFunction("read_float", ((Func<long, float>)ScriptFunction.ReadFloat).GetMethodInfo());
             luaState.RegisterFunction("read_double", ((Func<long, double>)ScriptFunction.ReadDouble).GetMethodInfo());
             luaState.RegisterFunction("read_ascii", ((Func<long, int, string>)ScriptFunction.ReadASCII).GetMethodInfo());
+            luaState.RegisterFunction("read_bytes", ((Func<long, int, byte[]>)ScriptFunction.ReadBytes).GetMethodInfo());
             luaState.RegisterFunction("pointer_path", ((Func<long[], long>)ScriptFunction.PointerPath).GetMethodInfo());
 
             luaState.DoString(script);

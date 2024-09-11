@@ -63,6 +63,7 @@ public sealed class CodeEditorWindow : Window
         lang.mIdentifiers["read_float"] = new() { mDeclaration = "Read a 32-bit single precision floating point" };
         lang.mIdentifiers["read_double"] = new() { mDeclaration = "Read a 64-bit double precision floating point" };
         lang.mIdentifiers["read_ascii"] = new() { mDeclaration = "Read a sequence of ASCII characters" };
+        lang.mIdentifiers["read_bytes"] = new() { mDeclaration = "Read a sequence of bytes" };
 
         lang.mIdentifiers["timer_set_loading"] = new() { mDeclaration = "Set timer to loading" };
         lang.mIdentifiers["timer_set_not_loading"] = new() { mDeclaration = "Set timer to not loading" };

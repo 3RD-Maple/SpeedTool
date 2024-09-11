@@ -1,5 +1,4 @@
 using System;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
@@ -50,6 +49,11 @@ namespace InjectedTimer
         public static double ReadDouble(long addr)
         {
             return APIHelper.ReadDouble((IntPtr)addr);
+        }
+
+        public static byte[] ReadBytes(long addr, int amount)
+        {
+            return APIHelper.ReadRaw((IntPtr)addr, amount);
         }
 
         public static long PointerPath(params long[] addresses)

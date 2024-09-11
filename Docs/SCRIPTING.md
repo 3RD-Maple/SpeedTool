@@ -83,9 +83,12 @@ Please refer to those for available functionality in the scripting engine.
 | read_float(addr) | Reads a 32-bit single precision floating point value from `addr` |
 | read_double(addr) | Reads a 64-bit double precision floating point value from `addr` |
 | read_ascii(addr, n) | Reads an ASCII string of length `n` from `addr` |
+| read_bytes(addr, n) | Reads `n` bytes from `addr` |
 | pointer_path(addr[]) | Unwraps a pointer path for `addr`. Since pointer pathes can change in runtime, it's best to not cache the result |
 | module_base_address(module) | Returns the base address of a `module`. The search is case-insensitive |
 
+
+> **_NOTE:_** `read_bytes` will return array that starts indexing with 0, unlike LUA's usual 1
 
 * Timer controls
 
