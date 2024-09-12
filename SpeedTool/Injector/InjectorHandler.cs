@@ -49,6 +49,8 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         {
             if(time.Ticks == 0)
                 return TimerState.NoState;
+            if(Platform.Platform.SharedPlatform.IsRunFinished)
+                return TimerState.Finished;
             return TimerState.Running;
         }
     }
@@ -143,6 +145,7 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
 
     public void Reset()
     {
+        started = false;
         time = new(0);
         p?.SendString("reset");
     }
@@ -154,7 +157,10 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
 
     private void OnMessage(object? sender, string message)
     {
-        if(message.StartsWith("timer "))
+        // Stop accepting messages if finished
+        if(CurrentState == TimerState.Finished)
+            return;
+        if(message.StartsWith("timer ") && started)
         {
             var ticks = long.Parse(message.Split(" ")[1]);
             time = new TimeSpan(ticks);
@@ -163,7 +169,10 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
         if(message == "start")
         {
             if(!Platform.Platform.SharedPlatform.IsRunStarted)
+            {
                 Platform.Platform.SharedPlatform.Split();
+                started = true;
+            }
         }
         if(message == "split")
         {
@@ -228,6 +237,8 @@ public sealed class InjectorHandler : IDisposable, ITimerSource
     Thread workerThread;
     Process? loadedProcess;
     private string exeName;
+
+    bool started = false;
 
     [DllImport("kernel32.dll", SetLastError = true, CallingConvention = CallingConvention.Winapi)]
     [return: MarshalAs(UnmanagedType.Bool)]

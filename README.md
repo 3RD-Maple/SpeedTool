@@ -41,6 +41,8 @@ If you want to run SpeedTool, please execute the following command:
 dotnet run --project SpeedTool
 ```
 
+**Due to complications with .NET Framework versions, to get scripting support you need to manually copu the output of TimerInjector project into SpeedTool output directory.**
+
 ## Future plans
 
 Some things we'd like to work on in the near future:

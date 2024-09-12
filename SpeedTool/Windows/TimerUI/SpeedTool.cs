@@ -79,7 +79,9 @@ internal class SpeedToolTimerUI : TimerUIBase
         else
             TextCentered(stringShortened);
 
-        if(splits.PreviousSplit != null)
+        if(timer.CurrentState == TimerState.Finished)
+            DrawDtText(splits.CurrentSplit);
+        else if(splits.PreviousSplit != null)
             DrawDtText(splits.PreviousSplit!.Value);
         DrawTimeText(timer);
     }
@@ -102,6 +104,8 @@ internal class SpeedToolTimerUI : TimerUIBase
 
     private void DrawDtText(SplitDisplayInfo split)
     {
+        if(split.DeltaTimes[DisplayTimingMethod].Ticks == 0)
+            return;
         var ahead = split.DeltaTimes[DisplayTimingMethod].Ticks < 0;
         var color = ahead ? colorsConfig.AheadColor : colorsConfig.BehindColor;
         var text = split.DeltaTimes[DisplayTimingMethod].ToSpeedtoolDTString();

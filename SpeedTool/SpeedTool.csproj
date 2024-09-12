@@ -20,7 +20,12 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="../TimerInjector/TimerInjector.csproj" Condition="'$(OS)' == 'Windows_NT'"/>
+
+    <!-- I tried including this project for the ease of building, but it keeps restoring the .NET 8.0 Lua instead Framework 4.6 Lua which it actually needs
+         Until I somehow update easyhook to work with NET 8.0, this is off limits. 
+    -->
+
+    <!--<ProjectReference Include="../TimerInjector/TimerInjector.csproj" Condition="'$(OS)' == 'Windows_NT'" />-->
     <PackageReference Include="SharpHook" Version="5.3.7" />
     <PackageReference Include="Silk.NET" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL.Extensions.Imgui" Version="2.21.0" />

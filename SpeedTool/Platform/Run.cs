@@ -27,7 +27,7 @@ public class Run : ISplitsSource
         }
     }
 
-    public SplitDisplayInfo CurrentSplit => new SplitDisplayInfo(flattened[currentSplit].DisplayString, true, flattened[currentSplit].Level);
+    public SplitDisplayInfo CurrentSplit => flattened[currentSplit];
 
     public void Split()
     {
