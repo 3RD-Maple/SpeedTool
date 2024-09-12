@@ -10,10 +10,17 @@
     <PublishAOT>true</PublishAOT>
     <Version>0.2.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <!-- Disabling NU1701 enables referencing TimerInjector, which is built using different framework -->
+    <NoWarn>NU1701</NoWarn>
+
+    <!-- And this allows to publish with a TimerInjector reference that is built differently -->
+    <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+
     <ApplicationIcon>Resources\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../TimerInjector/TimerInjector.csproj" Condition="'$(OS)' == 'Windows_NT'"/>
     <PackageReference Include="SharpHook" Version="5.3.7" />
     <PackageReference Include="Silk.NET" Version="2.21.0" />
     <PackageReference Include="Silk.NET.OpenGL.Extensions.Imgui" Version="2.21.0" />
