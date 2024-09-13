@@ -17,6 +17,8 @@ using System.Numerics;
 using SpeedTool.Platform.EventsArgs;
 using StbImageSharp;
 using Silk.NET.Core;
+using System.Runtime.InteropServices;
+using SpeedTool.Platform.Linux;
 
 public class Window : IDisposable
 {
@@ -35,7 +37,10 @@ public class Window : IDisposable
             images = new Images(gl!);
             controller = new ImGuiController(gl, window, input, () => {
                 LoadDefaultFont();
-                LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 22, "UI");
+                if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                    LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 22, "UI");
+                else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+                    LoadFontEx(Fonts.DefaultFont, Fonts.DefaultCJKFont, 22, "UI");
                 var stream = GetType().Assembly.GetManifestResourceStream(ICON_RESOURCE_NAME)!;
                 var img = ImageResult.FromStream(stream);
                 var rawImg = new RawImage(img.Width, img.Height, new(img.Data));

@@ -8,6 +8,8 @@ using SpeedTool.Windows.TimerUI;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
+using System.Runtime.InteropServices;
+using SpeedTool.Platform.Linux;
 
 namespace SpeedTool.Windows;
 
@@ -53,7 +55,10 @@ class MainWindow : SPWindow
 
     protected override void OnLoad()
     {
-        LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 42, "Main");
+        if(RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+            LoadFontEx(Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\segoeui.ttf", Environment.GetFolderPath(Environment.SpecialFolder.Fonts) + "\\meiryo.ttc", 42, "Main");
+        else if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            LoadFontEx(Fonts.DefaultFont, Fonts.DefaultCJKFont, 42, "Main");
     }
 
     protected override void OnUI(double dt)

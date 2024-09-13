@@ -65,8 +65,6 @@ public sealed class UniversalFileDialog : Window
             }
         }
 
-       
-
         ImGui.Text(directory.CurrentPath);
 
         if (ImGui.BeginListBox("", new Vector2(ImGui.GetWindowWidth() * 1f, ImGui.GetWindowHeight() * 0.6f)))
@@ -94,16 +92,9 @@ public sealed class UniversalFileDialog : Window
         }
         ImGui.EndListBox();
 
-        
-        
-        
         ImGui.InputText("", ref fileName, 255);
-        
         ImGui.SameLine();
-        
-        
-        ImGui.SameLine();
-        
+
         if (operationMode == DialogOperation.Open)
         {
             if (ImGui.Button("Open", new Vector2(ImGui.GetWindowWidth() * 0.3f, ImGui.GetWindowHeight() * 0.05f)))
@@ -122,15 +113,13 @@ public sealed class UniversalFileDialog : Window
                 SaveFile(path => onLoad(path));
             }
         }
-        
+
         if (ImGui.Button("Cancel", new Vector2(ImGui.GetWindowWidth() * 0.4f, ImGui.GetWindowHeight() * 0.05f)))
         {
             Close();
         }
     }
 
-    
-    
     public void OpenFolder(Action<string> onOpen)
     {
         if (Directory.Exists(selectedDirectory))
@@ -162,14 +151,16 @@ public sealed class UniversalFileDialog : Window
        {
            onSave?.Invoke(fullPath);
        }
+
+       Close();
     }
 
     private readonly DialogOperation operationMode;
 
     private string fileName = "";
-    
+
     private Action<string> onLoad;
-    
+
     private string? selectedDirectory = AppContext.BaseDirectory;
 
     private bool isfolderSelected;
