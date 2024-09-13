@@ -7,6 +7,17 @@ Each script must contain two function: `on_load` and `on_frame`. Other than that
 `on_load` function is being executed once the script is loaded.  
 `on_frame` function is executed on each frame the target game outputs.
 
+## LUA
+To ensure scripting safety, the script is running inside a safe LUA sandbox that has a lot of features disabled. Whitelist approach is used.  
+Lua version used is 5.4  
+Standard library functions available:
+* All of the `string` module
+* All of the `math` module
+* Some of the `table` module
+* Coroutines
+* `os.clock`, `os.difftime`, `os.time` from os module
+* `tonumber`, `tostring`, and some other
+
 ## Sample script
 Below you can find a sample script file written for Need for Speed: Underground 2
 ```lua

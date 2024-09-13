@@ -47,6 +47,7 @@ namespace InjectedTimer
 
         Lua luaState;
 
+        // Original LUA sandbox code is taken from here https://stackoverflow.com/questions/1224708/how-can-i-create-a-secure-lua-sandbox
         private const string SANDBOX =
 """
 -- save a pointer to globals that would be unreachable in sandbox

@@ -65,6 +65,7 @@ public sealed class GameEditorWindow : Platform.Window
             {
                 ImGui.InputText("Game Name", ref Name, 255);
                 ImGui.InputText("Exe Name", ref ExeName, 255);
+                ImGuiExtensions.TooltipHint("Exe name should include .exe");
                 if(ExeName != "")
                 {
                     if(ImGui.Button("Edit script"))
@@ -313,6 +314,27 @@ end
 
 function on_frame()
     -- this function will be executed on each frame
+
+    --[[
+        Try hovering over those highlighted functions to see what they do :)
+        read_int(0xDEADBEEF)
+        read_float(0xDEADBEEF)
+        read_long(0xDEADBEEF)
+        read_double(0xDEADBEEF)
+        read_bytes(0xDEADBEEF, 16)
+        read_ascii(0xDEADBEEF, 16)
+        pointer_path(0xDEADBEEF, 0xC, 0x10, 0xCC)
+        module_base_address('kernel32.dll')
+
+        timer_set_loading()
+        timer_set_not_loading()
+
+        timer_start()
+        timer_split()
+
+        debug_message('Hello, world!')
+        debug_message(string.format('%d %d', 10, 20))
+    ]]
 end
 ";
 

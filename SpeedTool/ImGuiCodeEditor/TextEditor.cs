@@ -2034,11 +2034,18 @@ public class TextEditor
             io.WantTextInput = true;
 
             if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Z)))
-                Undo();
+            {
+                // Because of some issues in the code, undo and redo are temporarily disabled
+                // Undo();
+            }
             else if (!IsReadOnly && !ctrl && !shift && alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Backspace)))
-                Undo();
+            {
+                // Undo();
+            }
             else if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Y)))
-                Redo();
+            {
+                // Redo();
+            }
             else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.UpArrow)))
                 MoveUp(1, shift);
             else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.DownArrow)))
@@ -2082,7 +2089,10 @@ public class TextEditor
             else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Enter)))
                 EnterCharacter('\n', false);
             else if (!IsReadOnly && !ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Tab)))
-                EnterCharacter('\t', shift);
+            {
+                for(int i = 0; i < 4; i++)
+                    EnterCharacter(' ', shift);
+            }
 
             if (!IsReadOnly && io.InputQueueCharacters.Size != 0)
             {
