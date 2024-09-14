@@ -23,4 +23,4 @@ There isn't any specific code-style imposed.
 These are the kind of things that are unlikely to be merged:
 * PRs with several hundred lines of code changed, spanning over several systems/files
 * Formatting/whitespace fixes
-* **PRs that add dependenices**
+* **PRs that add dependencies**
