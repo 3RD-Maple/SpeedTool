@@ -1,7 +1,7 @@
 # SpeedTool
 A scriptable OpenGL-accelerated speedrunning timer that runs inside your games!
 
->⚠️**WARNING**⚠️ This project is still a _**Work In Progress**_. Please expect rough edges, missing features, bugs, and breackage of backwards compatibility.
+>⚠️**WARNING**⚠️ This project is still a _**Work In Progress**_. Please expect rough edges, missing features, bugs, and breakage of backwards compatibility.
 
 _We are looking for contributors. Please consider checking out [CONTRIBUTING](CONTRIBUTING.md) if you wish to help improve the project._
 
@@ -23,7 +23,7 @@ List of already supported graphics platforms:
 
 Support for other graphics platforms will be added in near future
 
-> **ℹ️ NOTE ℹ️** Some games might be imopssible to inject to, due to anti-cheat software or other game-specific implementation quircks. Please note that we can only test games that we have in out possesion.
+> **ℹ️ NOTE ℹ️** Some games might be impossible to inject to, due to anti-cheat software or other game-specific implementation quirks. Please note that we can only test games that we have in our possession.
 
 ## Building
 
@@ -41,7 +41,7 @@ If you want to run SpeedTool, please execute the following command:
 dotnet run --project SpeedTool
 ```
 
-**Due to complications with .NET Framework versions, to get scripting support you need to manually copu the output of TimerInjector project into SpeedTool output directory.**
+**Due to complications with .NET Framework versions, to get scripting support you need to manually copy the output of TimerInjector project into SpeedTool output directory.**
 
 ## Future plans
 

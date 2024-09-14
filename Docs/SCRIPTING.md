@@ -3,12 +3,12 @@ SpeedTool is using the [LUA programming language](https://www.lua.org/) for its 
 Below you will find a brief introduction to timer scripting with SpeedTool
 
 ## Important things
-Each script must contain two function: `on_load` and `on_frame`. Other than that, everything is up for the programer to do.  
+Each script must contain two function: `on_load` and `on_frame`. Other than that, everything is up for the programmer to do.  
 `on_load` function is being executed once the script is loaded.  
 `on_frame` function is executed on each frame the target game outputs.
 
 ## LUA
-To ensure scripting safety, the script is running inside a safe LUA sandbox that has a lot of features disabled. Whitelist approach is used.  
+To ensure scripting safety, the script is running inside a safe LUA sandbox that has a lot of features disabled. A whitelist approach is used.  
 Lua version used is 5.4  
 Standard library functions available:
 * All of the `string` module
@@ -95,7 +95,7 @@ Please refer to those for available functionality in the scripting engine.
 | read_double(addr) | Reads a 64-bit double precision floating point value from `addr` |
 | read_ascii(addr, n) | Reads an ASCII string of length `n` from `addr` |
 | read_bytes(addr, n) | Reads `n` bytes from `addr` |
-| pointer_path(addr[]) | Unwraps a pointer path for `addr`. Since pointer pathes can change in runtime, it's best to not cache the result |
+| pointer_path(addr[]) | Unwraps a pointer path for `addr`. Since pointer paths can change at runtime, it's best to not cache the result |
 | module_base_address(module) | Returns the base address of a `module`. The search is case-insensitive |
 
 
