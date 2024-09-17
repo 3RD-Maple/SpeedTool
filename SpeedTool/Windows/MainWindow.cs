@@ -23,6 +23,8 @@ class MainWindow : SPWindow
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
         config = Configuration.GetSection<GeneralConfiguration>()!;
+        colorSettings = Configuration.GetSection<ColorSettings>()!;
+        BackgroundColor = colorSettings.TimerBackground;
         LoadUI();
     }
 
@@ -30,7 +32,14 @@ class MainWindow : SPWindow
     {
         ui.ReloadConfig(sender, section);
         if ((section as GeneralConfiguration) != null)
+        {
             config = (section as GeneralConfiguration)!;
+        }
+        else if((section as ColorSettings) != null)
+        {
+            colorSettings = (section as ColorSettings)!;
+            BackgroundColor = colorSettings.TimerBackground;
+        }
     }
 
     override public void Dispose()
@@ -227,6 +236,7 @@ class MainWindow : SPWindow
     string errorMessage = "";
     TimerDrawable drw;
     private GeneralConfiguration config;
+    private ColorSettings colorSettings;
     Platform.Platform platform;
 
     TimerUIBase ui;

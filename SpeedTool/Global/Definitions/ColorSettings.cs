@@ -21,4 +21,8 @@ public sealed class ColorSettings : IConfigurationSection
     [JsonConverter(typeof(Vector4Converter))]
     [JsonInclude]
     public Vector4 PBColor;
+
+    [JsonConverter(typeof(Vector4Converter))]
+    [JsonInclude]
+    public Vector4 TimerBackground;
 }

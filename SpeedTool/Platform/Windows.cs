@@ -53,7 +53,7 @@ public class Window : IDisposable
         {
             controller?.Update((float)delta);
             gl?.Viewport(0, 0, (uint)sizes.X, (uint)sizes.Y);
-            gl?.ClearColor(Color.FromArgb(0, 26, 20, 27));
+            gl?.ClearColor(clearColor);
             gl?.Clear((uint)ClearBufferMask.ColorBufferBit);
 
             OnDraw(delta);
@@ -127,6 +127,18 @@ public class Window : IDisposable
     private void HandleConfigUpdate(object? sender, IConfigurationSection section)
     {
         OnConfigUpdated(sender, section);
+    }
+
+    public Vector4 BackgroundColor
+    {
+        get
+        {
+            return new Vector4(clearColor.R / 255.0f, clearColor.G / 255.0f, clearColor.B / 255.0f, clearColor.A / 255.0f);
+        }
+        set
+        {
+            clearColor = VectorColorToColor(value);
+        }
     }
 
     public Sizes Sizes
@@ -260,6 +272,11 @@ public class Window : IDisposable
         fonts["default"] = ImGui.GetIO().Fonts.AddFontDefault();
     }
 
+    private Color VectorColorToColor(Vector4 clr)
+    {
+        return Color.FromArgb((int)(clr.W * 255), (int)(clr.X * 255), (int)(clr.Y * 255), (int)(clr.Z * 255));
+    }
+
     public ImFontPtr GetFont(string name)
     {
         return fonts[name];
@@ -272,6 +289,8 @@ public class Window : IDisposable
     ImGuiController? controller;
 
     private Images? images;
+
+    Color clearColor = Color.FromArgb(0, 26, 20, 27);
 
     Vector2D<int> sizes;
 
