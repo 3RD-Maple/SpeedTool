@@ -1,3 +1,5 @@
+using System.Numerics;
+using Silk.NET.Windowing;
 using SpeedTool.Global;
 using SpeedTool.Splits;
 using SpeedTool.Timer;
@@ -10,6 +12,15 @@ abstract class TimerUIBase
     public abstract void DoUI(ISplitsSource splits, ITimerSource source);
     
     public virtual void ReloadConfig(object? sender, IConfigurationSection? section) { }
+
+    public abstract WindowBorder DesiredBorder { get; }
+    public virtual Vector2 DesiredSize
+    {
+        get
+        {
+            return new Vector2(500, 550);
+        }
+    }
 
     protected TimingMethod DisplayTimingMethod
     {

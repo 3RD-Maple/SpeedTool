@@ -1,5 +1,6 @@
 using System.Numerics;
 using ImGuiNET;
+using Silk.NET.Windowing;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
@@ -21,7 +22,9 @@ class ClassicTimerUI : TimerUIBase
     {
 
     }
-    
+
+    public override WindowBorder DesiredBorder => WindowBorder.Resizable;
+
     public override void ReloadConfig(object? sender, IConfigurationSection? section)
     {
         if((section as ColorSettings) != null)

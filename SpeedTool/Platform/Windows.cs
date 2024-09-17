@@ -176,6 +176,16 @@ public class Window : IDisposable
         window.Close();
     }
 
+    public void Resize(Sizes size)
+    {
+        window.Size = size;
+    }
+
+    public void SetBorder(WindowBorder border)
+    {
+        window.WindowBorder = border;
+    }
+
     public GL Gl
     {
         get

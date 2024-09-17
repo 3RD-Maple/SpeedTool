@@ -1,6 +1,7 @@
 using System.Numerics;
 using ImGuiNET;
 using Silk.NET.OpenGL;
+using Silk.NET.Windowing;
 using SpeedTool.Global;
 using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
@@ -23,6 +24,8 @@ internal class SpeedToolTimerUI : TimerUIBase
         this.gl = gl;
         drw = new TimerDrawable(gl);
     }
+
+    public override WindowBorder DesiredBorder => WindowBorder.Fixed;
 
     private ColorSettings colorsConfig { get; set; } =
         Configuration.GetSection<ColorSettings>() ?? throw new Exception();

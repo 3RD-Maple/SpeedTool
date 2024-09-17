@@ -10,6 +10,7 @@ using SpeedTool.Global.Definitions;
 using SpeedTool.Splits;
 using System.Runtime.InteropServices;
 using SpeedTool.Platform.Linux;
+using System.Diagnostics.CodeAnalysis;
 
 namespace SpeedTool.Windows;
 
@@ -22,7 +23,7 @@ class MainWindow : SPWindow
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
         config = Configuration.GetSection<GeneralConfiguration>()!;
-        ui = SelectUI();
+        LoadUI();
     }
 
     protected override void OnConfigUpdated(object? sender, IConfigurationSection? section)
@@ -115,15 +116,11 @@ class MainWindow : SPWindow
             {
                 if(ImGui.MenuItem("SpeedTool"))
                 {
-                    config.TimerUI = "SpeedTool";
-                    Configuration.SetSection(config);
-                    ui = SelectUI();
+                    SetUI("SpeedTool");
                 }
                 if(ImGui.MenuItem("Classic"))
                 {
-                    config.TimerUI = "Classic";
-                    Configuration.SetSection(config);
-                    ui = SelectUI();
+                    SetUI("Classic");
                 }
                 ImGui.EndMenu();
             }
@@ -206,6 +203,24 @@ class MainWindow : SPWindow
         default:
             return new SpeedToolTimerUI(Gl);
         }
+    }
+
+    private void SetUI(string display)
+    {
+        if(config.TimerUI == display)
+            return;
+
+        config.TimerUI = display;
+        Configuration.SetSection(config);
+        LoadUI();
+    }
+
+    [MemberNotNull(nameof(ui))]
+    private void LoadUI()
+    {
+        ui = SelectUI();
+        SetBorder(ui.DesiredBorder);
+        Resize(new Vector2D<int>((int)ui.DesiredSize.X, (int)ui.DesiredSize.Y));
     }
 
     bool hasError = false;
