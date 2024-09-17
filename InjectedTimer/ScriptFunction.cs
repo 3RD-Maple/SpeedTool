@@ -82,12 +82,19 @@ namespace InjectedTimer
             try
             {
                 var data = APIHelper.ReadRaw((IntPtr)addr, count);
-                return Encoding.ASCII.GetString(data);
+                return Encoding.ASCII.GetString(data.Take(ASCIILength(data)).ToArray());
             }
             catch
             {
                 return "";
             }
+        }
+
+        private static int ASCIILength(byte[] data)
+        {
+            int i = 0;
+            while(data[i] != 0) i++;
+            return i;
         }
 
         public static Pipe Sink;
