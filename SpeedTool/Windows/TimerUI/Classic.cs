@@ -101,6 +101,10 @@ class ClassicTimerUI : TimerUIBase
         {
             return (ColorsConfig.TextColor, displayInfo.Times[DisplayTimingMethod].ToSpeedToolTimerString());
         }
+        else if(displayInfo.PBTimes[DisplayTimingMethod].Ticks != 0)
+        {
+            return (ColorsConfig.TextColor, displayInfo.PBTimes[DisplayTimingMethod].ToSpeedToolTimerString());
+        }
 
         return (ColorsConfig.TextColor, "");
     }

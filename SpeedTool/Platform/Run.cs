@@ -13,7 +13,11 @@ public class Run : ISplitsSource
         FlattenSplits();
 
         if(comparisonRun != null && comparisonRun.Splits.Length == flattened.Length)
+        {
+            for(int i = 0; i < comparisonRun.Splits.Length; i++)
+                flattened[i].PBTimes = comparisonRun.Splits[i].Times;
             comparison = comparisonRun;
+        }
     }
 
     public bool Started { get; private set; }

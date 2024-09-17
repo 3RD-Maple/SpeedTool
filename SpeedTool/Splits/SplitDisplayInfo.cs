@@ -61,6 +61,8 @@ public struct SplitDisplayInfo
 
     public TimeCollection Times = new();
 
+    public TimeCollection PBTimes = new();
+
     public JsonObject ToJson()
     {
         JsonObject o = new();
