@@ -68,24 +68,22 @@ public sealed class SplitsController
     public void Start()
     {
         currentSplitId = -1;
-        NextSplit();
+        NextSplit(new());
     }
 
-    public bool NextSplit()
+    public bool NextSplit(TimeCollection times)
     {
         // Write split time
         if(currentSplitId >= 0)
         {
             flattened[currentSplitId].IsCurrent = false;
-            for(int i = 0; i < (int)TimingMethod.Last; i++)
-            {
-                var tm = (TimingMethod)i;
-                var time = Platform.Platform.SharedPlatform.GetTimerFor(tm).CurrentTime;
-                flattened[currentSplitId].Times[tm] = time;
-                // TODO: Fill segment times
-            }
+            flattened[currentSplitId].Times = times;
             if(comparison != null)
                 flattened[currentSplitId].DeltaTimes = flattened[currentSplitId].Times - comparison.Splits[currentSplitId].TotalTime;
+            if(PreviousSplit != null)
+                flattened[currentSplitId].SegmentTimes = flattened[currentSplitId].Times - PreviousSplit.Times;
+            else
+                flattened[currentSplitId].SegmentTimes = flattened[currentSplitId].Times;
         }
 
         currentSplitId++;
@@ -118,7 +116,7 @@ public sealed class SplitsController
         // If split has subsplits, go to next split
         if(NextFlatSplit != null && NextFlatSplit.Level > CurrentFlatSplit.Level)
         {
-            if(!NextSplit())
+            if(!NextSplit(times))
                 return false;
         }
 

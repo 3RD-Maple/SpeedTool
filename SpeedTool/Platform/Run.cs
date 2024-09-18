@@ -48,7 +48,7 @@ public class Run : ISplitsSource
             return;
         }
 
-        if(!controller.NextSplit())
+        if(!controller.NextSplit(Platform.SharedPlatform.GetCurrentTimes()))
         {
             timer.Stop();
             Started = false;

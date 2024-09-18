@@ -51,7 +51,7 @@ class ClassicTimerUI : TimerUIBase
             var split = gotSplits[i];
             var isLast = i == (gotSplits.Length - 1) && split.Times[DisplayTimingMethod].Ticks != 0;
 
-            var timeText = isLast ? GetTimeStringForLastSplit(ref split) : GetTimeString(ref split, source);
+            var timeText = isLast ? GetTimeStringForLastSplit(ref split) : GetTimeString(ref split, source, splits);
             var timeTextLen = timeText.Item2 == "" ? 0 : ImGui.CalcTextSize(timeText.Item2).X;
             var splitOffset = split.Level * SPLIT_OFFSET;
             var splitText = ImGuiExtensions.ShortenStringForWidth((int)(ImGui.GetWindowSize().X - timeTextLen - splitOffset - 35), split.DisplayString);
@@ -81,10 +81,20 @@ class ClassicTimerUI : TimerUIBase
         ImGui.PopStyleVar(5);
     }
 
-    private (Vector4, string) GetTimeString(ref SplitDisplayInfo displayInfo, ITimerSource source)
+    private (Vector4, string) GetTimeString(ref SplitDisplayInfo displayInfo, ITimerSource source, ISplitsSource splits)
     {
         if(displayInfo.IsCurrent)
         {
+            if(displayInfo.PBSplit != null)
+            {
+                var currentSeg = source.CurrentTime;
+                if(splits.PreviousSplit != null)
+                    currentSeg -= splits.PreviousSplit.Times[DisplayTimingMethod];
+                if(currentSeg > displayInfo.PBSplit.SegmentTime[DisplayTimingMethod])
+                {
+                    return (ColorsConfig.BehindColor, source.CurrentTime.ToSpeedToolTimerString());
+                }
+            }
             return (ColorsConfig.TextColor, source.CurrentTime.ToSpeedToolTimerString());
         }
         else if(displayInfo.DeltaTimes[DisplayTimingMethod].TotalMilliseconds != 0)
@@ -101,7 +111,7 @@ class ClassicTimerUI : TimerUIBase
         {
             return (ColorsConfig.TextColor, displayInfo.Times[DisplayTimingMethod].ToSpeedToolTimerString());
         }
-        else if(displayInfo.PBSplit.TotalTime[DisplayTimingMethod].Ticks != 0)
+        else if(displayInfo.PBSplit != null && displayInfo.PBSplit.TotalTime[DisplayTimingMethod].Ticks != 0)
         {
             return (ColorsConfig.TextColor, displayInfo.PBSplit.TotalTime[DisplayTimingMethod].ToSpeedToolTimerString());
         }

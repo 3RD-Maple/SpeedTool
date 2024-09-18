@@ -3,7 +3,7 @@ using SpeedTool.JSON;
 
 namespace SpeedTool.Splits;
 
-public struct SplitInfo
+public class SplitInfo
 {
     public SplitInfo() { }
 

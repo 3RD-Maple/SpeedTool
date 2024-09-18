@@ -55,5 +55,5 @@ public class SplitDisplayInfo
     public TimeCollection SegmentTimes = new();
 
     [JsonInclude]
-    public SplitInfo PBSplit = new();
+    public SplitInfo? PBSplit;
 }
