@@ -1,9 +1,9 @@
-using System.Text.Json.Nodes;
-using SpeedTool.Util;
+using System.Text.Json.Serialization;
+using SpeedTool.JSON;
 
 namespace SpeedTool.Splits;
 
-public struct SplitDisplayInfo
+public class SplitDisplayInfo
 {
     public SplitDisplayInfo(string name, bool active, int level)
     {
@@ -19,30 +19,15 @@ public struct SplitDisplayInfo
         Level = 0;
     }
 
-    public static SplitDisplayInfo FromJsonObject(JsonObject o)
+    public SplitInfo ToSplitInfo()
     {
-        SplitDisplayInfo ret = new SplitDisplayInfo(o.EnforceGetString("DisplayString"), false, (int)o["Level"]!);
-        ret.Times = new TimeCollection(o["Times"]!.AsObject());
-        ret.DeltaTimes = new TimeCollection(o["DeltaTimes"]!.AsObject());
-        return ret;
-    }
-
-    public static JsonArray SerializeMany(SplitDisplayInfo[] splits)
-    {
-        JsonArray ret = new();
-        for(int i = 0; i < splits.Length; i++)
-            ret.Add((JsonNode)splits[i].ToJson());
-
-        return ret;
-    }
-
-    public static SplitDisplayInfo[] DeserializeJsonArray(JsonArray array)
-    {
-        var count = array.Count;
-        SplitDisplayInfo[] ret = new SplitDisplayInfo[count];
-        for(int i = 0; i < count; i++)
-            ret[i] = FromJsonObject(array[i]!.AsObject());
-        return ret;
+        return new SplitInfo()
+        {
+            DeltaTime = DeltaTimes,
+            Name = DisplayString,
+            SegmentTime = SegmentTimes,
+            TotalTime = Times
+        };
     }
 
     /// <summary>
@@ -57,20 +42,18 @@ public struct SplitDisplayInfo
 
     public string DisplayString { get; private set; }
 
+    [JsonInclude]
+    [JsonConverter(typeof(TimeCollectionConverter))]
     public TimeCollection DeltaTimes = new();
 
+    [JsonInclude]
+    [JsonConverter(typeof(TimeCollectionConverter))]
     public TimeCollection Times = new();
 
-    public TimeCollection PBTimes = new();
+    [JsonInclude]
+    [JsonConverter(typeof(TimeCollectionConverter))]
+    public TimeCollection SegmentTimes = new();
 
-    public JsonObject ToJson()
-    {
-        JsonObject o = new();
-        o["Level"] = Level;
-        o["DisplayString"] = DisplayString;
-        o["DeltaTimes"] = DeltaTimes.ToJson();
-        o["Times"] = Times.ToJson();
-
-        return o;
-    }
+    [JsonInclude]
+    public SplitInfo PBSplit = new();
 }

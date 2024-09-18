@@ -1,7 +1,3 @@
-using System.Text.Json;
-using System.Text.Json.Nodes;
-using SpeedTool.Util;
-
 namespace SpeedTool.Splits;
 
 public class Category
@@ -12,49 +8,9 @@ public class Category
         Splits = splits;
     }
 
-    public JsonObject ToJson()
-    {
-        JsonObject o = new();
-        o["Name"] = Name;
-        o["RunsCount"] = RunsCount;
-        o["Splits"] = SerializeSplits();
-        return o;
-    }
+    public string Name { get; set; }
 
-    public static Category FromJson(JsonObject obj)
-    {
-        if(!obj.ContainsKey("Splits"))
-            throw new FormatException();
-        var splits = obj["Splits"]!.AsArray();
-        var spl = new Split[splits.Count];
-        for(int i = 0; i < spl.Length; i++)
-        {
-            spl[i] = Split.FromJson(splits[i]!.AsObject());
-        }
+    public Split[] Splits { get; set; }
 
-        return new Category(obj.EnforceGetString("Name"), spl);
-    }
-
-    public string Name { get; private set; }
-
-    public Split[] Splits { get; private set; }
-
-    public int RunsCount { get; private set; }
-
-    private JsonArray SerializeSplits()
-    {
-        JsonArray arr = new();
-        for(int i = 0; i < Splits.Length; i++)
-        {
-            arr.Add((JsonNode)Splits[i].ToJson());
-        }
-
-        return arr;
-    }
-
-    private static void EnforceField(JsonObject obj, string name)
-    {
-        if(obj[name] == null)
-            throw new JsonException();
-    }
+    public int RunsCount { get; set; }
 }

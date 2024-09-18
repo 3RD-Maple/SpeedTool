@@ -1,4 +1,5 @@
 using System.IO.Compression;
+using System.Text.Json;
 using System.Text.Json.Nodes;
 using SpeedTool.Timer;
 using SpeedTool.Util;
@@ -100,7 +101,7 @@ public class Game
         g.categories = new Category[categories.Length];
         for(int i = 0; i < categories.Length; i++)
         {
-            g.categories[i] = Category.FromJson(JSONHelper.EnforceParseAsObject(categories[i].AsText()));
+            g.categories[i] = (JsonSerializer.Deserialize(categories[i].AsText(), typeof(Category), SourceGeneratorContext.Default) as Category)!;
         }
 
         g.source.Dispose();
@@ -118,7 +119,7 @@ public class Game
 
     private JsonObject GetCategoryJson(int idx)
     {
-        return categories[idx].ToJson();
+        return JsonSerializer.SerializeToNode(categories[idx], typeof(Category), SourceGeneratorContext.Default)!.AsObject();
     }
 
     private JsonObject GetMetaJson()

@@ -11,7 +11,7 @@ class RunCollection
         {
             if(!HasRuns)
                 throw new Exception("Collection was empty");
-            return runs.OrderBy(x => x.Times[Timer.TimingMethod.RealTime]).FirstOrDefault()!;
+            return runs.OrderBy(x => x.TotalTimes[Timer.TimingMethod.RealTime]).FirstOrDefault()!;
         }
     }
 

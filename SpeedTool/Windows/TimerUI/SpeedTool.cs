@@ -85,7 +85,7 @@ internal class SpeedToolTimerUI : TimerUIBase
         if(timer.CurrentState == TimerState.Finished)
             DrawDtText(splits.CurrentSplit);
         else if(splits.PreviousSplit != null)
-            DrawDtText(splits.PreviousSplit!.Value);
+            DrawDtText(splits.PreviousSplit!);
         DrawTimeText(timer);
     }
 

@@ -1,4 +1,4 @@
-using System.Text.Json.Nodes;
+using System.Text.Json;
 using Silk.NET.Input.Glfw;
 using Silk.NET.Windowing.Glfw;
 using SpeedTool.Injector;
@@ -134,6 +134,15 @@ public sealed class Platform
         ReloadRun();
     }
 
+    public TimeCollection GetCurrentTimes()
+    {
+        TimeCollection tc = new();
+        for(int i = 0; i < (int)TimingMethod.Last; i++)
+            tc[(TimingMethod)i] = GetTimerFor((TimingMethod)i).CurrentTime;
+
+        return tc;
+    }
+
     public ITimerSource GetTimerFor(TimingMethod method)
     {
         return sources[(int)method];
@@ -185,7 +194,8 @@ public sealed class Platform
         var fileName = game!.Name + "." + CurrentCategory!.Name;
         fileName = Path.GetInvalidFileNameChars().Aggregate(fileName, (current, c) => current.Replace(c, '_'));
         var dst = ENV.LocalFilesPath + "pbs/" + fileName + ".json";
-        File.WriteAllText(dst, run.ToJson().ToString());
+        var json = JsonSerializer.Serialize(run, typeof(RunInfo), SourceGeneratorContext.Default);
+        File.WriteAllText(dst, json);
     }
 
     public RunInfo? GetPBRun(Game g, Category c)
@@ -195,7 +205,17 @@ public sealed class Platform
 
         var dst = ENV.LocalFilesPath + "pbs/" + fileName + ".json";
         if(File.Exists(dst))
-            return RunInfo.FromJson(JsonNode.Parse(File.ReadAllText(dst))!.AsObject());
+        {
+            try
+            {
+                return JsonSerializer.Deserialize(File.ReadAllText(dst), typeof(RunInfo), SourceGeneratorContext.Default) as RunInfo;
+            }
+            catch
+            {
+                File.Delete(dst);
+                return null;
+            }
+        }
         return null;
     }
 
@@ -244,7 +264,7 @@ public sealed class Platform
         if(injector != null)
             injector.Reset();
 
-        run = new Run(game, game.GetCategories()[activeCategory].Splits, GetPBRun(game, CurrentCategory!));
+        run = new Run(game, game.GetCategories()[activeCategory], GetPBRun(game, CurrentCategory!));
         sources[(int)TimingMethod.RealTime] = run.Timer;
     }
 
