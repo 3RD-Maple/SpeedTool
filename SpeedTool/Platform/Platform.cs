@@ -210,8 +210,9 @@ public sealed class Platform
             {
                 return JsonSerializer.Deserialize(File.ReadAllText(dst), typeof(RunInfo), SourceGeneratorContext.Default) as RunInfo;
             }
-            catch
+            catch(Exception ex)
             {
+                DebugLog.SharedInstance.Write(ex.Message);
                 File.Delete(dst);
                 return null;
             }

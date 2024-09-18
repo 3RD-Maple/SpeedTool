@@ -38,7 +38,6 @@ public class Run : ISplitsSource
             {
                 Platform.SharedPlatform.ReloadRun();
                 timer.Reset();
-                controller = new SplitsController(category, null);
                 IsFinished = false;
                 return;
             }
