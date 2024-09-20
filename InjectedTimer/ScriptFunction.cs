@@ -93,7 +93,7 @@ namespace InjectedTimer
         private static int ASCIILength(byte[] data)
         {
             int i = 0;
-            while(data[i] != 0) i++;
+            while(i < data.Length && data[i] != 0) i++;
             return i;
         }
 
