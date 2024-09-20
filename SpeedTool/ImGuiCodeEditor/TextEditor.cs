@@ -5,7 +5,7 @@ using System.Text.RegularExpressions;
 
 using ErrorMarkers = Dictionary<int, string>;
 using Breakpoints = HashSet<int>;
-using UndoBuffer = List<UndoRecord>;
+using UndoBuffer = Stack<UndoRecord>;
 using Line = List<Glyph>;
 using Lines = List<List<Glyph>>;
 using RegexList = List<Tuple<System.Text.RegularExpressions.Regex, PaletteIndex>>;
@@ -123,7 +123,6 @@ public class TextEditor
         mScrollToTop = true;
 
         mUndoBuffer.Clear();
-        mUndoIndex = 0;
 
         Colorize();
     }
@@ -158,7 +157,6 @@ public class TextEditor
         mScrollToTop = true;
 
         mUndoBuffer.Clear();
-        mUndoIndex = 0;
 
         Colorize();
     }
@@ -338,14 +336,6 @@ public class TextEditor
             else
             {
                 --cindex;
-                if (cindex > 0)
-                {
-                    if (mLines.Count > line)
-                    {
-                        while (cindex > 0 && IsUTFSequence(mLines[line][cindex].mChar))
-                            --cindex;
-                    }
-                }
             }
 
             mState.mCursorPosition = new Coordinates(line, GetCharacterColumn(line, cindex));
@@ -403,7 +393,7 @@ public class TextEditor
             }
             else
             {
-                cindex += UTF8CharLength(line[cindex].mChar);
+                cindex++;
                 mState.mCursorPosition = new Coordinates(lindex, GetCharacterColumn(lindex, cindex));
                 if (aWordMode)
                     mState.mCursorPosition = FindNextWord(mState.mCursorPosition);
@@ -696,7 +686,7 @@ public class TextEditor
                 u.mRemovedEnd.mColumn++;
                 u.mRemoved = GetText(u.mRemovedStart, u.mRemovedEnd);
 
-                var d = UTF8CharLength(line[cindex].mChar);
+                var d = 1;
                 while (d-- > 0 && cindex < line.Count)
                     line.RemoveAt(cindex);
             }
@@ -712,21 +702,23 @@ public class TextEditor
 
     public bool CanUndo()
     {
-        return !mReadOnly && mUndoIndex > 0;
+        return !mReadOnly && mUndoBuffer.Count > 0;
     }
     public bool CanRedo()
     {
-        return !mReadOnly && mUndoIndex < mUndoBuffer.Count;
+        return !mReadOnly && mUndoBuffer.Count > 0;
     }
     public void Undo(int aSteps = 1)
     {
         while (CanUndo() && aSteps-- > 0)
-            mUndoBuffer[--mUndoIndex].Undo(this);
+        {
+            mUndoBuffer.Pop().Undo(this);
+        }
     }
     public void Redo(int aSteps = 1)
     {
         while (CanRedo() && aSteps-- > 0)
-            mUndoBuffer[mUndoIndex++].Redo(this);
+            mUndoBuffer.Pop().Undo(this);
     }
 
     public static Palette GetDarkPalette()
@@ -1090,7 +1082,7 @@ public class TextEditor
                     t.mPreprocessor = withinPreproc;
                     line[currentIndex] = t;
 
-                    currentIndex += UTF8CharLength(c);
+                    currentIndex += 1;
                     if (currentIndex >= line.Count)
                     {
                         currentIndex = 0;
@@ -1138,7 +1130,7 @@ public class TextEditor
             }
             else
             {
-                var d = UTF8CharLength(line[it].mChar);
+                var d = 1;
                 var l = d;
                 char[] tempCString = new char[7];
                 int i = 0;
@@ -1270,7 +1262,7 @@ public class TextEditor
 
             if (cindex + 1 < line.Count)
             {
-                var delta = UTF8CharLength(line[cindex].mChar);
+                var delta = 1;
                 cindex = Math.Min(cindex + delta, line.Count - 1);
             }
             else
@@ -1362,7 +1354,7 @@ public class TextEditor
             else
             {
                 var line = mLines[aWhere.mLine];
-                var d = UTF8CharLength(aValue[i]);
+                var d = 1;
                 while (d-- > 0 && aValue[i] != '\0')
                     line.Insert(cindex++, new Glyph(aValue[i], PaletteIndex.Default));
                 ++aWhere.mColumn;
@@ -1376,16 +1368,7 @@ public class TextEditor
 
     void AddUndo(UndoRecord aValue)
     {
-        // assert(!mReadOnly);
-        //printf("AddUndo: (@%d.%d) +\'%s' [%d.%d .. %d.%d], -\'%s', [%d.%d .. %d.%d] (@%d.%d)\n",
-        //	aValue.mBefore.mCursorPosition.mLine, aValue.mBefore.mCursorPosition.mColumn,
-        //	aValue.mAdded.c_str(), aValue.mAddedStart.mLine, aValue.mAddedStart.mColumn, aValue.mAddedEnd.mLine, aValue.mAddedEnd.mColumn,
-        //	aValue.mRemoved.c_str(), aValue.mRemovedStart.mLine, aValue.mRemovedStart.mColumn, aValue.mRemovedEnd.mLine, aValue.mRemovedEnd.mColumn,
-        //	aValue.mAfter.mCursorPosition.mLine, aValue.mAfter.mCursorPosition.mColumn
-        //	);
-
-        mUndoBuffer.Add(aValue);
-        ++mUndoIndex;
+        mUndoBuffer.Push(aValue);
     }
 
     Coordinates ScreenPosToCoordinates(Vector2 aPosition)
@@ -1424,7 +1407,7 @@ public class TextEditor
                 else
                 {
                     char[] buf = new char[7];
-                    var d = UTF8CharLength(line[columnIndex].mChar);
+                    var d = 1;
                     int i = 0;
                     while (i < 6 && d-- > 0)
                         buf[i++] = line[columnIndex++].mChar;
@@ -1493,7 +1476,7 @@ public class TextEditor
         while (cindex < line.Count)
         {
             var c = line[cindex].mChar;
-            var d = UTF8CharLength(c);
+            var d = 1;
             if (cstart != line[cindex].mColorIndex)
                 break;
 
@@ -1572,7 +1555,7 @@ public class TextEditor
                 c = (c / mTabSize) * mTabSize + mTabSize;
             else
                 ++c;
-            i += UTF8CharLength(line[i].mChar);
+            i += 1;
         }
         return i;
     }
@@ -1587,7 +1570,7 @@ public class TextEditor
         while (i < aIndex && i < line.Count)
         {
             var c = line[i].mChar;
-            i += UTF8CharLength(c);
+            i += 1;
             if (c == '\t')
                 col = (col / mTabSize) * mTabSize + mTabSize;
             else
@@ -1603,7 +1586,7 @@ public class TextEditor
         var line = mLines[aLine];
         int c = 0;
         for (int i = 0; i < line.Count; c++)
-            i += UTF8CharLength(line[i].mChar);
+            i += 1;
         return c;
     }
 
@@ -1620,7 +1603,7 @@ public class TextEditor
                 col = (col / mTabSize) * mTabSize + mTabSize;
             else
                 col++;
-            i += UTF8CharLength(c);
+            i += 1;
         }
         return col;
     }
@@ -1831,17 +1814,16 @@ public class TextEditor
         }
         else
         {
-            char[] buf = new char[7];
-            int e = ImTextCharToUtf8(ref buf, 7, aChar);
+            char[] buf = [aChar];
+            int e = 1;
             if (e > 0)
             {
-                buf[e] = '\0';
                 var line = mLines[coord.mLine];
                 var cindex = GetCharacterIndex(coord);
 
                 if (mOverwrite && cindex < line.Count)
                 {
-                    var d = UTF8CharLength(line[cindex].mChar);
+                    var d = 1;
 
                     u.mRemovedStart = mState.mCursorPosition;
                     u.mRemovedEnd = new Coordinates(coord.mLine, GetCharacterColumn(coord.mLine, cindex + d));
@@ -1856,8 +1838,6 @@ public class TextEditor
                 int added = 0;
                 foreach(var c in buf)
                 {
-                    if(c == '\0')
-                        break;
                     line.Insert(cindex, new Glyph(c, PaletteIndex.Default));
                     added++;
                     cindex++;
@@ -1933,11 +1913,6 @@ public class TextEditor
                 var line = mLines[mState.mCursorPosition.mLine];
                 var cindex = GetCharacterIndex(pos) - 1;
                 var cend = cindex + 1;
-                while (cindex > 0 && IsUTFSequence(line[cindex].mChar))
-                    --cindex;
-
-                //if (cindex > 0 && UTF8CharLength(line[cindex].mChar) > 1)
-                //	--cindex;
 
                 u.mRemovedStart = u.mRemovedEnd = GetActualCursorCoordinates();
                 --u.mRemovedStart.mColumn;
@@ -2402,7 +2377,7 @@ public class TextEditor
                     }
                     else
                     {
-                        var l = UTF8CharLength(glyph.mChar);
+                        var l =1;
                         while (l-- > 0)
                             mLineBuffer += (line[i++].mChar);
                     }
@@ -2461,7 +2436,6 @@ public class TextEditor
     Lines mLines = new();
     internal EditorState mState = new();
     UndoBuffer mUndoBuffer = new();
-    int mUndoIndex = 0;
 
     int mTabSize = 4;
     bool mOverwrite = false;
@@ -2500,65 +2474,4 @@ public class TextEditor
     long mStartTime;
 
     float mLastClick = -1.0f;
-
-    #region Helpers
-
-    static bool IsUTFSequence(char c)
-    {
-        return (c & 0xC0) == 0x80;
-    }
-
-    static int UTF8CharLength(char c)
-    {
-        if ((c & 0xFE) == 0xFC)
-            return 6;
-        if ((c & 0xFC) == 0xF8)
-            return 5;
-        if ((c & 0xF8) == 0xF0)
-            return 4;
-        else if ((c & 0xF0) == 0xE0)
-            return 3;
-        else if ((c & 0xE0) == 0xC0)
-            return 2;
-        return 1;
-    }
-
-    static int ImTextCharToUtf8(ref char[] buf, int buf_size, uint c)
-    {
-        if (c < 0x80)
-        {
-            buf[0] = (char)c;
-            return 1;
-        }
-        if (c < 0x800)
-        {
-            if (buf_size < 2) return 0;
-            buf[0] = (char)(0xc0 + (c >> 6));
-            buf[1] = (char)(0x80 + (c & 0x3f));
-            return 2;
-        }
-        if (c >= 0xdc00 && c < 0xe000)
-        {
-            return 0;
-        }
-        if (c >= 0xd800 && c < 0xdc00)
-        {
-            if (buf_size < 4) return 0;
-            buf[0] = (char)(0xf0 + (c >> 18));
-            buf[1] = (char)(0x80 + ((c >> 12) & 0x3f));
-            buf[2] = (char)(0x80 + ((c >> 6) & 0x3f));
-            buf[3] = (char)(0x80 + ((c) & 0x3f));
-            return 4;
-        }
-        //else if (c < 0x10000)
-        {
-            if (buf_size < 3) return 0;
-            buf[0] = (char)(0xe0 + (c >> 12));
-            buf[1] = (char)(0x80 + ((c >> 6) & 0x3f));
-            buf[2] = (char)(0x80 + ((c) & 0x3f));
-            return 3;
-        }
-    }
-
-    #endregion
 }

@@ -6,8 +6,10 @@ This is a direct by-hand translation of [ImGuiColorTextEditor](https://github.co
   
 I tried keeping it as close to original as possible, though a few lines are missing here and there, and some logic has been rewritten.
 
-There shouldn't be any missing functionality (besides broken UTF-8 as of now), though any bug reports are welcome.
-
 Please notice that this code **is not very well tested** and might fail here and there
 
 I am unsure if I will be improving this project any time soon
+
+Modifications:
+* Removed UTF-8 handling to keep this consistent with C#
+* Bugfixes
