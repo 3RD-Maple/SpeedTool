@@ -8,7 +8,7 @@
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>False</GenerateDocumentationFile>
     <PublishAOT>true</PublishAOT>
-    <Version>0.2.1</Version>
+    <Version>0.3.0</Version>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <!-- Disabling NU1701 enables referencing TimerInjector, which is built using different framework -->
     <NoWarn>NU1701</NoWarn>
