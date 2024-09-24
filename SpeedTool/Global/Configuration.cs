@@ -1,7 +1,6 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Nodes;
 
-
 namespace SpeedTool.Global
 {
     /// <summary>
@@ -26,16 +25,22 @@ namespace SpeedTool.Global
             if (_init) return _init;
             if(!File.Exists(filePath))
             {
-                var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!;
-                var sr = new StreamReader(stream);
-                File.WriteAllText(filePath, sr.ReadToEnd());
+                DeployDefaultConfiguration(filePath);
                 return Init(filePath);
             }
             _filepath = filePath;
             using var reader = new StreamReader(File.OpenRead(filePath));
             _loadedCfg = reader.ReadToEnd();
-            _mappedValues = JsonNode.Parse(_loadedCfg)!.AsObject();
-
+            try
+            {
+                _mappedValues = JsonNode.Parse(_loadedCfg)!.AsObject();
+            }
+            catch
+            {
+                // Unable to load config, restore defaults
+                DeployDefaultConfiguration(filePath);
+                return Init(filePath);
+            }
             _init = true;
             return _init;
         }
@@ -84,6 +89,13 @@ namespace SpeedTool.Global
                 NotifyConfigurationChanged(value);
                 return true;
             }
+        }
+
+        private static void DeployDefaultConfiguration(string filePath)
+        {
+            var stream = typeof(Program).Assembly.GetManifestResourceStream(RESOURCE_NAME)!;
+            var sr = new StreamReader(stream);
+            File.WriteAllText(filePath, sr.ReadToEnd());
         }
 
         public static void NotifyConfigurationChanged(IConfigurationSection section)
