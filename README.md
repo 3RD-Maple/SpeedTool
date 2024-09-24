@@ -3,6 +3,8 @@ A scriptable OpenGL-accelerated speedrunning timer that runs inside your games!
 
 >⚠️**WARNING**⚠️ This project is still a _**Work In Progress**_. Please expect rough edges, missing features, bugs, and breakage of backwards compatibility.
 
+You can find the newest release on [itch.io](https://3rdmaple.itch.io/speedtool)
+
 _We are looking for contributors. Please consider checking out [CONTRIBUTING](CONTRIBUTING.md) if you wish to help improve the project._
 
 ## Features
