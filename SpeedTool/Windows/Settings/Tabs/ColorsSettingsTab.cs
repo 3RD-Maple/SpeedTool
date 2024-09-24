@@ -7,8 +7,7 @@ namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class ColorsSettingsTab : TabBase
 {
-   private ColorSettings Config { get; } =
-       Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+   private ColorSettings Config { get; } = Configuration.GetSection<ColorSettings>();
 
    public ColorsSettingsTab(string tabName) : base(tabName) { }
 

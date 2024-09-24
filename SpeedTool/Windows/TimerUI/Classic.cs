@@ -12,11 +12,9 @@ namespace SpeedTool.Windows.TimerUI;
 
 class ClassicTimerUI : TimerUIBase
 {
-    private ColorSettings ColorsConfig { get; set; } = 
-        Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+    private ColorSettings ColorsConfig { get; set; } = Configuration.GetSection<ColorSettings>();
     
-    private ClassicUISettings UIConfig { get; set; } = 
-        Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
+    private ClassicUISettings UIConfig { get; set; } = Configuration.GetSection<ClassicUISettings>();
     
     public ClassicTimerUI()
     {
@@ -36,8 +34,8 @@ class ClassicTimerUI : TimerUIBase
 
     public override void DoUI(ISplitsSource splits, ITimerSource source)
     {
-        ColorsConfig = Configuration.GetSection<ColorSettings>() ?? throw new Exception();
-        UIConfig = Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
+        ColorsConfig = Configuration.GetSection<ColorSettings>();
+        UIConfig = Configuration.GetSection<ClassicUISettings>();
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0);
         ImGui.PushStyleVar(ImGuiStyleVar.WindowPadding, 0);
         ImGui.PushStyleVar(ImGuiStyleVar.CellPadding, 0);

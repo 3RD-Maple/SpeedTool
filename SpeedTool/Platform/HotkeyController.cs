@@ -62,7 +62,7 @@ sealed class HotkeyController : IDisposable
 
     public void RefreshSettings()
     {
-        var hotkeys = Configuration.GetSection<HotkeySettings>()!;
+        var hotkeys = Configuration.GetSection<HotkeySettings>();
         enabled = hotkeys.HotkeysEnabled;
         cyclers = 
         [
@@ -79,7 +79,7 @@ sealed class HotkeyController : IDisposable
 
     private void ToggleHotkeys()
     {
-        var settings = Configuration.GetSection<HotkeySettings>()!;
+        var settings = Configuration.GetSection<HotkeySettings>();
         settings.HotkeysEnabled = !settings.HotkeysEnabled;
         Configuration.SetSection(settings);
         RefreshSettings();

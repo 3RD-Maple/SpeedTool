@@ -53,7 +53,7 @@ namespace SpeedTool.Global
         /// <returns></returns>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="NotInitializedException"></exception>
-        public static T? GetSection<T>(string? section = null) where T : class, IConfigurationSection, new()
+        public static T GetSection<T>(string? section = null) where T : class, IConfigurationSection, new()
         {
             if (!_init) throw new NotInitializedException();
 
@@ -61,8 +61,16 @@ namespace SpeedTool.Global
             if(!_mappedValues!.ContainsKey(section))
                 return new();
 
-            var value = _mappedValues.Single(x => x.Key == section).Value!;
-            return JsonSerializer.Deserialize(value, typeof(T), SourceGeneratorContext.Default) as T;
+            var value = _mappedValues.Single(x => x.Key == section).Value;
+            if(value == null)
+                return new T();
+            var t = JsonSerializer.Deserialize(value, typeof(T), SourceGeneratorContext.Default) as T;
+            if(t == null)
+            {
+                SetSection(new T());
+                return GetSection<T>();
+            }
+            return t;
         }
 
         /// <summary>

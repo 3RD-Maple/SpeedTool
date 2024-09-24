@@ -10,8 +10,7 @@ namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class SpeedToolUISettingsTab : TabBase
 {
-    private SpeedToolUISettings Config { get; } =
-        Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
+    private SpeedToolUISettings Config { get; } = Configuration.GetSection<SpeedToolUISettings>();
 
     private Vector4 secondsClockTimerColor;
     private Vector4 minutesClockTimerColor;

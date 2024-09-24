@@ -27,11 +27,9 @@ internal class SpeedToolTimerUI : TimerUIBase
 
     public override WindowBorder DesiredBorder => WindowBorder.Fixed;
 
-    private ColorSettings colorsConfig { get; set; } =
-        Configuration.GetSection<ColorSettings>() ?? throw new Exception();
+    private ColorSettings colorsConfig { get; set; } = Configuration.GetSection<ColorSettings>();
 
-    private SpeedToolUISettings speedToolConfig { get; set; } =
-        Configuration.GetSection<SpeedToolUISettings>() ?? throw new Exception();
+    private SpeedToolUISettings speedToolConfig { get; set; } = Configuration.GetSection<SpeedToolUISettings>();
 
     private string currentSplit { get; set; } = "";
 

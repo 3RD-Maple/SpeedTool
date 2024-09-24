@@ -11,7 +11,7 @@ public sealed class HotkeySettingsTab : TabBase
 
     public HotkeySettingsTab(string tabName) : base(tabName)
     {
-        Config = Configuration.GetSection<HotkeySettings>()!;
+        Config = Configuration.GetSection<HotkeySettings>();
     }
 
     protected override void ApplyTabSettings()

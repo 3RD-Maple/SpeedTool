@@ -8,8 +8,7 @@ namespace SpeedTool.Windows.Settings.Tabs;
 
 public sealed class ClassicUISettingsTab : TabBase
 {
-    private ClassicUISettings Config { get; } =
-        Configuration.GetSection<ClassicUISettings>() ?? throw new Exception();
+    private ClassicUISettings Config { get; } = Configuration.GetSection<ClassicUISettings>();
 
     private Vector4 activeSplitColor;
     private int shownSplitsCount;

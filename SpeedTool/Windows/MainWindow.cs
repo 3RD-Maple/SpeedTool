@@ -22,8 +22,8 @@ class MainWindow : SPWindow
     {
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
-        config = Configuration.GetSection<GeneralConfiguration>()!;
-        colorSettings = Configuration.GetSection<ColorSettings>()!;
+        config = Configuration.GetSection<GeneralConfiguration>();
+        colorSettings = Configuration.GetSection<ColorSettings>();
         BackgroundColor = colorSettings.TimerBackground;
         LoadUI();
     }
@@ -203,7 +203,7 @@ class MainWindow : SPWindow
 
     private TimerUIBase SelectUI()
     {
-        switch(Configuration.GetSection<GeneralConfiguration>()!.TimerUI)
+        switch(Configuration.GetSection<GeneralConfiguration>().TimerUI)
         {
         case "Classic":
             return new ClassicTimerUI();
