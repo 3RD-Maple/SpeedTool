@@ -15,4 +15,7 @@ public sealed class ClassicUISettings : IConfigurationSection
 
     [JsonInclude]
     public bool ShowRTA = true;
+
+    [JsonInclude]
+    public bool AlternateSplitBackround = true;
 }

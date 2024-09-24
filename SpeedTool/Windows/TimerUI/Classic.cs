@@ -57,7 +57,7 @@ class ClassicTimerUI : TimerUIBase
             ImGui.TableNextColumn();
             if (split.IsCurrent)
                 ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(UIConfig.ActiveSplitColor));
-            else if(i % 2 != 0)
+            else if(UIConfig.AlternateSplitBackround && i % 2 != 0)
             {
                 ImGui.TableSetBgColor(ImGuiTableBgTarget.RowBg1, Vector4Extensions.ToUint(new Vector4(0.2f, 0.2f, 0.2f, 1.0f)));
             }

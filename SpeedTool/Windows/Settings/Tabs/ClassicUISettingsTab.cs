@@ -28,7 +28,7 @@ public sealed class ClassicUISettingsTab : TabBase
         if (!(section is ClassicUISettings))
             return;
         
-        // event handling 
+        // TODO: What's up with this?
     }
 
     protected override void DoTabInternal()
@@ -36,6 +36,8 @@ public sealed class ClassicUISettingsTab : TabBase
         ImGuiExtensions.SpeedToolColorPicker("Active split", ref Config.ActiveSplitColor);
         ImGui.Checkbox("Show extra RTA timer", ref Config.ShowRTA);
         ImGuiExtensions.TooltipHint("When checked, an additional RTA timer\nwill be shown for games with other default timing methods");
+        ImGui.Checkbox("Alternate splits background", ref Config.AlternateSplitBackround);
+        ImGuiExtensions.TooltipHint("When checked, splits will have alternating backgrounds");
         ImGui.InputInt("Shown Splits", ref Config.ShownSplitsCount, 1, 1);
     }
 }
