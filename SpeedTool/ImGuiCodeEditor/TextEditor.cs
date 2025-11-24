@@ -75,7 +75,7 @@ public class TextEditor
         ImGui.PushStyleColor(ImGuiCol.ChildBg, ImGui.ColorConvertU32ToFloat4(id));
         ImGui.PushStyleVar(ImGuiStyleVar.ItemSpacing, new Vector2(0.0f, 0.0f));
         if (!mIgnoreImGuiChild)
-            ImGui.BeginChild(aTitle, aSize, aBorder ? ImGuiChildFlags.Border : ImGuiChildFlags.None, ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysHorizontalScrollbar | ImGuiWindowFlags.NoMove);
+            ImGui.BeginChild(aTitle, aSize, aBorder, ImGuiWindowFlags.HorizontalScrollbar | ImGuiWindowFlags.AlwaysHorizontalScrollbar | ImGuiWindowFlags.NoMove);
 
         if (mHandleKeyboardInputs)
         {
@@ -2008,62 +2008,62 @@ public class TextEditor
             io.WantCaptureKeyboard = true;
             io.WantTextInput = true;
 
-            if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Z))
+            if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Z)))
             {
                 // Because of some issues in the code, undo and redo are temporarily disabled
                 // Undo();
             }
-            else if (!IsReadOnly && !ctrl && !shift && alt && ImGui.IsKeyPressed(ImGuiKey.Backspace))
+            else if (!IsReadOnly && !ctrl && !shift && alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Backspace)))
             {
                 // Undo();
             }
-            else if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Y))
+            else if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Y)))
             {
                 // Redo();
             }
-            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.UpArrow))
+            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.UpArrow)))
                 MoveUp(1, shift);
-            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.DownArrow))
+            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.DownArrow)))
                 MoveDown(1, shift);
-            else if (!alt && ImGui.IsKeyPressed(ImGuiKey.LeftArrow))
+            else if (!alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.LeftArrow)))
                 MoveLeft(1, shift, ctrl);
-            else if (!alt && ImGui.IsKeyPressed(ImGuiKey.RightArrow))
+            else if (!alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.RightArrow)))
                 MoveRight(1, shift, ctrl);
-            else if (!alt && ImGui.IsKeyPressed(ImGuiKey.PageUp))
+            else if (!alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.PageUp)))
                 MoveUp(GetPageSize() - 4, shift);
-            else if (!alt && ImGui.IsKeyPressed(ImGuiKey.PageDown))
+            else if (!alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.PageDown)))
                 MoveDown(GetPageSize() - 4, shift);
-            else if (!alt && ctrl && ImGui.IsKeyPressed(ImGuiKey.Home))
+            else if (!alt && ctrl && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Home)))
                 MoveTop(shift);
-            else if (ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.End))
+            else if (ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.End)))
                 MoveBottom(shift);
-            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.Home))
+            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Home)))
                 MoveHome(shift);
-            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.End))
+            else if (!ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.End)))
                 MoveEnd(shift);
-            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Delete))
+            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Delete)))
                 Delete();
-            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Backspace))
+            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Backspace)))
                 Backspace();
-            else if (!ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Insert))
+            else if (!ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Insert)))
                 mOverwrite ^= true;
-            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Insert))
+            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Insert)))
                 Copy();
-            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.C))
+            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.C)))
                 Copy();
-            else if (!IsReadOnly && !ctrl && shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Insert))
+            else if (!IsReadOnly && !ctrl && shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Insert)))
                 Paste();
-            else if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.V))
+            else if (!IsReadOnly && ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.V)))
                 Paste();
-            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.X))
+            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.X)))
                 Cut();
-            else if (!ctrl && shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Delete))
+            else if (!ctrl && shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Delete)))
                 Cut();
-            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.A))
+            else if (ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.A)))
                 SelectAll();
-            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGuiKey.Enter))
+            else if (!IsReadOnly && !ctrl && !shift && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Enter)))
                 EnterCharacter('\n', false);
-            else if (!IsReadOnly && !ctrl && !alt && ImGui.IsKeyPressed(ImGuiKey.Tab))
+            else if (!IsReadOnly && !ctrl && !alt && ImGui.IsKeyPressed(ImGui.GetKeyIndex(ImGuiKey.Tab)))
             {
                 for(int i = 0; i < 4; i++)
                     EnterCharacter(' ', shift);
