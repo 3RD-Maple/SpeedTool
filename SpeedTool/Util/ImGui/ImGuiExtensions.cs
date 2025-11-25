@@ -171,6 +171,23 @@ public static class ImGuiExtensions
         return source.Substring(0, symbols) + "...";
     }
 
+    public static bool EditableTime(string id, ref TimeSpan time)
+    {
+        bool changed = false;
+        string timeString = time.ToSpeedToolTimerString();
+
+        if (ImGuiNET.ImGui.InputText($"##{id}", ref timeString, 20))
+        {
+            if (TimeStringParser.IsValidTimeString(timeString))
+            {
+                time = TimeStringParser.ParseTimeString(timeString);
+                changed = true;
+            }
+        }
+
+        return changed;
+    }
+
     private static KeyCode lastPressed = KeyCode.VcUndefined;
     private static bool listening = false;
 

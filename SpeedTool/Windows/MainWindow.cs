@@ -133,6 +133,13 @@ class MainWindow : SPWindow
                 }
                 ImGui.EndMenu();
             }
+            if(platform.Game != null)
+            {
+                if(ImGui.MenuItem("Edit Times"))
+                {
+                    onExit = () => platform.AddWindow(new TimeEditorWindow(platform.Game.GetCategories()[0].Splits));
+                }
+            }
             if(ImGui.MenuItem("Settings"))
             {
                 onExit = () => platform.AddWindow(new SettingsWindow());
