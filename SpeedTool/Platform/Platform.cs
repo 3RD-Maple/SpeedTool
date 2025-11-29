@@ -164,6 +164,18 @@ public sealed class Platform
         ReloadRun();
     }
 
+    public void UnloadGame()
+    {
+        if(Game is null)
+            return;
+
+        DebugLog.SharedInstance.Write($"Unloading game {Game.Name}");
+        game = null;
+        injector?.Dispose();
+        injector = null;
+        run = null;
+    }
+
     public void Run()
     {
         while (windows.Count != 0)

@@ -106,6 +106,13 @@ class MainWindow : SPWindow
                 {
                     platform.PreviousCategory();
                 }
+                if(!platform.IsRunStarted)
+                {
+                    if(ImGui.MenuItem("Close Game"))
+                    {
+                        platform.UnloadGame();
+                    }
+                }
             }
             ImGui.Separator();
             if(ImGui.MenuItem("Split"))
