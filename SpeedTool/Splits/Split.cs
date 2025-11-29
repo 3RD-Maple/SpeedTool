@@ -21,7 +21,20 @@ public class Split
 
     [JsonInclude]
     [JsonConverter(typeof(TimeCollectionConverter))]
-    public TimeCollection SplitTimes;
+    public TimeCollection SplitTimes
+    {
+        get
+        {
+            if(Subsplits.Length == 0)
+                return times;
+            else
+                return Subsplits.Select(x => x.SplitTimes).Aggregate((x, y) => x + y);
+        }
+        set
+        {
+            times = value;
+        }
+    }
 
     public SplitDisplayInfo[] Flatten()
     {
@@ -49,4 +62,6 @@ public class Split
 
         return list.ToArray();
     }
+
+    private TimeCollection times;
 }

@@ -1,4 +1,3 @@
-using Silk.NET.Vulkan;
 using SpeedTool.Timer;
 
 namespace SpeedTool.Splits;
@@ -26,6 +25,18 @@ public struct TimeCollection
     public ref TimeSpan TimeRefFor(TimingMethod timingMethod)
     {
         return ref spans[(int)timingMethod];
+    }
+
+    public static TimeCollection operator+(TimeCollection a, TimeCollection b)
+    {
+        var res = new TimeCollection();
+        for(int i = 0; i < TIMES_COUNT; i++)
+        {
+            var TM = (TimingMethod)i;
+            res[TM] = a[TM] + b[TM];
+        }
+
+        return res;
     }
 
     public static TimeCollection operator-(TimeCollection a, TimeCollection b)
