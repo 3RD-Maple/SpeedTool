@@ -26,7 +26,8 @@ public class SplitDisplayInfo
             DeltaTime = DeltaTimes,
             Name = DisplayString,
             SegmentTime = SegmentTimes,
-            TotalTime = Times
+            TotalTime = Times,
+            Level = Level
         };
     }
 

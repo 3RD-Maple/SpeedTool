@@ -11,6 +11,7 @@ using SpeedTool.Splits;
 using System.Runtime.InteropServices;
 using SpeedTool.Platform.Linux;
 using System.Diagnostics.CodeAnalysis;
+using SpeedTool.Platform;
 
 namespace SpeedTool.Windows;
 
@@ -142,9 +143,12 @@ class MainWindow : SPWindow
             }
             if(platform.Game != null)
             {
+                var pb = platform.GetPBRun(platform.Game, platform.CurrentCategory!);
+                if(pb is null)
+                    pb = new Run(platform.Game, platform.CurrentCategory!, null).GetRunInfo();
                 if(ImGui.MenuItem("Edit Times"))
                 {
-                    onExit = () => platform.AddWindow(new TimeEditorWindow(platform.Game.GetCategories()[0].Splits));
+                    onExit = () => platform.AddWindow(new TimeEditorWindow(pb));
                 }
             }
             if(ImGui.MenuItem("Settings"))
