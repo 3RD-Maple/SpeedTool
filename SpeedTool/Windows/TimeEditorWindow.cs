@@ -130,8 +130,7 @@ class TimeEditorWindow : Window
 
     private TimeCollection CollectTotalTimes()
     {
-        TimeCollection ret = new();
-        return ret;
+        return splits.Last().TotalTime;
     }
 
     private void DrawSplit(SplitInfo s, bool isGroup)

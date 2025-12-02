@@ -87,10 +87,12 @@ public sealed class SplitsController
         }
 
         currentSplitId++;
-        if(currentSplitId >= flattened.Length)
+
+        bool runFinished = currentSplitId >= flattened.Length;
+
+        if(runFinished)
         {
-            currentSplitId--;
-            return false;
+            currentSplitId = 0;
         }
 
         // Roll over parent splitts and write times for them
@@ -105,6 +107,9 @@ public sealed class SplitsController
             if(comparison != null)
                 p.Split.DeltaTimes = flattened[currentSplitId].Times - comparison.Splits[currentSplitId].TotalTime;
         }
+
+        if(runFinished)
+            return false;
 
         // Roll over to the first actual split in the tree
         while(NextFlatSplit != null && CurrentFlatSplit.Level < NextFlatSplit.Level)
