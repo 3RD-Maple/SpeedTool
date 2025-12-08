@@ -87,12 +87,24 @@ public sealed class SplitsController
         }
 
         currentSplitId++;
-
-        bool runFinished = currentSplitId >= flattened.Length;
-
-        if(runFinished)
+        if(currentSplitId >= flattened.Length)
         {
-            currentSplitId = 0;
+            currentSplitId--;
+
+            // Roll over parent splitts and write times for them
+            // Copy-pasted from below, because I don't feel like fixing this properly for now...
+            while(infoStack.Count > 0)
+            {
+                var p = infoStack.Pop();
+                for(int i = 0; i < (int)TimingMethod.Last; i++)
+                {
+                    var tm = (TimingMethod)i; 
+                    p.Split.Times[tm] = Platform.Platform.SharedPlatform.GetTimerFor(tm).CurrentTime;
+                }
+                if(comparison != null)
+                    p.Split.DeltaTimes = flattened[currentSplitId].Times - comparison.Splits[currentSplitId].TotalTime;
+            }
+            return false;
         }
 
         // Roll over parent splitts and write times for them
@@ -107,9 +119,6 @@ public sealed class SplitsController
             if(comparison != null)
                 p.Split.DeltaTimes = flattened[currentSplitId].Times - comparison.Splits[currentSplitId].TotalTime;
         }
-
-        if(runFinished)
-            return false;
 
         // Roll over to the first actual split in the tree
         while(NextFlatSplit != null && CurrentFlatSplit.Level < NextFlatSplit.Level)
