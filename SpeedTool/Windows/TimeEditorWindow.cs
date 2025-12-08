@@ -69,7 +69,7 @@ class TimeEditorWindow : Window
             for(int i = 0; i < splits.Length; i++)
             {
                 bool isGroup = i < (splits.Length - 1) ? splits[i + 1].Level > splits[i].Level : false;
-                DrawSplit(splits[i], isGroup);
+                DrawSplit(splits[i], isGroup, i);
             }
             ImGui.EndTable();
         }
@@ -133,7 +133,7 @@ class TimeEditorWindow : Window
         return splits.Last().TotalTime;
     }
 
-    private void DrawSplit(SplitInfo s, bool isGroup)
+    private void DrawSplit(SplitInfo s, bool isGroup, int n)
     {
         ImGui.SetCursorPosX(s.Level * 10 + 5);
         ImGui.Text(s.Name);
@@ -143,7 +143,7 @@ class TimeEditorWindow : Window
         if(isGroup)
             ImGui.Text("--");
         else
-            ImGuiExtensions.EditableTime(s.Name, ref s.SegmentTime.TimeRefFor(tm));
+            ImGuiExtensions.EditableTime(n.ToString(), ref s.SegmentTime.TimeRefFor(tm));
         ImGui.TableNextColumn();
     }
 

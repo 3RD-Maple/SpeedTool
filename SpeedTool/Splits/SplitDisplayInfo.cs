@@ -5,18 +5,12 @@ namespace SpeedTool.Splits;
 
 public class SplitDisplayInfo
 {
-    public SplitDisplayInfo(string name, bool active, int level)
+    public SplitDisplayInfo(string name, bool active, int level, bool leaf)
     {
         DisplayString = name;
         IsCurrent = active;
         Level = level;
-    }
-
-    public SplitDisplayInfo(Split s)
-    {
-        DisplayString = s.Name;
-        IsCurrent = false;
-        Level = 0;
+        IsLeaf = leaf;
     }
 
     public SplitInfo ToSplitInfo()
@@ -42,6 +36,11 @@ public class SplitDisplayInfo
     public int Level { get; private set; }
 
     public string DisplayString { get; private set; }
+
+    /// <summary>
+    /// Is this spleat a leaf, meaning no subsplits
+    /// </summary>
+    public bool IsLeaf { get; private set; } = false;
 
     [JsonInclude]
     [JsonConverter(typeof(TimeCollectionConverter))]

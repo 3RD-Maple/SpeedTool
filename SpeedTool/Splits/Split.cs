@@ -53,7 +53,7 @@ public class Split
 
     private SplitDisplayInfo[] Flatten(int level)
     {
-        List<SplitDisplayInfo> list = [new SplitDisplayInfo(Name, false, level)];
+        List<SplitDisplayInfo> list = [new SplitDisplayInfo(Name, false, level, Subsplits.Length == 0)];
 
         foreach(var split in Subsplits)
         {

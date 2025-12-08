@@ -11,5 +11,5 @@ public class NullSplitsSource : ISplitsSource
         return [split];
     }
 
-    private SplitDisplayInfo split = new SplitDisplayInfo("No Game", false, 0);
+    private SplitDisplayInfo split = new SplitDisplayInfo("No Game", false, 0, true);
 }

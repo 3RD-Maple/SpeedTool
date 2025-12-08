@@ -131,6 +131,9 @@ public sealed class SplitsController
 
     public void UndoSplit()
     {
+        if(!CanUndoSplit)
+            return;
+
         while(PreviousFlatSplit != null)
         {
             flattened[currentSplitId].IsCurrent = false;
@@ -330,6 +333,24 @@ public sealed class SplitsController
     private SplitDisplayInfo? NextFlatSplit => currentSplitId >= flattened.Length - 1 ? null : flattened[currentSplitId + 1];
     private SplitDisplayInfo CurrentFlatSplit => flattened[Math.Max(0, currentSplitId)];
     private SplitDisplayInfo? PreviousFlatSplit => currentSplitId <= 0 ? null : flattened[currentSplitId - 1];
+
+    /// <summary>
+    /// Can we undo a split?
+    /// </summary>
+    private bool CanUndoSplit
+    {
+        get
+        {
+            // Simply unroll and see if any leaves are left behind
+            for(int i = currentSplitId - 1; i > 0; i--)
+            {
+                if(flattened[i].IsLeaf)
+                    return true;
+            }
+
+            return false;
+        }
+    }
 
     int currentSplitId = 0;
 
