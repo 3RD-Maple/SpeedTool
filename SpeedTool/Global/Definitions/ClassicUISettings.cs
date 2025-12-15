@@ -18,4 +18,8 @@ public sealed class ClassicUISettings : IConfigurationSection
 
     [JsonInclude]
     public bool AlternateSplitBackround = true;
+
+    [JsonInclude]
+    [JsonConverter(typeof(Vector2Converter))]
+    public Vector2 DesiredSizes = new(500, 550);
 }

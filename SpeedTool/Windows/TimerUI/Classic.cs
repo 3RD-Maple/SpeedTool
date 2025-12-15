@@ -12,16 +12,31 @@ namespace SpeedTool.Windows.TimerUI;
 
 class ClassicTimerUI : TimerUIBase
 {
+    private bool ConfigChangePending { get; set; } = false;
+    private DateTime ConfigChangePendingSince { get; set; } = DateTime.MinValue;
     private ColorSettings ColorsConfig { get; set; } = Configuration.GetSection<ColorSettings>();
-    
+
     private ClassicUISettings UIConfig { get; set; } = Configuration.GetSection<ClassicUISettings>();
-    
+
     public ClassicTimerUI()
     {
 
     }
 
     public override WindowBorder DesiredBorder => WindowBorder.Resizable;
+
+    public override Vector2 DesiredSize => UIConfig.DesiredSizes;
+
+    public override void Resizing(Vector2 newSizes)
+    {
+        if(newSizes == UIConfig.DesiredSizes)
+            return;
+
+        UIConfig.DesiredSizes = newSizes;
+        ConfigChangePendingSince = DateTime.Now;
+        ConfigChangePending = true;
+        Configuration.SetSection(UIConfig);
+    }
 
     public override void ReloadConfig(object? sender, IConfigurationSection? section)
     {
@@ -34,6 +49,7 @@ class ClassicTimerUI : TimerUIBase
 
     public override void DoUI(ISplitsSource splits, ITimerSource source)
     {
+        CheckAndSaveConfig();
         ColorsConfig = Configuration.GetSection<ColorSettings>();
         UIConfig = Configuration.GetSection<ClassicUISettings>();
         ImGui.PushStyleVar(ImGuiStyleVar.FramePadding, 0);
@@ -137,6 +153,21 @@ class ClassicTimerUI : TimerUIBase
         var posX = ImGui.GetWindowWidth() - sz - 10;
         ImGui.SetCursorPosX(posX);
         ImGui.TextColored(color, text);
+    }
+
+    private void CheckAndSaveConfig()
+    {
+        // FIXME:
+        //  Once the user starts resizing the window, the resize message is spammed. If I were to save
+        //  new sizes on every resize message, it would lead to config being rewritten too many times.
+        //  To prevent too mane file operations, only save it 5 secods after the last resize message.
+        //  This is a hack but will do for now.
+        if(ConfigChangePending && (DateTime.Now - ConfigChangePendingSince) > TimeSpan.FromSeconds(5))
+        {
+            ConfigChangePending = false;
+            ConfigChangePendingSince = DateTime.MinValue;
+            Configuration.SetSection(UIConfig);
+        }
     }
 
     public override void Draw(double dt, ISplitsSource splits, ITimerSource source) { }

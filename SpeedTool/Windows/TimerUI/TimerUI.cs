@@ -10,8 +10,10 @@ abstract class TimerUIBase
 {
     public abstract void Draw(double dt, ISplitsSource splits, ITimerSource source);
     public abstract void DoUI(ISplitsSource splits, ITimerSource source);
-    
+
     public virtual void ReloadConfig(object? sender, IConfigurationSection? section) { }
+
+    public virtual void Resizing(Vector2 newSizes) { }
 
     public abstract WindowBorder DesiredBorder { get; }
     public virtual Vector2 DesiredSize

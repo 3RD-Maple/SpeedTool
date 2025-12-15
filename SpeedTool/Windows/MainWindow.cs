@@ -208,6 +208,11 @@ class MainWindow : SPWindow
         }
     }
 
+    protected override void OnResizing(Vector2 newSizes)
+    {
+        ui?.Resizing(newSizes);
+    }
+
     static private WindowOptions options
     {
         get

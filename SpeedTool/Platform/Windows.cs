@@ -89,6 +89,7 @@ public class Window : IDisposable
         {
             this.sizes = sizes;
             gl?.Viewport(0, 0, (uint)sizes.X, (uint)sizes.Y);
+            OnResizing(new(sizes.X, sizes.Y));
         };
 
         window.Closing += () =>
@@ -225,6 +226,8 @@ public class Window : IDisposable
     protected virtual void OnAfterUI(double dt) { }
 
     protected virtual void OnFilesDropped(string[] files) { }
+
+    protected virtual void OnResizing(Vector2 newSizes) { }
 
     /// <summary>
     /// Called when the window is closing
