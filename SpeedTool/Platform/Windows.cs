@@ -25,9 +25,9 @@ public class Window : IDisposable
 {
     public Window(WindowOptions options, Sizes sz)
     {
-        window = SilkWindow.Create(options);
         sizes = sz;
-
+        options.Size = sz;
+        window = SilkWindow.Create(options);
         fonts = new();
 
         window.Load += () =>
@@ -84,6 +84,8 @@ public class Window : IDisposable
             ImGui.PopStyleVar();
 
             controller?.Render();
+
+            LogDiagnostics();
         };
 
         window.Resize += sizes =>
@@ -242,6 +244,29 @@ public class Window : IDisposable
     protected virtual void OnClosing() { }
 
     protected virtual void OnConfigUpdated(object? sender, IConfigurationSection? section) { }
+
+    private void LogDiagnostics()
+    {
+        diagnosticFrame++;
+        if(diagnosticFrame is not (1 or 5 or 30 or 120))
+            return;
+
+        var io = ImGui.GetIO();
+        var dd = ImGui.GetDrawData();
+        DebugLog.SharedInstance.Write($"Frame {diagnosticFrame}: windowSize={window.Size.X}x{window.Size.Y} fb={window.FramebufferSize.X}x{window.FramebufferSize.Y} " +
+                                      $"displaySize={io.DisplaySize.X}x{io.DisplaySize.Y} fbScale={io.DisplayFramebufferScale.X}x{io.DisplayFramebufferScale.Y} " +
+                                      $"cmdLists={dd.CmdListsCount} vtx={dd.TotalVtxCount} idx={dd.TotalIdxCount} texID={io.Fonts.TexID} glErr={gl?.GetError()}");
+
+        if(diagnosticFrame == 1)
+            DebugLog.SharedInstance.Write($"GL: vendor='{GlString(GLEnum.Vendor)}' renderer='{GlString(GLEnum.Renderer)}' version='{GlString(GLEnum.Version)}'");
+    }
+
+    private unsafe string GlString(GLEnum name)
+    {
+        return Marshal.PtrToStringUTF8((IntPtr)gl!.GetString(name)) ?? "";
+    }
+
+    private int diagnosticFrame;
 
     private IWindow window;
 
