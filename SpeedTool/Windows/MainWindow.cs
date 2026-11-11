@@ -189,9 +189,6 @@ class MainWindow : SPWindow
         ImGui.PopFont();
         ImGui.End();
 
-        // Diagnostic: opaque white square in the top-left corner, rendered on the foreground layer
-        ImGui.GetForegroundDrawList().AddRectFilled(new Vector2(8, 8), new Vector2(48, 48), 0xFFFFFFFF);
-
         onExit?.Invoke();
     }
 
