@@ -139,19 +139,27 @@ public sealed class UniversalFileDialog : Window
             directory.CurrentPath = selectedDirectory;
             directory.RefreshDirectory();
 
+            currentItem = 0;
+            errorMessage = "";
             if (directory.TotalFiles!.Count > 0)
             {
                 selectedDirectory = Path.Combine(directory.CurrentPath, directory.TotalFiles[0]);
                 isfolderSelected = directory.Directories!.Contains(directory.TotalFiles[0]);
-
-                onOpen(selectedDirectory);
             }
         }
-        else
+        else if(operationMode == DialogOperation.Open)
         {
-            onOpen(Path.GetFullPath(directory.CurrentPath));
-            onOpen?.Invoke(Path.GetFullPath(directory.CurrentPath));
-            Close();
+            var path = Path.GetFullPath(selectedDirectory ?? directory.CurrentPath);
+            try
+            {
+                onOpen(path);
+                Close();
+            }
+            catch(Exception ex)
+            {
+                errorMessage = "Failed to open: " + ex.Message;
+                DebugLog.SharedInstance.Write($"Failed to open '{path}': {ex}");
+            }
         }
     }
     
