@@ -12,13 +12,21 @@ public sealed class UniversalDirectory
     
     public void RefreshDirectory()
     {
-        Directories = Directory.GetDirectories(CurrentPath)
-            .Select(x => Path.GetFileName(x))
-            .ToArray();
-        
-        Files = Directory.GetFiles(CurrentPath)
-            .Select(x => Path.GetFileName(x))
-            .ToArray();
+        try
+        {
+            Directories = Directory.GetDirectories(CurrentPath)
+                .Select(x => Path.GetFileName(x))
+                .ToArray();
+            
+            Files = Directory.GetFiles(CurrentPath)
+                .Select(x => Path.GetFileName(x))
+                .ToArray();
+        }
+        catch(UnauthorizedAccessException)
+        {
+            Directories = [];
+            Files = [];
+        }
         
         TotalFiles = Directories
             .Concat(Files)

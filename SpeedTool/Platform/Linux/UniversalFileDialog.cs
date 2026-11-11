@@ -2,6 +2,7 @@ using System.Numerics;
 using ImGuiNET;
 using Silk.NET.Maths;
 using Silk.NET.Windowing;
+using SpeedTool.Platform.Debugging;
 
 namespace SpeedTool.Platform.Linux;
 
@@ -11,9 +12,15 @@ public sealed class UniversalFileDialog : Window
 
     public UniversalFileDialog(Action<string> onLoad, DialogOperation operation) : base(options, new Vector2D<int>(500, 550))
     {
-        directory = new UniversalDirectory(AppContext.BaseDirectory);
+        directory = new UniversalDirectory(GetDefaultDirectory());
         this.onLoad = onLoad;
         operationMode = operation;
+    }
+
+    private static string GetDefaultDirectory()
+    {
+        var home = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+        return string.IsNullOrEmpty(home) ? "/" : home;
     }
 
     private static WindowOptions options
@@ -95,6 +102,11 @@ public sealed class UniversalFileDialog : Window
         ImGui.InputText("", ref fileName, 255);
         ImGui.SameLine();
 
+        if(errorMessage != "")
+        {
+            ImGui.TextColored(new Vector4(1.0f, 0.3f, 0.3f, 1.0f), errorMessage);
+        }
+
         if (operationMode == DialogOperation.Open)
         {
             if (ImGui.Button("Open", new Vector2(ImGui.GetWindowWidth() * 0.3f, ImGui.GetWindowHeight() * 0.05f)))
@@ -149,11 +161,22 @@ public sealed class UniversalFileDialog : Window
 
        if (!string.IsNullOrEmpty(fileName))
        {
-           onSave?.Invoke(fullPath);
+           try
+           {
+               onSave?.Invoke(fullPath);
+           }
+           catch(Exception ex)
+           {
+               errorMessage = "Failed to save: " + ex.Message;
+               DebugLog.SharedInstance.Write($"Failed to save '{fullPath}': {ex}");
+               return;
+           }
        }
 
        Close();
     }
+
+    private string errorMessage = "";
 
     private readonly DialogOperation operationMode;
 
