@@ -45,6 +45,32 @@ dotnet run --project SpeedTool
 
 **Due to complications with .NET Framework versions, to get scripting support you need to manually copy the output of TimerInjector project into SpeedTool output directory.**
 
+## Running on Linux
+
+### Wayland
+
+SpeedTool runs natively on Wayland (the bundled GLFW supports it out of the box).
+
+Global hotkeys work differently on Wayland: the compositor does not allow applications to install global
+keyboard hooks, so SpeedTool reads key events directly from the kernel's evdev devices instead. This requires
+read access to `/dev/input/event*`, which usually means being a member of the `input` group:
+
+```
+sudo usermod -aG input $USER
+```
+
+(Log out and back in for the group change to take effect.) If evdev access is unavailable, SpeedTool falls back
+to the regular global hook, which only sees X11/XWayland applications.
+
+The hotkey backend can be forced with the `SPEEDTOOL_HOTKEY_BACKEND` environment variable:
+
+* `SPEEDTOOL_HOTKEY_BACKEND=evdev` - always use evdev
+* `SPEEDTOOL_HOTKEY_BACKEND=global` - always use the global hook (X11)
+
+When unset, SpeedTool picks evdev automatically on Wayland sessions.
+
+The active backend is written to the debug log on startup.
+
 ## Future plans
 
 Some things we'd like to work on in the near future:

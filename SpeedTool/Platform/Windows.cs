@@ -15,6 +15,7 @@ using Sizes = Silk.NET.Maths.Vector2D<int>;
 using ImGuiNET;
 using System.Numerics;
 using SpeedTool.Platform.EventsArgs;
+using SpeedTool.Platform.Debugging;
 using StbImageSharp;
 using Silk.NET.Core;
 using System.Runtime.InteropServices;
@@ -256,17 +257,34 @@ public class Window : IDisposable
 
     public unsafe void LoadFontEx(string fontStd, string fontCJK, int size, string name)
     {
-        var res = ImGui.GetIO().Fonts.AddFontFromFileTTF(fontStd, size, null, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+        var atlas = ImGui.GetIO().Fonts;
+
+        var res = File.Exists(fontStd) ? atlas.AddFontFromFileTTF(fontStd, size, null, atlas.GetGlyphRangesDefault()) : null;
+        if(res.NativePtr == null)
+        {
+            // No usable system font, fall back to the built-in font so the UI still renders
+            DebugLog.SharedInstance.Write($"Font '{fontStd}' is not usable, falling back to the built-in ImGui font");
+            fonts[name] = atlas.AddFontDefault();
+            return;
+        }
 
         ImFontConfigPtr config = new(ImGuiNative.ImFontConfig_ImFontConfig());
         config.MergeMode = true;
 
+        atlas.AddFontFromFileTTF(fontStd, size, config, atlas.GetGlyphRangesCyrillic());
 
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontStd, size, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesKorean());
-        ImGui.GetIO().Fonts.AddFontFromFileTTF(fontCJK, size, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseFull());
-        ImGui.GetIO().Fonts.Build();
+        if(File.Exists(fontCJK))
+        {
+            atlas.AddFontFromFileTTF(fontCJK, size, config, atlas.GetGlyphRangesJapanese());
+            atlas.AddFontFromFileTTF(fontCJK, size, config, atlas.GetGlyphRangesKorean());
+            atlas.AddFontFromFileTTF(fontCJK, size, config, atlas.GetGlyphRangesChineseFull());
+        }
+        else
+        {
+            DebugLog.SharedInstance.Write($"CJK font '{fontCJK}' is not usable, skipping CJK glyphs");
+        }
+
+        atlas.Build();
         fonts[name] = res;
     }
 

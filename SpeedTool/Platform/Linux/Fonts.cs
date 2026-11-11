@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.Runtime.Versioning;
+using SpeedTool.Platform.Debugging;
 
 namespace SpeedTool.Platform.Linux;
 
@@ -13,8 +14,7 @@ public sealed class Fonts
             if(!loaded)
                 Load();
 
-            var str = fonts.Where(x => x.Contains("DroidSans.ttf")).FirstOrDefault();
-            return str == null ? "" : str;
+            return defaultFont ?? "";
         }
     }
 
@@ -24,38 +24,136 @@ public sealed class Fonts
         {
             if(!loaded)
                 Load();
-            
-            var str = fonts.Where(x => x.Contains("DroidSansJapanese.ttf")).FirstOrDefault();
-            return str == null ? "" : str;
+
+            return defaultCJKFont ?? "";
         }
     }
 
     private static void Load()
     {
-        using(var proc = new Process())
+        loaded = true;
+
+        defaultFont = FontconfigMatch("sans-serif") ?? FindByNames(StandardFontNames) ?? "";
+        defaultCJKFont = FontconfigMatch("sans-serif:lang=ja") ?? FindByNames(CJKFontNames) ?? "";
+
+        if(defaultFont == "")
+            DebugLog.SharedInstance.Write("Fonts: no usable system font found, falling back to the built-in ImGui font");
+    }
+
+    private static string? FontconfigMatch(string pattern)
+    {
+        try
         {
-            loaded = true;
-            proc.StartInfo = new()
+            using(var proc = new Process())
             {
-                FileName = "fc-list",
-                Arguments = ": file",
-                RedirectStandardOutput = true
-            };
+                proc.StartInfo = new()
+                {
+                    FileName = "fc-match",
+                    Arguments = $"-f \"%{{file}}\" {pattern}",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
 
-            if(!proc.Start())
-                return;
+                if(!proc.Start())
+                    return null;
 
-            fonts = proc.StandardOutput.ReadToEnd()
-                                       .Split("\n")
-                                       .Where(x => x.Length > 0)
-                                       .Select(x => x.Substring(0, x.Length - 2))
-                                       .Where(x => x.EndsWith(".ttf"))
-                                       .ToArray();
+                var file = proc.StandardOutput.ReadToEnd().Trim();
+                proc.WaitForExit();
 
-            proc.WaitForExit();
+                return File.Exists(file) ? file : null;
+            }
+        }
+        catch
+        {
+            return null;
         }
     }
 
-    private static string[] fonts = [];
+    private static string? FindByNames(string[] names)
+    {
+        var files = ListFontFiles();
+        foreach(var name in names)
+        {
+            var str = files.Where(x => x.ToLowerInvariant().Contains(name)).FirstOrDefault();
+            if(str != null)
+                return str;
+        }
+
+        return null;
+    }
+
+    private static string[] ListFontFiles()
+    {
+        var files = new List<string>();
+        files.AddRange(RunFcList());
+
+        // Scan standard font directories as well, fc-list might be missing or not in PATH
+        foreach(var dir in FontDirs)
+        {
+            if(!Directory.Exists(dir))
+                continue;
+
+            files.AddRange(Directory.EnumerateFiles(dir, "*", SearchOption.AllDirectories)
+                                     .Where(x => x.EndsWith(".ttf") || x.EndsWith(".otf")));
+        }
+
+        return files.Distinct().ToArray();
+    }
+
+    private static IEnumerable<string> RunFcList()
+    {
+        try
+        {
+            using(var proc = new Process())
+            {
+                proc.StartInfo = new()
+                {
+                    FileName = "fc-list",
+                    Arguments = ": file",
+                    RedirectStandardOutput = true,
+                    UseShellExecute = false
+                };
+
+                if(!proc.Start())
+                    return [];
+
+                var files = proc.StandardOutput.ReadToEnd()
+                                             .Split("\n")
+                                             .Select(x => x.Trim())
+                                             .Where(x => x.EndsWith(":"))
+                                             .Select(x => x.Substring(0, x.Length - 1).Trim())
+                                             .Where(x => x.EndsWith(".ttf") || x.EndsWith(".otf"))
+                                             .ToArray();
+
+                proc.WaitForExit();
+                return files;
+            }
+        }
+        catch
+        {
+            return [];
+        }
+    }
+
+    private static readonly string[] StandardFontNames =
+    [
+        "dejavusans", "notosans", "liberationsans", "droidsans", "opensans", "firasans", "freesans", "ubuntu"
+    ];
+
+    private static readonly string[] CJKFontNames =
+    [
+        "notosanscjk", "droidsansfallback", "droidsansjapanese", "sourcehans", "wenquanyi", "vlgothic", "takao", "ipafont", "nanum"
+    ];
+
+    private static readonly string[] FontDirs =
+    [
+        "/usr/share/fonts",
+        "/usr/local/share/fonts",
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.local/share/fonts",
+        Environment.GetFolderPath(Environment.SpecialFolder.UserProfile) + "/.fonts"
+    ];
+
+    private static string? defaultFont;
+    private static string? defaultCJKFont;
     private static bool loaded = false;
 }
