@@ -36,6 +36,9 @@ public sealed class Fonts
         defaultFont = FontconfigMatch("sans-serif") ?? FindByNames(StandardFontNames) ?? "";
         defaultCJKFont = FontconfigMatch("sans-serif:lang=ja") ?? FindByNames(CJKFontNames) ?? "";
 
+        DebugLog.SharedInstance.Write($"Fonts: default font: '{defaultFont}'");
+        DebugLog.SharedInstance.Write($"Fonts: default CJK font: '{defaultCJKFont}'");
+
         if(defaultFont == "")
             DebugLog.SharedInstance.Write("Fonts: no usable system font found, falling back to the built-in ImGui font");
     }

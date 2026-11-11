@@ -121,6 +121,12 @@ public class Window : IDisposable
         window.Initialize();
         window.Size = sizes;
 
+        if(RuntimeInformation.IsOSPlatform(OSPlatform.Linux))
+            DebugLog.SharedInstance.Write($"Window: session WAYLAND_DISPLAY='{Environment.GetEnvironmentVariable("WAYLAND_DISPLAY")}' " +
+                                          $"XDG_SESSION_TYPE='{Environment.GetEnvironmentVariable("XDG_SESSION_TYPE")}' " +
+                                          $"DISPLAY='{Environment.GetEnvironmentVariable("DISPLAY")}' " +
+                                          $"framebuffer={window.FramebufferSize.X}x{window.FramebufferSize.Y}");
+
         Configuration.OnConfigurationChanged += HandleConfigUpdate;
     }
 
@@ -258,6 +264,7 @@ public class Window : IDisposable
     public unsafe void LoadFontEx(string fontStd, string fontCJK, int size, string name)
     {
         var atlas = ImGui.GetIO().Fonts;
+        DebugLog.SharedInstance.Write($"LoadFontEx '{name}': std='{fontStd}' cjk='{fontCJK}'");
 
         var res = File.Exists(fontStd) ? atlas.AddFontFromFileTTF(fontStd, size, null, atlas.GetGlyphRangesDefault()) : null;
         if(res.NativePtr == null)
@@ -285,6 +292,7 @@ public class Window : IDisposable
         }
 
         atlas.Build();
+        DebugLog.SharedInstance.Write($"LoadFontEx '{name}': atlas built, {atlas.Fonts.Size} font(s) in atlas");
         fonts[name] = res;
     }
 
