@@ -10,7 +10,7 @@ namespace SpeedTool.Windows;
 
 class AboutWindow : Platform.Window
 {
-    public AboutWindow() : base(options, new Vector2D<int>(500, 350))
+    public AboutWindow() : base(options)
     {
         platform = Platform.Platform.SharedPlatform;
         Text = "About SpeedTool";
@@ -57,6 +57,7 @@ class AboutWindow : Platform.Window
             var opts = WindowOptions.Default;
             opts.Samples = 8;
             opts.WindowBorder = WindowBorder.Fixed;
+            opts.Size = new(500, 350);
             return opts;
         }
     }

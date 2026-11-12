@@ -22,10 +22,11 @@ using SpeedTool.Platform.Linux;
 
 public class Window : IDisposable
 {
-    public Window(WindowOptions options, Sizes sz)
+    public Window(WindowOptions options)
     {
+        sizes = options.Size;
+
         window = SilkWindow.Create(options);
-        sizes = sz;
 
         fonts = new();
 

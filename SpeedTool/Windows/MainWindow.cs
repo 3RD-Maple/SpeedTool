@@ -19,7 +19,7 @@ using SPWindow = Platform.Window;
 
 class MainWindow : SPWindow
 {
-    public MainWindow() : base(options, new Vector2D<int>(500, 550))
+    public MainWindow() : base(options)
     {
         platform = Platform.Platform.SharedPlatform;
         drw = new TimerDrawable(Gl);
@@ -220,6 +220,7 @@ class MainWindow : SPWindow
             var opts = WindowOptions.Default;
             opts.Samples = 8;
             opts.WindowBorder = WindowBorder.Fixed;
+            opts.Size = new(500, 550);
             return opts;
         }
     }

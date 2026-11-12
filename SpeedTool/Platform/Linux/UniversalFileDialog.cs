@@ -9,7 +9,7 @@ public sealed class UniversalFileDialog : Window
 {
     private UniversalDirectory directory;
 
-    public UniversalFileDialog(Action<string> onLoad, DialogOperation operation) : base(options, new Vector2D<int>(500, 550))
+    public UniversalFileDialog(Action<string> onLoad, DialogOperation operation) : base(options)
     {
         directory = new UniversalDirectory(AppContext.BaseDirectory);
         this.onLoad = onLoad;
@@ -22,6 +22,7 @@ public sealed class UniversalFileDialog : Window
         {
             var opts = WindowOptions.Default;
             opts.Samples = 8;
+            opts.Size = new(500, 550);
             return opts;
         }
     }

@@ -17,7 +17,7 @@ public sealed class CodeEditorWindow : Window
         textEditor.LanguageDefinition = CreateLanguageDefinition();
     }
 
-    private CodeEditorWindow() : base(options, new Vector2D<int>(1200, 780)) { }
+    private CodeEditorWindow() : base(options) { }
 
     public string Code
     {
@@ -33,6 +33,7 @@ public sealed class CodeEditorWindow : Window
         {
             var opts = WindowOptions.Default;
             opts.Samples = 8;
+            opts.Size = new(1200, 700);
             return opts;
         }
     }

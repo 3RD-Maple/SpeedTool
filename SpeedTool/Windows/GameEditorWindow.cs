@@ -19,7 +19,7 @@ public sealed class GameEditorWindow : Platform.Window
     }
 
     private readonly Platform.Platform platform;
-    public GameEditorWindow() : base(WindowOptions.Default, new Vector2D<int>(800, 600))
+    public GameEditorWindow() : base(WindowOptions.Default)
     {
         platform = Platform.Platform.SharedPlatform;
         Name = "Game Name";

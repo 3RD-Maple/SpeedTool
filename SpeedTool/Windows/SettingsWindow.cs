@@ -8,7 +8,7 @@ using Window = SpeedTool.Platform.Window;
 
 namespace SpeedTool.Windows;
 
-public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 550))
+public sealed class SettingsWindow() : Window(options)
 {
     private readonly TabBase[] settingsWindowTabs =
     {
@@ -22,6 +22,7 @@ public sealed class SettingsWindow() : Window(options, new Vector2D<int>(500, 55
         {
             var opts = WindowOptions.Default;
             opts.Samples = 8;
+            opts.Size = new(500, 550);
             return opts;
         }
     }

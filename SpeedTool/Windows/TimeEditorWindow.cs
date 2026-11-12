@@ -12,7 +12,7 @@ namespace SpeedTool.Windows;
 
 class TimeEditorWindow : Window
 {
-    public TimeEditorWindow(RunInfo ri) : base(options, new Vector2D<int>(500, 500))
+    public TimeEditorWindow(RunInfo ri) : base(options)
     {
         splits = ri.Splits;
         runInfo = ri;
@@ -33,6 +33,7 @@ class TimeEditorWindow : Window
         {
             var opts = WindowOptions.Default;
             opts.Samples = 8;
+            opts.Size = new(500, 500);
             return opts;
         }
     }

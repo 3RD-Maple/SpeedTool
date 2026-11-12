@@ -8,7 +8,7 @@ namespace SpeedTool.Windows;
 
 public sealed class DebugMessagesWindow : Platform.Window
 {
-    public DebugMessagesWindow() : base(WindowOptions.Default, new Vector2D<int>(800, 600))
+    public DebugMessagesWindow() : base(WindowOptions.Default)
     {
     }
 
