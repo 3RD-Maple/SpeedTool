@@ -1,6 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using SharpHook.Native;
+using SharpHook.Data;
 using SpeedTool.Platform;
 
 namespace SpeedTool.JSON;

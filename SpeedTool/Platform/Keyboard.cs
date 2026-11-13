@@ -1,5 +1,5 @@
 using System.Runtime.InteropServices;
-using SharpHook.Native;
+using SharpHook.Data;
 
 namespace SpeedTool.Platform;
 
@@ -18,6 +18,10 @@ public sealed class Keyboard
 
     internal void SetKeyData(KeyPressData data)
     {
+        // Do not process undefined keycodes
+        if(data.KeyCode == KeyCode.VcUndefined)
+            return;
+
         keys[(ushort)data.KeyCode] = data.Pressed;
 
         if(data.Pressed)

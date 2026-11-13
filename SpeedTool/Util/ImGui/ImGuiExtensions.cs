@@ -1,5 +1,5 @@
 using System.Numerics;
-using SharpHook.Native;
+using SharpHook.Data;
 using SpeedTool.Platform;
 using SpeedTool.Splits;
 using SpeedTool.Timer;

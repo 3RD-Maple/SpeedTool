@@ -20,6 +20,9 @@ internal sealed class KeyboardHook : IDisposable
 
     public void Cycle()
     {
+        if(hookTask.Exception is not null)
+            throw hookTask.Exception;
+
         while(!presses.IsEmpty)
         {
             var keyData = DequeueElement();

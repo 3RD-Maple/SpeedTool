@@ -3,7 +3,7 @@ using System.Text.Json.Nodes;
 namespace SpeedTool.Platform;
 
 using System.Text;
-using SharpHook.Native;
+using SharpHook.Data;
 
 public struct Hotkey
 {

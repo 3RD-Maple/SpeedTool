@@ -1,4 +1,4 @@
-using SharpHook.Native;
+using SharpHook.Data;
 
 namespace SpeedTool.Platform;
 
