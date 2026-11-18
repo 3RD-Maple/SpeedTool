@@ -6,6 +6,9 @@ namespace SpeedTool.Platform.Linux;
 [SupportedOSPlatform("Linux")]
 public sealed class Fonts
 {
+
+    private static readonly IEnumerable<string> DEFAULT_FONTS = ["DroidSans.ttf", "NotoSans-Regular.ttf"];
+    private static readonly IEnumerable<string> DEFAULT_CJK_FONTS = ["DroidSansJapanese.ttf", "NotoSansCJK-Regular.ttc"];
     public static string DefaultFont
     {
         get
@@ -13,8 +16,8 @@ public sealed class Fonts
             if(!loaded)
                 Load();
 
-            var str = fonts.Where(x => x.Contains("DroidSans.ttf")).FirstOrDefault();
-            return str == null ? "" : str;
+            var str = fonts.Where(x => DEFAULT_FONTS.Any(def_font => x.Contains(def_font))).FirstOrDefault();
+            return str ?? "";
         }
     }
 
@@ -25,8 +28,8 @@ public sealed class Fonts
             if(!loaded)
                 Load();
             
-            var str = fonts.Where(x => x.Contains("DroidSansJapanese.ttf")).FirstOrDefault();
-            return str == null ? "" : str;
+            var str = fonts.Where(x => DEFAULT_CJK_FONTS.Any(def_font => x.Contains(def_font))).FirstOrDefault();
+            return str ?? "";
         }
     }
 
