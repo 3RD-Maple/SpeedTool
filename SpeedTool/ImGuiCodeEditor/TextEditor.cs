@@ -618,7 +618,20 @@ public class TextEditor
         if (IsReadOnly)
             return;
 
-        var clipText = ImGui.GetClipboardText();
+        var getClip = () =>
+        {
+            try
+            {
+                var text = ImGui.GetClipboardText();
+                return text;
+            }
+            catch
+            {
+                return "";
+            }
+        };
+
+        var clipText = getClip();
         if (clipText != "" && clipText.Length > 0)
         {
             UndoRecord u = new();
