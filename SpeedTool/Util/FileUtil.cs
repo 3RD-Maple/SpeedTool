@@ -1,4 +1,5 @@
 using System.Runtime.InteropServices;
+using Silk.NET.SDL;
 using SpeedTool.Platform.Linux;
 using SpeedTool.Windows;
 using Dialogs = SpeedTool.Platform.Windows.WindowsFileDialog;
